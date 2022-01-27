@@ -16,6 +16,7 @@
 alpha       [a-zA-Z]
 digit       [0-9]
 
+
 num     {digit}{digit}*
 ID      {alpha}({alpha}|{digit})*
 
@@ -36,18 +37,26 @@ ID      {alpha}({alpha}|{digit})*
 "-"         return T_SUB;
 "/"         return T_DIV;
 "*"         return T_MULT;
-"begin"     return T_BEGIN;
-"end"       return T_END;
+"true"      return T_TRUE;
+"false"     return T_FALSE;
+"boolean"   return T_BOOLEAN;
+"int"       {lexeme = std::string(YYText()); return T_INT;}
+"void"      return T_VOID;  
+"if"        return T_IF;
+"else"      return T_ELSE;  
+"while"     return T_WHILE;
+"break"     return T_BREAK;
+"return"    return T_RETURN;
 
 {ID}        {lexeme = std::string(YYText()); return T_ID;}
 {num}       return T_NUM;
 
 
-"#"             BEGIN(COMMENT);
+"//"            BEGIN(COMMENT);
 <COMMENT>.
-<COMMENT>\n     {BEGIN(INITIAL); std::cout << "Caught commetn at line " << yylineno << "\n"; }
+<COMMENT>\n     {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << "\n"; }
 
-.               std::cerr << "Illegal char at line " << yylineno << std::endl;
+.               std::cerr << "Detected an illegal character at line " << yylineno << std::endl;
 
 %% 
 
