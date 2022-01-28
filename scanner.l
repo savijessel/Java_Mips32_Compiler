@@ -8,7 +8,10 @@
     // Declarations go here
     #include <iostream>
     #include <fstream>
+    #include <string>
     #include "scanner.hpp"
+    
+    static std::string strBuffer;
     
 %}
 
@@ -17,11 +20,16 @@ alpha       [a-zA-Z]
 digit       [0-9]
 
 
-num     {digit}{digit}*
-ID      {alpha}({alpha}|{digit})*
+
+num         {digit}{digit}*
+ID          {alpha}({alpha}|{digit})*
+
 
 /* Comment States */
 %x COMMENT
+
+/* String State */
+%x STRING
 
 %% 
 
@@ -37,6 +45,19 @@ ID      {alpha}({alpha}|{digit})*
 "-"         return T_SUB;
 "/"         return T_DIV;
 "*"         return T_MULT;
+"%"         return T_PS;
+"="         return T_EQ;
+"=="        return T_DEQ;
+"!="        return T_NEQ;
+"!"         return T_EX;
+"&&"        return T_AND;
+"||"        return T_OR;
+";"         return T_SEM;
+","         return T_COM;
+"("         return T_LPAR;
+")"         return T_RPAR;
+"{"         return T_LBRC;
+"}"         return T_RBRC;
 "true"      return T_TRUE;
 "false"     return T_FALSE;
 "boolean"   return T_BOOLEAN;
@@ -56,7 +77,20 @@ ID      {alpha}({alpha}|{digit})*
 <COMMENT>.
 <COMMENT>\n     {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << "\n"; }
 
-.               std::cerr << "Detected an illegal character at line " << yylineno << std::endl;
+\"                  {BEGIN(STRING); strBuffer.clear();}
+
+
+<STRING><<EOF>>     {std::cerr << "Reached End of File"<< std::endl; return EXIT_SUCCESS;}
+<STRING>[^\\]*   {strBuffer = strBuffer + std::string(YYText());}
+<STRING>\\n         {strBuffer = strBuffer + std::string(YYText());}
+<STRING>\\t         {strBuffer = strBuffer + std::string(YYText());}
+
+
+<STRING>\n          {std::cerr << "Detected a newline in a string at line " << yylineno << std::endl;}
+<STRING>\"          {BEGIN(INITIAL); lexeme = strBuffer; return T_STRING; }
+
+
+.                   std::cerr << "Detected an illegal character at line " << yylineno << std::endl;
 
 %% 
 

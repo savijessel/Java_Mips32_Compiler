@@ -34,7 +34,21 @@ enum
     T_LT,
     T_GT,
     T_GE,
-    T_LE
+    T_LE,
+    T_PS,
+    T_EQ,
+    T_DEQ,
+    T_NEQ,
+    T_EX,
+    T_AND,
+    T_OR,
+    T_SEM,
+    T_COM,
+    T_LPAR,
+    T_RPAR,
+    T_LBRC,
+    T_RBRC,
+    T_STRING,
 };
 
 // Lexer class. Inherits yyFlexLexer
@@ -122,6 +136,48 @@ inline char const *getName(int tok)
 
     case T_GE:
         return ">=";
+
+    case T_PS:
+        return "%";
+
+    case T_EQ:
+        return "=";
+
+    case T_DEQ:
+        return "==";
+
+    case T_NEQ:
+        return "!=";
+
+    case T_EX:
+        return "!";
+
+    case T_AND:
+        return "&&";
+
+    case T_OR:
+        return "||";
+
+    case T_SEM:
+        return ";";
+
+    case T_COM:
+        return ",";
+
+    case T_LPAR:
+        return "(";
+
+    case T_RPAR:
+        return ")";
+
+    case T_LBRC:
+        return "{";
+
+    case T_RBRC:
+        return "}";
+
+    case T_STRING:
+        return "string";
 
     default:
         return "";
