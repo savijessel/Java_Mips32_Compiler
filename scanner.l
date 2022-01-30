@@ -18,8 +18,9 @@
 /* Definitions here */
 alpha       [a-zA-Z]
 digit       [0-9]
-escape      \\[bftrn'"]
+escape      \\[bftrn0'"\\]
 strChar     [^\"\n\\]
+
 
 
 
@@ -84,11 +85,14 @@ ID          {alpha}({alpha}|{digit})*
 
 
 
-<STRING><<EOF>>  {std::cerr << "Reached End of File"<< std::endl; return EXIT_SUCCESS;}
-<STRING>\"       {ECHO; BEGIN(INITIAL);} 
-<STRING>\n       {std::cerr << "Detected a newline in a string at or near line" << yylineno << std::endl; return EXIT_FAILURE;} 
+<STRING><<EOF>>                  {std::cerr << "Missing string end quote at or near line " << yylineno << std::endl; return EXIT_SUCCESS;}
 <STRING>({escape}|{strChar})        {yymore();}
-<STRING>[^{escape}]      {std::cerr << "Detected an invalid escape in a string at or near line " << yylineno << std::endl; return EXIT_FAILURE;}
+<STRING>\"       {lexeme = std::string(YYText()); BEGIN(INITIAL); return T_STRING;}
+<STRING>\n       {std::cerr << "Detected a newline in a string at or near line " << yylineno << std::endl; return EXIT_FAILURE;} 
+<STRING>(\\[^bftrn0'"\\])      {std::cerr << "Detected an invalid escape in a string at or near line " << yylineno << std::endl; return EXIT_FAILURE;}
+
+
+
 
 
 
