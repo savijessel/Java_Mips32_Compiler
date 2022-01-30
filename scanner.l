@@ -78,7 +78,8 @@ ID          {alpha}({alpha}|{digit})*
 
 "//"            BEGIN(COMMENT);
 <COMMENT>.
-<COMMENT>\n     {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
+<COMMENT><<EOF>>   {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
+<COMMENT>\n  {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
 
 \"              {yymore(); BEGIN(STRING);}
 
@@ -88,8 +89,8 @@ ID          {alpha}({alpha}|{digit})*
 <STRING><<EOF>>                  {std::cerr << "Missing string end quote at or near line " << yylineno << std::endl; return EXIT_SUCCESS;}
 <STRING>({escape}|{strChar})        {yymore();}
 <STRING>\"       {lexeme = std::string(YYText()); BEGIN(INITIAL); return T_STRING;}
-<STRING>\n       {std::cerr << "Detected a newline in a string at or near line " << yylineno << std::endl; return EXIT_FAILURE;} 
-<STRING>(\\[^bftrn0'"\\])      {std::cerr << "Detected an invalid escape in a string at or near line " << yylineno << std::endl; return EXIT_FAILURE;}
+<STRING>\n       {std::cerr << "Detected a newline in a string at or near line " << yylineno << std::endl; return EXIT_SUCCESS;} 
+<STRING>(\\[^bftrn0'"\\])      {std::cerr << "Detected an invalid escape in a string at or near line " << yylineno << std::endl; return EXIT_SUCCESS;}
 
 
 
@@ -97,7 +98,7 @@ ID          {alpha}({alpha}|{digit})*
 
 
 
-.                 std::cerr << "Detected an illegal character at line " << yylineno << std::endl;
+.                 {std::cerr << "Detected an illegal character at line " << yylineno << std::endl; return EXIT_SUCCESS;}
 
 %% 
 
