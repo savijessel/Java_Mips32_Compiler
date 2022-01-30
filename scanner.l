@@ -11,13 +11,15 @@
     #include <string>
     #include "scanner.hpp"
     
-    static std::string strBuffer;
+    //static std::string strBuffer;
     
 %}
 
 /* Definitions here */
 alpha       [a-zA-Z]
 digit       [0-9]
+escape      \\[bftrn'"]
+strChar     [^\"\n\\]
 
 
 
@@ -61,7 +63,7 @@ ID          {alpha}({alpha}|{digit})*
 "true"      return T_TRUE;
 "false"     return T_FALSE;
 "boolean"   return T_BOOLEAN;
-"int"       {lexeme = std::string(YYText()); return T_INT;}
+"int"       return T_INT;
 "void"      return T_VOID;  
 "if"        return T_IF;
 "else"      return T_ELSE;  
@@ -70,27 +72,28 @@ ID          {alpha}({alpha}|{digit})*
 "return"    return T_RETURN;
 
 {ID}        {lexeme = std::string(YYText()); return T_ID;}
-{num}       return T_NUM;
+{num}       {lexeme = std::string(YYText()); return T_NUM;}
 
 
 "//"            BEGIN(COMMENT);
 <COMMENT>.
-<COMMENT>\n     {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << "\n"; }
+<COMMENT>\n     {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
 
-\"                  {BEGIN(STRING); strBuffer.clear();}
-
-
-<STRING><<EOF>>     {std::cerr << "Reached End of File"<< std::endl; return EXIT_SUCCESS;}
-<STRING>[^\\]*   {strBuffer = strBuffer + std::string(YYText());}
-<STRING>\\n         {strBuffer = strBuffer + std::string(YYText());}
-<STRING>\\t         {strBuffer = strBuffer + std::string(YYText());}
+\"              {yymore(); BEGIN(STRING);}
 
 
-<STRING>\n          {std::cerr << "Detected a newline in a string at line " << yylineno << std::endl;}
-<STRING>\"          {BEGIN(INITIAL); lexeme = strBuffer; return T_STRING; }
 
 
-.                   std::cerr << "Detected an illegal character at line " << yylineno << std::endl;
+<STRING><<EOF>>  {std::cerr << "Reached End of File"<< std::endl; return EXIT_SUCCESS;}
+<STRING>\"       {ECHO; BEGIN(INITIAL);} 
+<STRING>\n       {std::cerr << "Detected a newline in a string at or near line" << yylineno << std::endl; return EXIT_FAILURE;} 
+<STRING>({escape}|{strChar})        {yymore();}
+<STRING>[^{escape}]      {std::cerr << "Detected an invalid escape in a string at or near line " << yylineno << std::endl; return EXIT_FAILURE;}
+
+
+
+
+.                 std::cerr << "Detected an illegal character at line " << yylineno << std::endl;
 
 %% 
 
