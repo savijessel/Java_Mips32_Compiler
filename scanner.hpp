@@ -1,8 +1,7 @@
 /********************************
- * Example C++ Lexical Analyzer
- * Written for CPSC 411 Tutorial
- * File: scanner.hpp
- * Shankar Ganesh
+ * This file contains code adapted from tutorial code provided by the TA
+ * TA - Shankar Ganesh
+ * Reference File - scanner.hpp
  * *****************************/
 
 #ifndef SCANNER_HPP
@@ -12,10 +11,12 @@
 #include <fstream>
 #include <memory>
 
+static int warningCounter = 0;
+
 // Token enum
 enum
 {
-    T_ID = 1,
+    T_ID = 2,
     T_TRUE,
     T_FALSE,
     T_BOOLEAN,
@@ -182,6 +183,25 @@ inline char const *getName(int tok)
     default:
         return "";
     }
+}
+
+inline int scanError(std::string message, int yylineno)
+{
+    std::cerr << "Error: " << message << " at or near line " << yylineno << std::endl;
+    return EXIT_FAILURE;
+}
+
+inline bool scanWarning(std::string message, int yylineno)
+{
+    warningCounter++;
+    if (warningCounter >= 10)
+    {
+        std::cerr << "Error: Too many warnings. Qutting program " << std::endl;
+        warningCounter = 0;
+        return true;
+    }
+    std::cerr << "Warning: " << message << " at or near line " << yylineno << std::endl;
+    return false;
 }
 
 #endif

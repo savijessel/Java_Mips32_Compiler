@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv)
 {
-    std::istream *input = &std::cin;
+    std::istream *input;
 
     std::ifstream file;
 
@@ -38,6 +38,10 @@ int main(int argc, char **argv)
 
     while ((tok = lexer->yylex()) != 0)
     {
+        if (tok == EXIT_FAILURE)
+        {
+            return EXIT_FAILURE;
+        }
         std::cout << "line: " << lexer->getLine() << " token: " << getName(tok) << " Lexeme: "
                   << lexer->lexeme << "\n";
         lexer->lexeme = ""; // *** LOOK FOR A BETTER WAY TO CLEAR THE LEXEME ***

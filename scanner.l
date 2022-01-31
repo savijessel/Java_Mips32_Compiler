@@ -8,24 +8,24 @@
     // Declarations go here
     #include <iostream>
     #include <fstream>
-    #include <string>
     #include "scanner.hpp"
     
-    //static std::string strBuffer;
+   
     
 %}
 
 /* Definitions here */
-alpha       [a-zA-Z]
-digit       [0-9]
-escape      \\[bftrn0'"\\]
-strChar     [^\"\n\\]
+alpha               [a-zA-Z_]
+digit               [0-9]
+escapeChar          \\[bftrn0'"\\]
+invalidEscapeChar   \\[^bftrn0'"\\]
+strChar             [^\"\n\\]
 
 
 
 
-num         {digit}{digit}*
-ID          {alpha}({alpha}|{digit})*
+num                 {digit}{digit}*
+ID                  {alpha}({alpha}|{digit})*
 
 
 /* Comment States */
@@ -76,29 +76,30 @@ ID          {alpha}({alpha}|{digit})*
 {num}       {lexeme = std::string(YYText()); return T_NUM;}
 
 
-"//"            BEGIN(COMMENT);
+"//"        BEGIN(COMMENT);
+
+\"          {yymore(); BEGIN(STRING);}
+
+.           {if(scanWarning("Illegal character", yylineno))
+                return EXIT_FAILURE;}
+            
+
 <COMMENT>.
-<COMMENT><<EOF>>   {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
-<COMMENT>\n  {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
-
-\"              {yymore(); BEGIN(STRING);}
-
-
-
-
-<STRING><<EOF>>                  {std::cerr << "Missing string end quote at or near line " << yylineno << std::endl; return EXIT_SUCCESS;}
-<STRING>({escape}|{strChar})        {yymore();}
-<STRING>\"       {lexeme = std::string(YYText()); BEGIN(INITIAL); return T_STRING;}
-<STRING>\n       {std::cerr << "Detected a newline in a string at or near line " << yylineno << std::endl; return EXIT_SUCCESS;} 
-<STRING>(\\[^bftrn0'"\\])      {std::cerr << "Detected an invalid escape in a string at or near line " << yylineno << std::endl; return EXIT_SUCCESS;}
+<COMMENT><<EOF>>                    {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
+<COMMENT>\n                         {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
 
 
 
 
 
 
+<STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
+<STRING>({escapeChar}|{strChar})    {yymore();}
+<STRING>\"                          {lexeme = std::string(YYText()); BEGIN(INITIAL); return T_STRING;}
+<STRING>\n                          {return scanError("Newline in string", yylineno);} 
+<STRING>{invalidEscapeChar}         {return scanError("Invalid escape character", yylineno);}
 
-.                 {std::cerr << "Detected an illegal character at line " << yylineno << std::endl; return EXIT_SUCCESS;}
+
 
 %% 
 
@@ -110,4 +111,6 @@ ID          {alpha}({alpha}|{digit})*
 std::unique_ptr<CCLexer> createLexer(std::istream* input) {
     return std::make_unique<CCLexer>(input);
 }
+
+
 
