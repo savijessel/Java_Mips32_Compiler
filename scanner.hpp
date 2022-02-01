@@ -187,7 +187,7 @@ inline char const *getName(int tok)
 
 inline int scanError(std::string message, int yylineno)
 {
-    std::cerr << "Error: " << message << " at or near line " << yylineno << std::endl;
+    std::cerr << "Error: " << message << " on or near line " << yylineno << std::endl;
     return EXIT_FAILURE;
 }
 
@@ -200,7 +200,7 @@ inline bool scanWarning(std::string message, int yylineno)
         warningCounter = 0;
         return true;
     }
-    std::cerr << "Warning: " << message << " at or near line " << yylineno << std::endl;
+    std::cerr << "Warning: " << message << " on or near line " << yylineno << std::endl;
     return false;
 }
 

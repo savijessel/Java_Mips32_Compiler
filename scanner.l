@@ -17,8 +17,8 @@
 /* Definitions here */
 alpha               [a-zA-Z_]
 digit               [0-9]
-escapeChar          \\[bftrn0'"\\]
-invalidEscapeChar   \\[^bftrn0'"\\]
+escapeChar          \\[bftrn'"\\]
+invalidEscapeChar   \\[^bftrnx'"\\]
 strChar             [^\"\n\\]
 
 
@@ -94,8 +94,8 @@ ID                  {alpha}({alpha}|{digit})*
 
 
 <STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
-<STRING>({escapeChar}|{strChar})    {yymore();}
 <STRING>\"                          {lexeme = std::string(YYText()); BEGIN(INITIAL); return T_STRING;}
+<STRING>({escapeChar}|{strChar})    {yymore();}
 <STRING>\n                          {return scanError("Newline in string", yylineno);} 
 <STRING>{invalidEscapeChar}         {return scanError("Invalid escape character", yylineno);}
 
