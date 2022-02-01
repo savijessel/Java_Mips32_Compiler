@@ -95,6 +95,7 @@ ID                  {alpha}({alpha}|{digit})*
 
 <STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
 <STRING>\"                          {lexeme = std::string(YYText()); BEGIN(INITIAL); return T_STRING;}
+<STRING>\0                          {yymore();}
 <STRING>({escapeChar}|{strChar})    {yymore();}
 <STRING>\n                          {return scanError("Newline in string", yylineno);} 
 <STRING>{invalidEscapeChar}         {return scanError("Invalid escape character", yylineno);}
