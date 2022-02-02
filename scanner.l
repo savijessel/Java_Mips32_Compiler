@@ -87,8 +87,8 @@ ID                  {alpha}({alpha}|{digit})*
             
 
 <COMMENT>.
-<COMMENT><<EOF>>                    {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
-<COMMENT>\n                         {BEGIN(INITIAL); std::cout << "Detected comment at or near line " << yylineno << std::endl;}
+<COMMENT><<EOF>>                    {BEGIN(INITIAL);}
+<COMMENT>\n                         {BEGIN(INITIAL);}
 
 
 
