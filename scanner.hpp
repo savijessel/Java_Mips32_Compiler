@@ -196,7 +196,7 @@ inline bool scanWarning(std::string message, int yylineno)
     warningCounter++;
     if (warningCounter >= 10)
     {
-        std::cerr << "Error: Too many warnings. Qutting program " << std::endl;
+        std::cerr << "Error: Too many warnings on or near line " << yylineno << ". Qutting program " << std::endl;
         warningCounter = 0;
         return true;
     }
