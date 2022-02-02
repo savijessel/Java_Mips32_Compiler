@@ -1,3 +1,8 @@
+/********************************
+ * This file contains code adapted from tutorial code provided by the TA
+ * TA - Shankar Ganesh
+ * Reference File - scanner.l
+ * *****************************/
 %option c++
 %option yyclass="CCLexer"
 %option yylineno
@@ -9,13 +14,10 @@
     #include <iostream>
     #include <fstream>
     #include "scanner.hpp"
-    
-   
-    
 %}
 
 /* Definitions here */
-alpha               [a-zA-Z_]
+alpha               [a-zA-Z_]   
 digit               [0-9]
 escapeChar          \\[bftrn'"\\]
 invalidEscapeChar   \\[^bftrnx'"\\]
@@ -94,9 +96,8 @@ ID                  {alpha}({alpha}|{digit})*
 
 
 <STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
-<STRING>\"                          {lexeme = std::string(YYText()); BEGIN(INITIAL); return T_STRING;}
-<STRING>\0                          {yymore();}
-<STRING>({escapeChar}|{strChar})    {yymore();}
+<STRING>\"                          {lexeme = std::string(YYText(),YYLeng()); BEGIN(INITIAL); return T_STRING;}
+<STRING>({escapeChar}|{strChar}|\0) {yymore();} 
 <STRING>\n                          {return scanError("Newline in string", yylineno);} 
 <STRING>{invalidEscapeChar}         {return scanError("Invalid escape character", yylineno);}
 

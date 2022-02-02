@@ -1,8 +1,7 @@
 /********************************
- * Example C++ Lexical Analyzer
- * Written for CPSC 411 Tutorial
- * File: scanner.cpp
- * Shankar Ganesh
+ * This file contains code adapted from tutorial code provided by the TA
+ * TA - Shankar Ganesh
+ * Reference File - scanner.cpp
  * *****************************/
 
 #include <FlexLexer.h>
@@ -42,7 +41,7 @@ int main(int argc, char **argv)
         {
             return EXIT_FAILURE;
         }
-        std::cout << "line: " << lexer->getLine() << " token: " << getName(tok) << " Lexeme: "
+        std::cout << "line: " << lexer->getLine() << " | token: " << getName(tok) << " | Lexeme: "
                   << lexer->lexeme << "\n";
         lexer->lexeme = ""; // *** LOOK FOR A BETTER WAY TO CLEAR THE LEXEME ***
     }
