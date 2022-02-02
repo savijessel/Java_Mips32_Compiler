@@ -17,12 +17,11 @@
 %}
 
 /* Definitions here */
-alpha               [a-zA-Z_]   
-digit               [0-9]
-escapeChar          \\[bftrn'"\\]
-invalidEscapeChar   \\[^bftrnx'"\\]
-strChar             [^\"\n\\]
-
+alpha               [a-zA-Z_]                      
+digit               [0-9]                          
+escapeChar          \\[bftrn'"\\]                   
+invalidEscapeChar   \\[^bftrnx'"\\]                 
+strChar             [^\"\n\\]                      
 
 
 
@@ -78,27 +77,22 @@ ID                  {alpha}({alpha}|{digit})*
 {num}       {lexeme = std::string(YYText()); return T_NUM;}
 
 
-"//"        BEGIN(COMMENT);
+"//"        BEGIN(COMMENT);                                    
 
-\"          {BEGIN(STRING);}
+\"          BEGIN(STRING);                                      
 
-.           {if(scanWarning("Illegal character", yylineno))
-                return EXIT_FAILURE;}
+.           {if(scanWarning("Illegal character", yylineno))     
+                return EXIT_FAILURE;}                           
             
 
 <COMMENT>.
-<COMMENT><<EOF>>                    {BEGIN(INITIAL);}
-<COMMENT>\n                         {BEGIN(INITIAL);}
-
-
-
-
-
+<COMMENT><<EOF>>                    BEGIN(INITIAL);
+<COMMENT>\n                         BEGIN(INITIAL);
 
 <STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
 <STRING>\"                          {lexeme = std::string(YYText(),YYLeng()-1); BEGIN(INITIAL); return T_STRING;}
 <STRING>({escapeChar}|{strChar}|\0) {yymore();} 
-<STRING>\n                          {return scanError("Newline in string", yylineno);} 
+<STRING>\n                          {return scanError("Newline in string", yylineno);}
 <STRING>{invalidEscapeChar}         {return scanError("Invalid escape character", yylineno);}
 
 

@@ -185,15 +185,19 @@ inline char const *getName(int tok)
     }
 }
 
+// Lexer helper function that outputs an error message
 inline int scanError(std::string message, int yylineno)
 {
     std::cerr << "Error: " << message << " on or near line " << yylineno << std::endl;
     return EXIT_FAILURE;
 }
 
+// Lexer helper function that outputs a warning message
+// Outputs an error if at least 10 warnings occur
 inline bool scanWarning(std::string message, int yylineno)
 {
     warningCounter++;
+
     if (warningCounter >= 10)
     {
         std::cerr << "Error: Too many warnings on or near line " << yylineno << ". Qutting program " << std::endl;

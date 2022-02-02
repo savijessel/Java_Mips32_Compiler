@@ -21,6 +21,7 @@ int main(int argc, char **argv)
         file.open(argv[1]);
         ;
 
+        // If file cannot be opened, output error message and exit
         if (!file.is_open())
         {
             std::cerr << "\033[1m\033[31mfatal error: \x1B[0mFailed to open file " << argv[1] << std::endl;
@@ -35,15 +36,19 @@ int main(int argc, char **argv)
     auto lexer = createLexer(input);
     int tok;
 
+    // Read tokens until EOF reached
     while ((tok = lexer->yylex()) != 0)
     {
+        // Exit if the lexer indicates an error has occured
         if (tok == EXIT_FAILURE)
         {
             return EXIT_FAILURE;
         }
         std::cout << "line: " << lexer->getLine() << " | token: " << getName(tok) << " | Lexeme: "
                   << lexer->lexeme << "\n";
-        lexer->lexeme = ""; // *** LOOK FOR A BETTER WAY TO CLEAR THE LEXEME ***
+
+        // clear lexeme after each token read
+        lexer->lexeme = "";
     }
 
     if (file.is_open())
