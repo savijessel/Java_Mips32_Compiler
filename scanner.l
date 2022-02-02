@@ -80,7 +80,7 @@ ID                  {alpha}({alpha}|{digit})*
 
 "//"        BEGIN(COMMENT);
 
-\"          {yymore(); BEGIN(STRING);}
+\"          {BEGIN(STRING);}
 
 .           {if(scanWarning("Illegal character", yylineno))
                 return EXIT_FAILURE;}
@@ -96,7 +96,7 @@ ID                  {alpha}({alpha}|{digit})*
 
 
 <STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
-<STRING>\"                          {lexeme = std::string(YYText(),YYLeng()); BEGIN(INITIAL); return T_STRING;}
+<STRING>\"                          {lexeme = std::string(YYText(),YYLeng()-1); BEGIN(INITIAL); return T_STRING;}
 <STRING>({escapeChar}|{strChar}|\0) {yymore();} 
 <STRING>\n                          {return scanError("Newline in string", yylineno);} 
 <STRING>{invalidEscapeChar}         {return scanError("Invalid escape character", yylineno);}
