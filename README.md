@@ -8,7 +8,7 @@ Savipal Jessel, UCID: 30039257, savipal.jessel@ucalgary.ca
 2. Using a unix shell, please navigate to the top level directory of this repository
 3. Type 'make' into the shell and press enter. You should see the following output: <br />
     flex --c++ scanner.l <br />
-    g++ -std=c++14 -o scanner lex.yy.cc main.cpp <br />
+    g++ -Wall -std=c++14 -o scanner lex.yy.cc main.cpp <br />
 
 4. Run the scanner by running the following command: <br />
     [YOUR PATH HERE]/scanner    [YOUR TEXT FILE PATH HERE]
