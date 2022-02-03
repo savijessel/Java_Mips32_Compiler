@@ -17,10 +17,17 @@
 %}
 
 /* Definitions here */
-alpha               [a-zA-Z_]                      
-digit               [0-9]                          
-escapeChar          \\[bftrn'"\\]                   
-invalidEscapeChar   \\[^bftrnx'"\\]                 
+
+alpha               [a-zA-Z_]              
+digit               [0-9]       
+
+/* escape characters such as \b,\f,\t,\r,\n,\',\",\\ */
+escapeChar          \\[bftrn'"\\] 
+
+/* any escape character except those mentioned above */
+invalidEscapeChar   \\[^bftrnx'"\\]   
+
+/* any characters except quote characters, newlines, and slash characters */
 strChar             [^\"\n\\]                      
 
 
@@ -81,18 +88,32 @@ ID                  {alpha}({alpha}|{digit})*
 
 \"          BEGIN(STRING);                                      
 
+    /* If the token failed to match any of the rules above, output a warning */
+    /* Exit if the return from scanWarning() indicates at least 10 warnings have occured */ 
 .           {if(scanWarning("Illegal character", yylineno))     
                 return EXIT_FAILURE;}                           
             
 
+    /* While in the comment state, ignore all characters except /n */
+    /* Exit the state if a newline or EOF are detected */
 <COMMENT>.
 <COMMENT><<EOF>>                    BEGIN(INITIAL);
 <COMMENT>\n                         BEGIN(INITIAL);
 
+    /* Output error indicating an unterminated string if EOF detected before end quote */
 <STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
+
+    /* If an end quote is detected, convert YYText() to a std::string */
+    /* YYLeng()-1 is specified to handle \0 and strip off the end quote */
 <STRING>\"                          {lexeme = std::string(YYText(),YYLeng()-1); BEGIN(INITIAL); return T_STRING;}
+
+    /* Include any escape characters, "regular" characters, or null characters in the string */
 <STRING>({escapeChar}|{strChar}|\0) {yymore();} 
+
+    /* Output error indicating a newline in a string if \n detected before end quote */
 <STRING>\n                          {return scanError("Newline in string", yylineno);}
+
+    /* Output an error if any invalid escape characters are detected */
 <STRING>{invalidEscapeChar}         {return scanError("Invalid escape character", yylineno);}
 
 

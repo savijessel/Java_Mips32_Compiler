@@ -11,6 +11,7 @@
 #include <fstream>
 #include <memory>
 
+// used to count number of warning messages output
 static int warningCounter = 0;
 
 // Token enum
@@ -73,6 +74,7 @@ public:
 // Prototype. Defined in scanner.l
 std::unique_ptr<CCLexer> createLexer(std::istream *input);
 
+// return Token string associated with Token integer
 inline char const *getName(int tok)
 {
     switch (tok)
@@ -186,18 +188,21 @@ inline char const *getName(int tok)
 }
 
 // Lexer helper function that outputs an error message
+// returns EXIT_FAILURE to indicate scanner.l should terminate the program
 inline int scanError(std::string message, int yylineno)
 {
     std::cerr << "Error: " << message << " on or near line " << yylineno << std::endl;
     return EXIT_FAILURE;
 }
 
-// Lexer helper function that outputs a warning message
-// Outputs an error if at least 10 warnings occur
+// Scanner helper function that outputs a warning message
+// Outputs an error message if at least 10 warnings occur
 inline bool scanWarning(std::string message, int yylineno)
 {
     warningCounter++;
 
+    // if number of warnings exceeds 10, output error message and reset warning counter
+    // returns true to indicate scanner.l should terminate the program
     if (warningCounter >= 10)
     {
         std::cerr << "Error: Too many warnings on or near line " << yylineno << ". Qutting program " << std::endl;
