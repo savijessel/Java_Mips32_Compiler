@@ -100,7 +100,6 @@ ID                  {alpha}({alpha}|{digit})*
 <COMMENT><<EOF>>                    BEGIN(INITIAL);
 <COMMENT>\n                         BEGIN(INITIAL);
 
-    /* Output error indicating an unterminated string if EOF detected before end quote */
 <STRING><<EOF>>                     {return scanError("Missing string end quote", yylineno);}
 
     /* If an end quote is detected, convert YYText() to a std::string */
@@ -110,7 +109,6 @@ ID                  {alpha}({alpha}|{digit})*
     /* Include any escape characters, "regular" characters, or null characters in the string */
 <STRING>({escapeChar}|{strChar}|\0) {yymore();} 
 
-    /* Output error indicating a newline in a string if \n detected before end quote */
 <STRING>\n                          {return scanError("Newline in string", yylineno);}
 
     /* Output an error if any invalid escape characters are detected */
@@ -122,7 +120,6 @@ ID                  {alpha}({alpha}|{digit})*
 
 /* User routines here*/
 
-/* int yyFlexLexer::yywrap() { return 1; } */
 
 /* Creates and returns unique pointer to lexer */
 std::unique_ptr<CCLexer> createLexer(std::istream* input) {
