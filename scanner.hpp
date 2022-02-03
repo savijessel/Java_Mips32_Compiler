@@ -205,7 +205,7 @@ inline bool scanWarning(std::string message, int yylineno)
     // returns true to indicate scanner.l should terminate the program
     if (warningCounter >= 10)
     {
-        std::cerr << "Error: Too many warnings on or near line " << yylineno << ". Qutting program " << std::endl;
+        std::cerr << "Error: Too many warnings on or near line " << yylineno << ". Quitting program " << std::endl;
         warningCounter = 0;
         return true;
     }
