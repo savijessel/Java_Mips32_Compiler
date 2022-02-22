@@ -1,10 +1,30 @@
-all: flex scanner
+# Simple and readable. Not for portability.
 
-flex: scanner.l
-	flex --c++ scanner.l
+CXX := clang++
+CXXFLAGS := -std=c++14
+OBJS = parser.o scanner.o main.o
+EXEC = parser
 
-scanner: scanner.hpp lex.yy.cc main.cpp
-	g++ -Wall -std=c++14 -o scanner lex.yy.cc main.cpp
+
+all: build
+
+-include $(OBJ:.o=.d) 
+
+%.cc %.hh: %.yy
+	bison -o $*.cc $<
+
+%.cc: %.l
+	flex --c++ -o $*.cc $<
+
+%.o: %.cc
+	$(CXX) $(CXXFLAGS) -c $< -MMD -MF $*.d
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -MMD -MF $*.d
+
+build: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(EXEC) $^
 
 clean:
-	rm -rf *.yy.cc scanner
+	rm -f *.o *.d *.hh $(EXEC) *.cc 
+
