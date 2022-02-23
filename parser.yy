@@ -22,31 +22,32 @@
 %code requires{
     // Used for parse-param
     #include <memory>
+    #include <vector>
+    #include <iostream>
+    #include <string>
 
     // Forward Declaration.
     // Compiler outputs error otherwise
-    namespace JCC {
-        class Lexer;
-    }
+    class Driver;
 
 }
 
 /* Add a parameter to parse function. */
-%parse-param {std::unique_ptr<JCC::Lexer> &lexer}
+%parse-param {Driver &driver}
 
 /* Any other includes or C/C++ code can go in %code and 
     bison will place it somewhere optimal */
 %code {
     #include <iostream>
     #include <fstream>
-    #include "scanner.hpp"
+    #include "driver.hpp"
 
     // Undefine the normal yylex.
     // Bison will search for a yylex function in the global namespace
     // But one doesn't exist! It's in the lexer class. 
     // So define yylex.
     #undef yylex
-    #define yylex lexer->yylex
+    #define yylex driver.getToken
 }
 
 /* Prefix all tokens with T_ */
@@ -113,7 +114,7 @@
 
 %token NEQ "!="
 
-%token EX  "!"
+%token NOT  "!"
 
 %token AND "&&"
 
@@ -138,28 +139,154 @@
 
 
 /* Define the start symbol */
-%start S
+%start start
 
 /* The symbols E and F are of type int and return an int */
-%type <ival> E F
+
 
 %%
+start           : /* empty */           {std::cout<<"start"<<std::endl;}
+                | globaldeclarations    {std::cout<<"start"<<std::endl;}
+                ;
 
-S	: E		        {printf("%d\n", $1);}
-	;
+literal         : NUM                   {std::cout<<"NUMBER"<<std::endl;}
+                | STRING                {std::cout<<"STRING"<<std::endl;}
+                | TRUE                  {std::cout<<"TRUE"<<std::endl;}
+                | FALSE                 {std::cout<<"FALSE"<<std::endl;}
+                ;
 
-E	: E "+" F		{$$ = $1 + $3;}
-	| E MULT F	{$$ = $1 * $3;}
-	| E DIV F		{$$ = $1 / $3;}
-	| E PS F		{$$ = $1 % $3;}
-	| E SUB F		{$$ = $1 - $3;}
-    | "(" E ")"     {$$ = $2;}
-	| F				{$$ = $1;}
-	;
+type            : BOOLEAN               {std::cout<<"BOOLEAN"<<std::endl;}
+                | INT                   {std::cout<<"INT"<<std::endl;}
+                ;
 
-F	: NUM			{$$ = $1;}
+globaldeclarations      : globaldeclaration
+                        | globaldeclarations globaldeclaration
+                        ;
 
+globaldeclaration       : variabledeclaration
+                        | functiondeclaration
+                        | mainfunctiondeclaration
+                        ;
 
+variabledeclaration     : type identifier SEM
+                        ;
+
+identifier              : ID
+                        ;
+
+functiondeclaration     : functionheader block
+                        ;
+
+functionheader          : type functiondeclarator
+                        | VOID functiondeclarator
+                        ;
+
+functiondeclarator      : identifier LPAR formalparameterlist RPAR
+                        | identifier LPAR RPAR
+                        ;
+
+formalparameterlist     : formalparameter
+                        | formalparameterlist COM formalparameter
+                        ;
+
+formalparameter         : type identifier
+                        ;
+
+mainfunctiondeclaration : mainfunctiondeclarator block
+                        ;
+
+mainfunctiondeclarator  : identifier LPAR RPAR
+                        ;
+
+block                   : LBRC blockstatements RBRC
+                        | LBRC RBRC
+                        ;
+
+blockstatements         : blockstatement
+                        | blockstatements blockstatement
+                        ;
+
+blockstatement          : variabledeclaration
+                        | statement
+                        ;
+
+statement               : block
+                        | SEM
+                        | statementexpression SEM
+                        | BREAK SEM
+                        | RETURN expression SEM
+                        | RETURN SEM
+                        | IF LPAR expression RPAR statement
+                        | IF LPAR expression RPAR statement ELSE statement
+                        | WHILE LPAR expression RPAR statement
+                        ;
+
+statementexpression     : assignment
+                        | functioninvocation
+                        ;
+
+primary                 : literal
+                        | LPAR expression RPAR
+                        | functioninvocation
+                        ;
+
+argumentlist            : expression
+                        | argumentlist COM expression
+                        ;
+
+functioninvocation      : identifier LPAR argumentlist RPAR
+                        | identifier LPAR RPAR
+                        ;
+
+postfixexpression       : primary
+                        | identifier
+                        ;
+
+unaryexpression         : SUB unaryexpression
+                        | NOT unaryexpression
+                        | postfixexpression
+                        ;
+
+multiplicativeexpression: unaryexpression
+                        | multiplicativeexpression MULT unaryexpression
+                        | multiplicativeexpression DIV unaryexpression
+                        | multiplicativeexpression PS unaryexpression
+                        ;
+
+additiveexpression      : multiplicativeexpression
+                        | additiveexpression ADD multiplicativeexpression
+                        | additiveexpression SUB multiplicativeexpression
+                        ;
+
+relationalexpression    : additiveexpression
+                        | relationalexpression LT additiveexpression
+                        | relationalexpression GT additiveexpression
+                        | relationalexpression LE additiveexpression
+                        | relationalexpression GE additiveexpression
+                        ;
+
+equalityexpression      : relationalexpression
+                        | equalityexpression DEQ relationalexpression
+                        | equalityexpression NEQ relationalexpression
+                        ;
+
+conditionalandexpression: equalityexpression
+                        | conditionalandexpression AND equalityexpression
+                        ;
+
+conditionalorexpression : conditionalandexpression
+                        | conditionalorexpression OR conditionalandexpression
+                        ;
+
+assignmentexpression    : conditionalorexpression
+                        | assignment
+                        ;
+
+assignment              : identifier EQ assignmentexpression    {std::cout<<"equals"<<std::endl;}
+                        ;
+
+expression              : assignmentexpression
+                        ;
 %%
 
 /* Parser will call this function when it fails to parse */

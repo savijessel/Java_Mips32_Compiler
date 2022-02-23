@@ -1,30 +1,32 @@
-# Simple and readable. Not for portability.
-
-CXX := clang++
+CC := clang++
 CXXFLAGS := -std=c++14
-OBJS = parser.o scanner.o main.o
-EXEC = parser
+objs := parser.o scanner.o driver.o ast.o main.o util.o
 
-
-all: build
-
--include $(OBJ:.o=.d) 
+all: parser
 
 %.cc %.hh: %.yy
 	bison -o $*.cc $<
 
 %.cc: %.l
-	flex --c++ -o $*.cc $<
+	flex --c++ -o $@ $<
+
+
+-include $(OBJ:.o=.d)
 
 %.o: %.cc
-	$(CXX) $(CXXFLAGS) -c $< -MMD -MF $*.d
+	$(CC) $(CXXFLAGS) -c $< -MMD -MF $*.d
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -MMD -MF $*.d
+	$(CC) $(CXXFLAGS) -c $< -MMD -MF $*.d
+	
+tools: parser.yy scanner.l
+	bison -o parser.cc parser.yy
+	flex --c++ -o scanner.cc scanner.l
 
-build: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(EXEC) $^
+parser: $(objs)
+	$(CC) $(CXXFLAGS) -o $@ $^
+
 
 clean:
-	rm -f *.o *.d *.hh $(EXEC) *.cc 
+	rm -f *.o *.hh *.cc parser *.d
 

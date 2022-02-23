@@ -73,7 +73,7 @@ ID                  {alpha}({alpha}|{digit})*
 "="         return Token::T_EQ;
 "=="        return Token::T_DEQ;
 "!="        return Token::T_NEQ;
-"!"         return Token::T_EX;
+"!"         return Token::T_NOT;
 "&&"        return Token::T_AND;
 "||"        return Token::T_OR;
 ";"         return Token::T_SEM;

@@ -1,22 +1,22 @@
 /********************************
- * This file contains code adapted from tutorial code provided by the TA
- * TA - Shankar Ganesh
- * Reference File - scanner.cpp
+ * Example C++ Parser
+ * Written for CPSC 411 Tutorial
+ * File: scanner.cpp
+ * Shankar Ganesh
  * *****************************/
 
 #include <cstdlib>
 #include <cerrno>
 #include <cstring>
-#include <iostream>
-#include <fstream>
-
-#include "scanner.hpp"
-#include "parser.hh"
+#include "driver.hpp"
 
 int main(int argc, char **argv)
 {
 
-    std::istream *input = &std::cin; // FIX THIS LATER
+    // Create a driver.
+    // Driver can be considered an instance of my compiler
+    Driver *driver;
+    std::istream *input = &std::cin;
 
     std::ifstream file;
 
@@ -33,19 +33,14 @@ int main(int argc, char **argv)
         input = &file;
     }
 
-    auto lexer = createLexer(input);
-    auto parser = std::make_unique<JCC::Parser>(lexer);
+    // The constructor just sets the filename, does not open the file
+    // You can fix this in your implementation
+    (argc == 2) ? driver = new Driver(argv[1]) : driver = new Driver("stdin");
 
-    if (parser->parse() != 0)
-    {
-        std::cerr << "Parse failed!!\n";
-        if (file.is_open())
-            file.close();
-        return 1;
-    }
+    bool res = driver->start(*input);
 
     if (file.is_open())
         file.close();
 
-    return 0;
+    return res;
 }
