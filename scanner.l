@@ -110,8 +110,8 @@ ID                  {alpha}({alpha}|{digit})*
     /* While in the comment state, ignore all characters except /n */
     /* Exit the state if a newline or EOF are detected */
 <COMMENT>.
-<COMMENT><<EOF>>                    
-<COMMENT>\n                         BEGIN(INITIAL);
+<COMMENT><<EOF>>                   loc->lines();
+<COMMENT>\n                        {BEGIN(INITIAL); loc->lines();}
 
 <STRING><<EOF>>                     {return scanError("Missing string end quote", *loc); loc->lines();}
 

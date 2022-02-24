@@ -5,15 +5,26 @@
 
 int INDENT = 0;
 
-AST::AST(std::string name, std::vector<AST *> nodes)
+AST::AST(std::string myName, std::vector<AST *> nodes)
 {
-    name = name;
+    name = myName;
     addNodes(nodes);
 }
 
-AST::AST(std::string name)
+AST::AST(std::string myName)
 {
-    name = name;
+    name = myName;
+}
+
+Prog::Prog(std::string myName)
+{
+    name = myName;
+}
+
+Prog::Prog(std::string myName, std::vector<AST *> nodes)
+{
+    name = myName;
+    addNodes(nodes);
 }
 
 /* BinOp::BinOp(AST *left, Operator op, AST *right)
@@ -54,6 +65,7 @@ Statement::Statement()
 
 std::ostream &operator<<(std::ostream &out, const Type value)
 {
+
     switch (value)
     {
     case INT:
@@ -67,8 +79,9 @@ std::ostream &operator<<(std::ostream &out, const Type value)
     }
 }
 
-std::ostream &operator<<(std::ostream &out, const Operator value)
+std::ostream &operator<<(std::ostream &out, const NodeType value)
 {
+
     switch (value)
     {
 
@@ -116,6 +129,9 @@ std::ostream &operator<<(std::ostream &out, const Operator value)
 
     case OR:
         return out << "||";
+
+    case statementexpression:
+        return out << "statement expression";
 
     default:
         return out << "";

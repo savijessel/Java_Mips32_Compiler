@@ -24,7 +24,9 @@ bool Driver::start(std::istream &in)
     }
     bool res = parse(in);
     if (!res)
+    {
         tree->print();
+        }
 
     return res;
 }

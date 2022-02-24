@@ -67,7 +67,7 @@
 */
 
 
-%token ID "ID"
+%token <strVal> ID "ID"
 
 %token TRUE "true"
 
@@ -180,21 +180,21 @@
 %type <node> start
 
 %%
-start           : %empty /* empty */           
-                | globaldeclarations    {$$ = driver.tree = new Prog(std::string(driver.getFileName().c_str()));}
+start           : %empty /* empty */        {driver.tree = new Prog(std::string(driver.getFileName().c_str()));}   
+                | globaldeclarations        {driver.tree = $1;}
                 ;
 
-literal         : NUM                   {std::cout<<"NUMBER"<<std::endl;}
-                | STRING                {std::cout<<"STRING"<<std::endl;}
-                | TRUE                  {std::cout<<"TRUE"<<std::endl;}
-                | FALSE                 {std::cout<<"FALSE"<<std::endl;}
+literal         : NUM                   {$$ = new AST("number " + std::to_string($1));}
+                | STRING                {$$ = new AST(*$1);}
+                | TRUE                  {$$ = new AST("TRUE");}
+                | FALSE                 {$$ = new AST("FALSE");}
                 ;
 
-type            : BOOLEAN               {std::cout<<"BOOLEAN"<<std::endl;}
-                | INT                   {std::cout<<"INT"<<std::endl;}
+type            : BOOLEAN               {$$ = new AST("type integer");}
+                | INT                   {$$ = new AST("type boolean");}
                 ;
 
-globaldeclarations      : globaldeclaration {$$ = driver.tree = new Prog(std::string(driver.getFileName().c_str()));}
+globaldeclarations      : globaldeclaration {$$ = new Prog(std::string(driver.getFileName().c_str()),{$1});}
                         | globaldeclarations globaldeclaration {$$->addNodes({$2});}
                         ;
 
@@ -206,7 +206,7 @@ globaldeclaration       : variabledeclaration
 variabledeclaration     : type identifier SEM {$$ = new AST( "variable decleration",{$1,$2});}
                         ;
 
-identifier              : ID
+identifier              : ID {$$ = new AST("identifier " + *$1);}
                         ;
 
 functiondeclaration     : functionheader block {$$ = new AST( "function decleration",{$1,$2});}
@@ -237,7 +237,7 @@ block                   : LBRC blockstatements RBRC {$$ = new AST( "block",{$2})
                         | LBRC RBRC {$$ = new AST( "block");}
                         ;
 
-blockstatements         : blockstatement {$$ = new AST( "block",{$1});}
+blockstatements         : blockstatement 
                         | blockstatements blockstatement {$$->addNodes({$2});}
                         ;
 
@@ -256,7 +256,7 @@ statement               : block
                         | WHILE LPAR expression RPAR statement { $$ = new AST( "while", {$3, $5}); }
                         ;
 
-statementexpression     : assignment { $$ = new AST( "statement expression", {$1}); }
+statementexpression     : assignment 
                         | functioninvocation { $$ = new AST( "statement expression", {$1}); }
                         ;
 

@@ -5,7 +5,7 @@
 #define AST_HPP
 #define INDENT_CHAR ' '
 
-enum Operator
+enum NodeType
 {
     ADD,
     SUB,
@@ -21,7 +21,32 @@ enum Operator
     NEQ,
     NOT,
     AND,
-    OR
+    OR,
+    none,
+    program,
+    literal,
+    type,
+    globaldeclarations,
+    variabledeclaration,
+    identifier,
+    functiondeclaration,
+    functionheader,
+    functiondeclarator,
+    formalparameterlist,
+    formalparameter,
+    mainfunctiondeclaration,
+    mainfunctiondeclarator,
+    block,
+    blockstatements,
+    statement,
+    ifstatement,
+    whilestatement,
+    returnstatement,
+    breakstatement,
+    statementexpression,
+    argumentlist,
+    functioninvocation,
+    unaryexpression,
 };
 
 enum Type
@@ -42,14 +67,13 @@ inline bool instanceOf(const T *)
     return std::is_base_of<BaseClass, T>::value;
 }
 
-std::ostream &operator<<(std::ostream &out, const Operator value);
+std::ostream &operator<<(std::ostream &out, const NodeType value);
 std::ostream &operator<<(std::ostream &out, const Type value);
 
 class AST
 {
 protected:
     std::vector<AST *> children;
-    std::string name;
 
     void addChild(AST *child)
     {
@@ -57,8 +81,10 @@ protected:
     }
 
 public:
-    AST(std::string name, std::vector<AST *> nodes);
-    AST(std::string name);
+    std::string name;
+    AST() = default;
+    AST(std::string myName, std::vector<AST *> nodes);
+    AST(std::string myName);
 
     virtual ~AST()
     {
@@ -72,11 +98,14 @@ public:
     void addNodes(std::vector<AST *> nodes)
     {
         for (auto node : nodes)
+        {
             addChild(node);
+        }
     }
 
     virtual void print()
     {
+
         std::cout << std::string(INDENT * 2, INDENT_CHAR);
         std::cout << "--" << name << "\n";
         INDENT++;
@@ -92,9 +121,12 @@ class Prog : public AST
 {
 
 public:
-    Prog(std::string name) : AST(name) {} // might not do what i think it does
+    Prog(std::string myName);
+    Prog(std::string myName, std::vector<AST *> nodes);
+
     void print() override
     {
+
         std::cout << std::string(INDENT * 2, INDENT_CHAR);
         std::cout << "--Program: " << name << "\n";
         INDENT++;
