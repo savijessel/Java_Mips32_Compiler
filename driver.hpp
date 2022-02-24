@@ -6,7 +6,7 @@
 
 #include "scanner.hpp"
 #include "parser.hh"
-//#include "ast.hpp"
+#include "ast.hpp"
 
 class Driver
 {
@@ -19,7 +19,7 @@ public:
     bool start(std::istream &in);
 
     // Stores AST. Parser will fill this.
-    // AST *tree = nullptr;
+    AST *tree = nullptr;
 
     std::string getFileName() { return file_name; }
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 #ifndef AST_HPP
 #define AST_HPP
@@ -18,7 +19,7 @@ enum Operator
     EQ,
     DEQ,
     NEQ,
-    EX,
+    NOT,
     AND,
     OR
 };
@@ -35,29 +36,6 @@ extern int INDENT;
 class AST;
 class Prog;
 
-class Statement;
-class Block;
-class If;
-class IfElse;
-class Assignment;
-class Null;
-class Return;
-class Break;
-class While;
-
-class Expression;
-class Id;
-class Num;
-class ArOp;
-class CmOp;
-class Actuals;
-class FunctionCall;
-
-class Declaration;
-class Function;
-class Variable;
-class Paramater;
-
 template <typename BaseClass, typename T>
 inline bool instanceOf(const T *)
 {
@@ -71,11 +49,16 @@ class AST
 {
 protected:
     std::vector<AST *> children;
+    std::string name;
 
-    virtual void addChild(AST *child) = 0;
+    void addChild(AST *child)
+    {
+        children.push_back(child);
+    }
 
 public:
-    AST() = default;
+    AST(std::string name, std::vector<AST *> nodes);
+    AST(std::string name);
 
     virtual ~AST()
     {
@@ -86,32 +69,16 @@ public:
         children.clear();
     }
 
-    virtual void print() = 0;
-};
-
-class Prog : public AST
-{
-
-protected:
-    void addChild(AST *child) override
+    void addNodes(std::vector<AST *> nodes)
     {
-        children.push_back(child);
+        for (auto node : nodes)
+            addChild(node);
     }
 
-public:
-    const char *const progName;
-
-    Prog(const char *const str) : progName(str){};
-
-    void addNode(AST *node)
-    {
-        addChild(node);
-    }
-
-    void print() override
+    virtual void print()
     {
         std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Program: " << progName << "\n";
+        std::cout << "--" << name << "\n";
         INDENT++;
         for (auto child : children)
         {
@@ -120,5 +87,277 @@ public:
         INDENT--;
     }
 };
+
+class Prog : public AST
+{
+
+public:
+    Prog(std::string name) : AST(name) {} // might not do what i think it does
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Program: " << name << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+/* class Statement : public AST
+{
+};
+
+class Return : public Statement
+{
+
+    AST *exp;
+    AST *stm;
+
+public:
+    If(AST *exp, AST *stm);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "If: "
+                  << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class If : public Statement
+{
+
+    AST *exp;
+    AST *stm;
+
+public:
+    If(AST *exp, AST *stm);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "If: "
+                  << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class IfElse : public Statement
+{
+
+    AST *exp;
+    AST *stm;
+    AST *stm2;
+
+public:
+    IfElse(AST *exp, AST *stm, AST *stm2);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "IfElse: "
+                  << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class While : public Statement
+{
+
+    AST *exp;
+    AST *stm;
+
+public:
+    While(AST *exp, AST *stm);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "While: "
+                  << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class Declaration : public AST
+{
+};
+
+class Expression : public AST
+{
+};
+
+class statementExp : public Expression
+{
+
+    AST *assgn;
+
+public:
+    statementExp(AST *assg);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Statement Expression:"
+                  << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class BinOp : public Expression
+{
+
+    Operator op;
+    AST *left;
+    AST *right;
+
+public:
+    BinOp(AST *left, Operator op, AST *right);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Binary Operator: " << op << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class ArgumentList : public Expression
+{
+
+    AST *exp;
+
+public:
+    ArgumentList(AST *exp);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Argument List: "
+                  << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class FunctionCall : public Expression
+{
+
+    AST *id;
+    AST *argList;
+
+public:
+    FunctionCall(AST *id, AST *argList);
+    FunctionCall(AST *id);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Function Call: "
+                  << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class Id : public Expression
+{
+    const char *const idName;
+
+    Id(const char *const str) : idName(str){};
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Identifier Expression: " << idName << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class Num : public Expression
+{
+    const int numName;
+
+    Num(const int num) : numName(num){};
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Number Expression: " << numName << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+};
+
+class UnOp : public Expression
+{
+    Operator op;
+    AST *ex;
+
+    UnOp(Operator op, AST *ex);
+
+    void print() override
+    {
+        std::cout << std::string(INDENT * 2, INDENT_CHAR);
+        std::cout << "--Unary Operator: " << op << "\n";
+        INDENT++;
+        for (auto child : children)
+        {
+            child->print();
+        }
+        INDENT--;
+    }
+}; */
 
 #endif

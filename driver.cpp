@@ -23,8 +23,8 @@ bool Driver::start(std::istream &in)
         return 1;
     }
     bool res = parse(in);
-    // if (!res)
-    //  tree->Print();
+    if (!res)
+        tree->print();
 
     return res;
 }

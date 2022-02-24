@@ -5,25 +5,34 @@
 
 int INDENT = 0;
 
-ArOp::ArOp(Expression *leftEx, Operator op, Expression *rightEx)
+AST::AST(std::string name, std::vector<AST *> nodes)
 {
-    op = op;
-    leftEx = leftEx;
-    addChild(leftEx);
-    rightEx = rightEx;
-    addChild(rightEx);
+    name = name;
+    addNodes(nodes);
 }
 
-CmOp::CmOp(Expression *leftEx, Operator op, Expression *rightEx)
+AST::AST(std::string name)
 {
-    op = op;
-    leftEx = leftEx;
-    addChild(leftEx);
-    rightEx = rightEx;
-    addChild(rightEx);
+    name = name;
 }
 
-Statement *Statement::append(Statement *a, Statement *b)
+/* BinOp::BinOp(AST *left, Operator op, AST *right)
+{
+    op = op;
+    left = left;
+    addChild(left);
+    right = right;
+    addChild(right);
+}
+
+UnOp::UnOp(Operator op, AST *ex)
+{
+    op = op;
+    ex = ex;
+    addChild(ex);
+}
+
+ Statement *Statement::append(Statement *a, Statement *b)
 {
     if (!a->hasNext())
     {
@@ -41,7 +50,7 @@ Statement *Statement::append(Statement *a, Statement *b)
 Statement::Statement()
 {
     nextStatement = nullptr;
-}
+} */
 
 std::ostream &operator<<(std::ostream &out, const Type value)
 {
@@ -99,7 +108,7 @@ std::ostream &operator<<(std::ostream &out, const Operator value)
     case NEQ:
         return out << "!=";
 
-    case EX:
+    case NOT:
         return out << "!";
 
     case AND:

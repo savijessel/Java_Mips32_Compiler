@@ -25,6 +25,7 @@
     #include <vector>
     #include <iostream>
     #include <string>
+    #include "ast.hpp"
 
     // Forward Declaration.
     // Compiler outputs error otherwise
@@ -57,6 +58,8 @@
 %union{
     std::string* strVal;
     int ival;
+    AST* node;
+    
 };
 
 /* Tokens 
@@ -74,7 +77,7 @@
 
 %token INT "int"
 
-%token VOID "void"
+%token <node> VOID "void"
 
 %token IF "if"
 
@@ -142,11 +145,43 @@
 %start start
 
 /* The symbols E and F are of type int and return an int */
-
+%type <node> globaldeclarations
+%type <node> globaldeclaration
+%type <node> variabledeclaration
+%type <node> identifier
+%type <node> functiondeclaration
+%type <node> functionheader
+%type <node> functiondeclarator
+%type <node> formalparameterlist
+%type <node> formalparameter
+%type <node> mainfunctiondeclaration
+%type <node> mainfunctiondeclarator
+%type <node> block
+%type <node> blockstatements
+%type <node> blockstatement
+%type <node> statement
+%type <node> statementexpression
+%type <node> primary
+%type <node> argumentlist
+%type <node> functioninvocation
+%type <node> postfixexpression
+%type <node> unaryexpression
+%type <node> multiplicativeexpression
+%type <node> additiveexpression
+%type <node> relationalexpression
+%type <node> equalityexpression
+%type <node> conditionalandexpression
+%type <node> conditionalorexpression
+%type <node> assignmentexpression
+%type <node> assignment
+%type <node> expression
+%type <node> literal
+%type <node> type
+%type <node> start
 
 %%
-start           : /* empty */           {std::cout<<"start"<<std::endl;}
-                | globaldeclarations    {std::cout<<"start"<<std::endl;}
+start           : %empty /* empty */           
+                | globaldeclarations    {$$ = driver.tree = new Prog(std::string(driver.getFileName().c_str()));}
                 ;
 
 literal         : NUM                   {std::cout<<"NUMBER"<<std::endl;}
@@ -159,8 +194,8 @@ type            : BOOLEAN               {std::cout<<"BOOLEAN"<<std::endl;}
                 | INT                   {std::cout<<"INT"<<std::endl;}
                 ;
 
-globaldeclarations      : globaldeclaration
-                        | globaldeclarations globaldeclaration
+globaldeclarations      : globaldeclaration {$$ = driver.tree = new Prog(std::string(driver.getFileName().c_str()));}
+                        | globaldeclarations globaldeclaration {$$->addNodes({$2});}
                         ;
 
 globaldeclaration       : variabledeclaration
@@ -168,42 +203,42 @@ globaldeclaration       : variabledeclaration
                         | mainfunctiondeclaration
                         ;
 
-variabledeclaration     : type identifier SEM
+variabledeclaration     : type identifier SEM {$$ = new AST( "variable decleration",{$1,$2});}
                         ;
 
 identifier              : ID
                         ;
 
-functiondeclaration     : functionheader block
+functiondeclaration     : functionheader block {$$ = new AST( "function decleration",{$1,$2});}
                         ;
 
-functionheader          : type functiondeclarator
-                        | VOID functiondeclarator
+functionheader          : type functiondeclarator {$$ = new AST( "function header",{$1,$2});}
+                        | VOID functiondeclarator {$$ = new AST( "function header",{$2});}
                         ;
 
-functiondeclarator      : identifier LPAR formalparameterlist RPAR
-                        | identifier LPAR RPAR
+functiondeclarator      : identifier LPAR formalparameterlist RPAR {$$ = new AST( "function declarator",{$1,$3});}
+                        | identifier LPAR RPAR {$$ = new AST( "function declarator",{$1});}
                         ;
 
-formalparameterlist     : formalparameter
-                        | formalparameterlist COM formalparameter
+formalparameterlist     : formalparameter {$$ = new AST( "formal parameter list",{$1});}
+                        | formalparameterlist COM formalparameter {$$->addNodes({$3});}
                         ;
 
-formalparameter         : type identifier
+formalparameter         : type identifier {$$ = new AST( "formal paramater",{$1, $2});}
                         ;
 
-mainfunctiondeclaration : mainfunctiondeclarator block
+mainfunctiondeclaration : mainfunctiondeclarator block {$$ = new AST( "main function decleration",{$1, $2});}
                         ;
 
-mainfunctiondeclarator  : identifier LPAR RPAR
+mainfunctiondeclarator  : identifier LPAR RPAR {$$ = new AST( "main function declerator",{$1});}
                         ;
 
-block                   : LBRC blockstatements RBRC
-                        | LBRC RBRC
+block                   : LBRC blockstatements RBRC {$$ = new AST( "block",{$2});}
+                        | LBRC RBRC {$$ = new AST( "block");}
                         ;
 
-blockstatements         : blockstatement
-                        | blockstatements blockstatement
+blockstatements         : blockstatement {$$ = new AST( "block",{$1});}
+                        | blockstatements blockstatement {$$->addNodes({$2});}
                         ;
 
 blockstatement          : variabledeclaration
@@ -211,78 +246,78 @@ blockstatement          : variabledeclaration
                         ;
 
 statement               : block
-                        | SEM
-                        | statementexpression SEM
-                        | BREAK SEM
-                        | RETURN expression SEM
-                        | RETURN SEM
-                        | IF LPAR expression RPAR statement
-                        | IF LPAR expression RPAR statement ELSE statement
-                        | WHILE LPAR expression RPAR statement
+                        | SEM { $$ = new AST( "null statement"); }
+                        | statementexpression SEM { $$ = new AST( "statement expression", {$1});}
+                        | BREAK SEM { $$ = new AST( "break"); }
+                        | RETURN expression SEM { $$ = new AST( "return", {$2}); }
+                        | RETURN SEM { $$ = new AST( "return"); }
+                        | IF LPAR expression RPAR statement { $$ = new AST( "if", {$3, $5}); }
+                        | IF LPAR expression RPAR statement ELSE statement { $$ = new AST( "if else", {$3, $5, $7}); }
+                        | WHILE LPAR expression RPAR statement { $$ = new AST( "while", {$3, $5}); }
                         ;
 
-statementexpression     : assignment
-                        | functioninvocation
+statementexpression     : assignment { $$ = new AST( "statement expression", {$1}); }
+                        | functioninvocation { $$ = new AST( "statement expression", {$1}); }
                         ;
 
 primary                 : literal
-                        | LPAR expression RPAR
+                        | LPAR expression RPAR  { $$ = $2; }
                         | functioninvocation
                         ;
 
-argumentlist            : expression
-                        | argumentlist COM expression
+argumentlist            : expression { $$ = new AST( "argument list", {$1}); }
+                        | argumentlist COM expression {$$->addNodes({$3});}
                         ;
 
-functioninvocation      : identifier LPAR argumentlist RPAR
-                        | identifier LPAR RPAR
+functioninvocation      : identifier LPAR argumentlist RPAR { $$ = new AST( "function call", {$1, $3}); }
+                        | identifier LPAR RPAR { $$ = new AST( "function call", {$1}); }
                         ;
 
 postfixexpression       : primary
                         | identifier
                         ;
 
-unaryexpression         : SUB unaryexpression
-                        | NOT unaryexpression
+unaryexpression         : SUB unaryexpression { $$ = new AST( "-", {$2}); }
+                        | NOT unaryexpression { $$ = new AST( "!", {$2}); }
                         | postfixexpression
                         ;
 
 multiplicativeexpression: unaryexpression
-                        | multiplicativeexpression MULT unaryexpression
-                        | multiplicativeexpression DIV unaryexpression
-                        | multiplicativeexpression PS unaryexpression
+                        | multiplicativeexpression MULT unaryexpression { $$ = new AST( "*", {$1,$3}); }
+                        | multiplicativeexpression DIV unaryexpression  { $$ = new AST( "/", {$1,$3}); }
+                        | multiplicativeexpression PS unaryexpression   { $$ = new AST( "%", {$1,$3}); }
                         ;
 
 additiveexpression      : multiplicativeexpression
-                        | additiveexpression ADD multiplicativeexpression
-                        | additiveexpression SUB multiplicativeexpression
+                        | additiveexpression ADD multiplicativeexpression { $$ = new AST( "+", {$1,$3}); }
+                        | additiveexpression SUB multiplicativeexpression { $$ = new AST( "-", {$1,$3}); }
                         ;
 
 relationalexpression    : additiveexpression
-                        | relationalexpression LT additiveexpression
-                        | relationalexpression GT additiveexpression
-                        | relationalexpression LE additiveexpression
-                        | relationalexpression GE additiveexpression
+                        | relationalexpression LT additiveexpression { $$ = new AST( "<", {$1,$3}); }
+                        | relationalexpression GT additiveexpression { $$ = new AST( ">", {$1,$3}); }
+                        | relationalexpression LE additiveexpression { $$ = new AST( "<=", {$1,$3}); }
+                        | relationalexpression GE additiveexpression { $$ = new AST( ">=", {$1,$3}); }
                         ;
 
 equalityexpression      : relationalexpression
-                        | equalityexpression DEQ relationalexpression
-                        | equalityexpression NEQ relationalexpression
+                        | equalityexpression DEQ relationalexpression { $$ = new AST( "==", {$1,$3}); }
+                        | equalityexpression NEQ relationalexpression { $$ = new AST( "!=", {$1,$3}); }
                         ;
 
 conditionalandexpression: equalityexpression
-                        | conditionalandexpression AND equalityexpression
+                        | conditionalandexpression AND equalityexpression { $$ = new AST( "&&", {$1,$3}); }
                         ;
 
 conditionalorexpression : conditionalandexpression
-                        | conditionalorexpression OR conditionalandexpression
+                        | conditionalorexpression OR conditionalandexpression { $$ = new AST( "||", {$1,$3}); }
                         ;
 
 assignmentexpression    : conditionalorexpression
                         | assignment
                         ;
 
-assignment              : identifier EQ assignmentexpression    {std::cout<<"equals"<<std::endl;}
+assignment              : identifier EQ assignmentexpression  { $$ = new AST( "=", {$1,$3}); }
                         ;
 
 expression              : assignmentexpression
