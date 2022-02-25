@@ -5,23 +5,12 @@
 #define AST_HPP
 #define INDENT_CHAR ' '
 
-enum NodeType
+enum NodeName
 {
-    ADD,
-    SUB,
-    DIV,
-    MULT,
-    LT,
-    GT,
-    LE,
-    GE,
-    PS,
-    EQ,
-    DEQ,
-    NEQ,
-    NOT,
-    AND,
-    OR,
+    binop,
+    unop,
+    assignment,
+    num,
     none,
     program,
     literal,
@@ -39,14 +28,13 @@ enum NodeType
     block,
     blockstatements,
     statement,
-    ifstatement,
-    whilestatement,
-    returnstatement,
-    breakstatement,
+    ifstm,
+    whilestm,
+    returnstm,
+    breakstm,
     statementexpression,
     argumentlist,
-    functioninvocation,
-    unaryexpression,
+    functioncall,
 };
 
 enum Type
@@ -67,7 +55,7 @@ inline bool instanceOf(const T *)
     return std::is_base_of<BaseClass, T>::value;
 }
 
-std::ostream &operator<<(std::ostream &out, const NodeType value);
+std::ostream &operator<<(std::ostream &out, const NodeName value);
 std::ostream &operator<<(std::ostream &out, const Type value);
 
 class AST
@@ -81,10 +69,12 @@ protected:
     }
 
 public:
-    std::string name;
+    NodeName name;
+    std::string nodeType;
+    int lineNum;
     AST() = default;
-    AST(std::string myName, std::vector<AST *> nodes);
-    AST(std::string myName);
+    AST(std::string nodeType, NodeName name, std::vector<AST *> nodes, int lineNum);
+    AST(std::string nodeType, NodeName name, int lineNum);
 
     virtual ~AST()
     {
@@ -107,7 +97,8 @@ public:
     {
 
         std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--" << name << "\n";
+        std::cout << name << nodeType << "', line: " << lineNum << " }"
+                  << "\n";
         INDENT++;
         for (auto child : children)
         {
@@ -121,14 +112,14 @@ class Prog : public AST
 {
 
 public:
-    Prog(std::string myName);
-    Prog(std::string myName, std::vector<AST *> nodes);
+    Prog(std::string nodeType, NodeName name, int lineNum);
+    Prog(std::string nodeType, NodeName name, std::vector<AST *> nodes, int lineNum);
 
     void print() override
     {
 
         std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Program: " << name << "\n";
+        std::cout << "Program: " << nodeType << "\n";
         INDENT++;
         for (auto child : children)
         {

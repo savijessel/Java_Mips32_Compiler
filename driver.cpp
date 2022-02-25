@@ -26,7 +26,7 @@ bool Driver::start(std::istream &in)
     if (!res)
     {
         tree->print();
-        }
+    }
 
     return res;
 }
