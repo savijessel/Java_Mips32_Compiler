@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     // Create a driver.
     // Driver can be considered an instance of my compiler
     Driver *driver;
-    std::istream *input = &std::cin;
+    std::istream *input;
 
     std::ifstream file;
 
@@ -31,6 +31,13 @@ int main(int argc, char **argv)
         }
 
         input = &file;
+    }
+
+    else
+    {
+        std::cerr << "Error: No file name provided "
+                  << "\n";
+        return EXIT_FAILURE;
     }
 
     // The constructor just sets the filename, does not open the file
