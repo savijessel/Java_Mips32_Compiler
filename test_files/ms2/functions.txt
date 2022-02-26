@@ -1,0 +1,3 @@
+void help(int x, int y){
+	imHelping(x,y);
+}
