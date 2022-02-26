@@ -1,3 +1,9 @@
+/********************************
+ * This file contains code with slight references to tutorial code shown by the TA
+ * Source - ast. hpp
+ * TA - Shankar Ganesh
+ * *****************************/
+
 #include <iostream>
 #include <vector>
 
@@ -5,13 +11,14 @@
 #define AST_HPP
 #define INDENT_CHAR ' '
 
+// enum to represent different names/references for nodes
 enum NodeName
 {
     binop,
     unop,
     assignment,
     num,
-    none,
+    nullstm,
     program,
     literal,
     type,
@@ -37,45 +44,45 @@ enum NodeName
     functioncall,
 };
 
-enum Type
-{
-    INT,
-    BOOLEAN,
-    VOID
-};
-
 extern int INDENT;
 
 class AST;
 class Prog;
 
-template <typename BaseClass, typename T>
-inline bool instanceOf(const T *)
-{
-    return std::is_base_of<BaseClass, T>::value;
-}
-
+// header for output helper function
 std::ostream &operator<<(std::ostream &out, const NodeName value);
-std::ostream &operator<<(std::ostream &out, const Type value);
 
+// base AST Class
 class AST
 {
 protected:
+    // children nodes
     std::vector<AST *> children;
 
+    // add a child to the AST
     void addChild(AST *child)
     {
         children.push_back(child);
     }
 
 public:
+    // Name or reference of Node
     NodeName name;
+
+    // String to characterize type of node - typically extraneous properties or attributes
     std::string nodeType;
+
+    // line number corresponding to node
     int lineNum;
+
+    // various constructors
     AST() = default;
     AST(std::string nodeType, NodeName name, std::vector<AST *> nodes, int lineNum);
+    AST(NodeName name, std::vector<AST *> nodes, int lineNum);
     AST(std::string nodeType, NodeName name, int lineNum);
+    AST(NodeName myName, int myLineNum);
 
+    // destructor
     virtual ~AST()
     {
         for (auto child : children)
@@ -84,7 +91,7 @@ public:
         }
         children.clear();
     }
-
+    // adds several children
     void addNodes(std::vector<AST *> nodes)
     {
         for (auto node : nodes)
@@ -93,11 +100,12 @@ public:
         }
     }
 
+    // template print function
     virtual void print()
     {
 
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << name << nodeType << "', line: " << lineNum << " }"
+        std::cout << std::string(INDENT * 4, INDENT_CHAR);
+        std::cout << name << nodeType << "line: " << lineNum << " }"
                   << "\n";
         INDENT++;
         for (auto child : children)
@@ -108,6 +116,7 @@ public:
     }
 };
 
+// AST subclass exclusively for the program/start node
 class Prog : public AST
 {
 
@@ -118,8 +127,8 @@ public:
     void print() override
     {
 
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "Program: " << nodeType << "\n";
+        std::cout << std::string(INDENT * 4, INDENT_CHAR);
+        std::cout << "Program: { '" << nodeType << "' } \n";
         INDENT++;
         for (auto child : children)
         {
@@ -128,259 +137,5 @@ public:
         INDENT--;
     }
 };
-
-/* class Statement : public AST
-{
-};
-
-class Return : public Statement
-{
-
-    AST *exp;
-    AST *stm;
-
-public:
-    If(AST *exp, AST *stm);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "If: "
-                  << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class If : public Statement
-{
-
-    AST *exp;
-    AST *stm;
-
-public:
-    If(AST *exp, AST *stm);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "If: "
-                  << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class IfElse : public Statement
-{
-
-    AST *exp;
-    AST *stm;
-    AST *stm2;
-
-public:
-    IfElse(AST *exp, AST *stm, AST *stm2);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "IfElse: "
-                  << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class While : public Statement
-{
-
-    AST *exp;
-    AST *stm;
-
-public:
-    While(AST *exp, AST *stm);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "While: "
-                  << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class Declaration : public AST
-{
-};
-
-class Expression : public AST
-{
-};
-
-class statementExp : public Expression
-{
-
-    AST *assgn;
-
-public:
-    statementExp(AST *assg);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Statement Expression:"
-                  << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class BinOp : public Expression
-{
-
-    Operator op;
-    AST *left;
-    AST *right;
-
-public:
-    BinOp(AST *left, Operator op, AST *right);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Binary Operator: " << op << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class ArgumentList : public Expression
-{
-
-    AST *exp;
-
-public:
-    ArgumentList(AST *exp);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Argument List: "
-                  << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class FunctionCall : public Expression
-{
-
-    AST *id;
-    AST *argList;
-
-public:
-    FunctionCall(AST *id, AST *argList);
-    FunctionCall(AST *id);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Function Call: "
-                  << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class Id : public Expression
-{
-    const char *const idName;
-
-    Id(const char *const str) : idName(str){};
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Identifier Expression: " << idName << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class Num : public Expression
-{
-    const int numName;
-
-    Num(const int num) : numName(num){};
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Number Expression: " << numName << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-};
-
-class UnOp : public Expression
-{
-    Operator op;
-    AST *ex;
-
-    UnOp(Operator op, AST *ex);
-
-    void print() override
-    {
-        std::cout << std::string(INDENT * 2, INDENT_CHAR);
-        std::cout << "--Unary Operator: " << op << "\n";
-        INDENT++;
-        for (auto child : children)
-        {
-            child->print();
-        }
-        INDENT--;
-    }
-}; */
 
 #endif

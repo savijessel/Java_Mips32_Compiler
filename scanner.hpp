@@ -34,6 +34,7 @@ namespace JCC
 
         // Flex will produce this function.
         // BUT YOU MUST HAVE THE PROTOTYPE IN THE CLASS
+        using yyFlexLexer::yylex;
         virtual int yylex(JCC::Parser::semantic_type *yylval, JCC::Parser::location_type *location);
     };
 }

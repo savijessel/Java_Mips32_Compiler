@@ -30,7 +30,6 @@ public:
 
 private:
     std::string file_name;
-
     bool parse(std::istream &in);
     std::unique_ptr<JCC::Parser> parser{nullptr};
     std::unique_ptr<JCC::Lexer> lexer{nullptr};

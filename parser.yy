@@ -186,12 +186,16 @@
 
 
 start           : %empty /* empty */        {driver.tree = new Prog(std::string(driver.getFileName().c_str()), 
-                                                NodeName::program, @$.begin.line);}   
+                                             NodeName::program, @$.begin.line);}   
                 | globaldeclarations        {driver.tree = $1;}
                 ;
 
 literal         : NUM                   {$$ = new AST("number', 'Attr': " + std::to_string($1), NodeName::literal, @$.begin.line);}
-                | STRING                {$$ = new AST("string', 'Attr': " + *$1, NodeName::literal, @$.begin.line);}
+
+                | STRING                {std::string input = *$1; input.replace(input.find('\0'),1,"\\x00"); 
+                                         $$ = new AST("string', 'Attr': " + input, NodeName::literal, @$.begin.line); 
+                                         std::cout<<*$1<<std::endl;}
+
                 | TRUE                  {$$ = new AST("boolean', Attr': TRUE", NodeName::literal, @$.begin.line);}
                 | FALSE                 {$$ = new AST("boolean', Attr': FALSE", NodeName::literal, @$.begin.line);}
                 ;
@@ -209,41 +213,41 @@ globaldeclaration       : variabledeclaration
                         | mainfunctiondeclaration
                         ;
 
-variabledeclaration     : type identifier SEM {$$ = new AST( "variable declaration", NodeName::variabledeclaration,{$1,$2},@$.begin.line);}
+variabledeclaration     : type identifier SEM {$$ = new AST(NodeName::variabledeclaration,{$1,$2},@$.begin.line);}
                         ;
 
 identifier              : ID {$$ = new AST(*$1,NodeName::identifier,@$.begin.line);}
                         ;
 
-functiondeclaration     : functionheader block {$$ = new AST( "function declaration", NodeName::functiondeclaration,{$1,$2},@$.begin.line);}
+functiondeclaration     : functionheader block {$$ = new AST(NodeName::functiondeclaration,{$1,$2},@$.begin.line);}
                         ;
 
-functionheader          : type functiondeclarator {$$ = new AST( "function header",NodeName::functionheader,{$1,$2},@$.begin.line);}
-                        | VOID functiondeclarator {$$ = new AST( "void function header",NodeName::functionheader,{$2},@$.begin.line);}
+functionheader          : type functiondeclarator {$$ = new AST(NodeName::functionheader,{$1,$2},@$.begin.line);}
+                        | VOID functiondeclarator {$$ = new AST( "void",NodeName::functionheader,{$2},@$.begin.line);}
                         ;
 
-functiondeclarator      : identifier LPAR formalparameterlist RPAR {$$ = new AST( "function declarator",NodeName::functiondeclarator,{$1,$3},@$.begin.line);}
-                        | identifier LPAR RPAR {$$ = new AST( "function declarator",NodeName::functiondeclarator,{$1},@$.begin.line);}
+functiondeclarator      : identifier LPAR formalparameterlist RPAR {$$ = new AST(NodeName::functiondeclarator,{$1,$3},@$.begin.line);}
+                        | identifier LPAR RPAR {$$ = new AST(NodeName::functiondeclarator,{$1},@$.begin.line);}
                         ;
 
-formalparameterlist     : formalparameter {$$ = new AST( "formal parameter list",NodeName::formalparameterlist,{$1},@$.begin.line);}
+formalparameterlist     : formalparameter {$$ = new AST(NodeName::formalparameterlist,{$1},@$.begin.line);}
                         | formalparameterlist COM formalparameter {$$->addNodes({$3}); $$->lineNum = @$.begin.line;}
                         ;
 
-formalparameter         : type identifier {$$ = new AST( "formal paramater",NodeName::formalparameter,{$1, $2},@$.begin.line);}
+formalparameter         : type identifier {$$ = new AST(NodeName::formalparameter,{$1, $2},@$.begin.line);}
                         ;
 
-mainfunctiondeclaration : mainfunctiondeclarator block {$$ = new AST("main function decleration",NodeName::mainfunctiondeclaration,{$1, $2},@$.begin.line);}
+mainfunctiondeclaration : mainfunctiondeclarator block {$$ = new AST(NodeName::mainfunctiondeclaration,{$1, $2},@$.begin.line);}
                         ;
 
-mainfunctiondeclarator  : identifier LPAR RPAR {$$ = new AST( "main function declarator",NodeName::mainfunctiondeclarator,{$1},@$.begin.line);}
+mainfunctiondeclarator  : identifier LPAR RPAR {$$ = new AST(NodeName::mainfunctiondeclarator,{$1},@$.begin.line);}
                         ;
 
-block                   : LBRC blockstatements RBRC {$$ = new AST( "block",NodeName::block,{$2},@$.begin.line);}
-                        | LBRC RBRC {$$ = new AST( "block",NodeName::block,@$.begin.line);}
+block                   : LBRC blockstatements RBRC {$$ = new AST(NodeName::block,{$2},@$.begin.line);}
+                        | LBRC RBRC {$$ = new AST(NodeName::block,@$.begin.line);}
                         ;
 
-blockstatements         : blockstatement 
+blockstatements         : blockstatement {$$ = new AST(NodeName::blockstatements,{$1},@$.begin.line);}
                         | blockstatements blockstatement {$$->addNodes({$2}); $$->lineNum = @$.begin.line;}
                         ;
 
@@ -252,18 +256,18 @@ blockstatement          : variabledeclaration
                         ;
 
 statement               : block
-                        | SEM { $$ = new AST( "null statement", NodeName::statement,@$.begin.line); }
-                        | statementexpression SEM { $$ = new AST( "statement expression",NodeName::statementexpression, {$1},@$.begin.line);}
-                        | BREAK SEM { $$ = new AST( "break",NodeName::breakstm,@$.begin.line); }
-                        | RETURN expression SEM { $$ = new AST( "return",NodeName::returnstm, {$2},@$.begin.line); }
-                        | RETURN SEM { $$ = new AST( "return",NodeName::returnstm,@$.begin.line); }
-                        | IF LPAR expression RPAR statement { $$ = new AST( "if", NodeName::ifstm, {$3, $5},@$.begin.line); }
-                        | IF LPAR expression RPAR statement ELSE statement { $$ = new AST( "if else",NodeName::ifstm, {$3, $5, $7},@$.begin.line); }
-                        | WHILE LPAR expression RPAR statement { $$ = new AST( "while",NodeName::whilestm, {$3, $5},@$.begin.line); }
+                        | SEM { $$ = new AST( NodeName::nullstm,@$.begin.line); }
+                        | statementexpression SEM { $$ = $1; $$->lineNum = @$.begin.line;}
+                        | BREAK SEM { $$ = new AST(NodeName::breakstm,@$.begin.line); }
+                        | RETURN expression SEM { $$ = new AST(NodeName::returnstm, {$2},@$.begin.line); }
+                        | RETURN SEM { $$ = new AST(NodeName::returnstm,@$.begin.line); }
+                        | IF LPAR expression RPAR statement { $$ = new AST( NodeName::ifstm, {$3, $5},@$.begin.line); }
+                        | IF LPAR expression RPAR statement ELSE statement { $$ = new AST( "if else statement",NodeName::ifstm, {$3, $5, $7},@$.begin.line); }
+                        | WHILE LPAR expression RPAR statement { $$ = new AST(NodeName::whilestm, {$3, $5},@$.begin.line); }
                         ;
 
-statementexpression     : assignment 
-                        | functioninvocation
+statementexpression     : assignment { $$ = new AST( "assignment", NodeName::statementexpression, {$1},@$.begin.line); }
+                        | functioninvocation { $$ = new AST( "function call", NodeName::statementexpression, {$1},@$.begin.line); }
                         ;
 
 primary                 : literal
@@ -271,12 +275,12 @@ primary                 : literal
                         | functioninvocation
                         ;
 
-argumentlist            : expression { $$ = new AST( "argument list", NodeName::argumentlist, {$1},@$.begin.line); }
+argumentlist            : expression { $$ = new AST( NodeName::argumentlist, {$1},@$.begin.line); }
                         | argumentlist COM expression {$$->addNodes({$3}); $$->lineNum = @$.begin.line;}
                         ;
 
-functioninvocation      : identifier LPAR argumentlist RPAR { $$ = new AST( "function call",NodeName::functioncall, {$1, $3},@$.begin.line); }
-                        | identifier LPAR RPAR { $$ = new AST( "function call",NodeName::functioncall, {$1},@$.begin.line); }
+functioninvocation      : identifier LPAR argumentlist RPAR { $$ = new AST(NodeName::functioncall, {$1, $3},@$.begin.line); }
+                        | identifier LPAR RPAR { $$ = new AST(NodeName::functioncall, {$1},@$.begin.line); }
                         ;
 
 postfixexpression       : primary

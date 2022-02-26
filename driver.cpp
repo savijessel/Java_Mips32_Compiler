@@ -36,6 +36,7 @@ bool Driver::start(std::istream &in)
 // Prints out the token if needed. Can be a flag or a global debug var.
 int Driver::getToken(JCC::Parser::semantic_type *yylval, JCC::Parser::location_type *location)
 {
+
     int tok = lexer->yylex(yylval, location);
     // std::cout << "Token: " << (JCC::Parser::token::token_kind_type)tok << "\n";
     return tok;

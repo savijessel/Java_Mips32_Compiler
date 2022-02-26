@@ -4,26 +4,47 @@
 #include "ast.hpp"
 
 int INDENT = 0;
-std::string opFormatStr = " { 'Op': '";
-std::string attrFormatStr = " { 'Attr': '";
-std::string regFormatStr = " { ";
-std::string typeFormatStr = " { 'Type': '";
 
+// strings to help format different AST properties
+std::string attrFormatStr = " { Attr: '";
+std::string regFormatStr = " { ";
+std::string typeFormatStr = " { Type: '";
+
+// AST constructor with all paramaters
 AST::AST(std::string myNodeType, NodeName myName, std::vector<AST *> nodes, int myLineNum)
 {
-    nodeType = myNodeType;
+    nodeType = myNodeType + "', ";
     addNodes(nodes);
     name = myName;
     lineNum = myLineNum;
 }
 
-AST::AST(std::string myNodeType, NodeName myName, int myLineNum)
+// AST constructor with no attributes or properties
+AST::AST(NodeName myName, std::vector<AST *> nodes, int myLineNum)
 {
-    nodeType = myNodeType;
+    nodeType = "";
+    addNodes(nodes);
     name = myName;
     lineNum = myLineNum;
 }
 
+// AST constructor with no children parameters
+AST::AST(std::string myNodeType, NodeName myName, int myLineNum)
+{
+    nodeType = myNodeType + "', ";
+    name = myName;
+    lineNum = myLineNum;
+}
+
+// AST constructor with no children parameters or attributes/properties
+AST::AST(NodeName myName, int myLineNum)
+{
+    nodeType = "";
+    name = myName;
+    lineNum = myLineNum;
+}
+
+// Partial Prog constructor -- included for extensiblity
 Prog::Prog(std::string myNodeType, NodeName myName, int myLineNum)
 {
     nodeType = myNodeType;
@@ -31,6 +52,7 @@ Prog::Prog(std::string myNodeType, NodeName myName, int myLineNum)
     lineNum = myLineNum;
 }
 
+// Full Prog constructor -- included for extensiblity
 Prog::Prog(std::string myNodeType, NodeName myName, std::vector<AST *> nodes, int myLineNum)
 {
     nodeType = myNodeType;
@@ -39,58 +61,7 @@ Prog::Prog(std::string myNodeType, NodeName myName, std::vector<AST *> nodes, in
     lineNum = myLineNum;
 }
 
-/* BinOp::BinOp(AST *left, Operator op, AST *right)
-{
-    op = op;
-    left = left;
-    addChild(left);
-    right = right;
-    addChild(right);
-}
-
-UnOp::UnOp(Operator op, AST *ex)
-{
-    op = op;
-    ex = ex;
-    addChild(ex);
-}
-
- Statement *Statement::append(Statement *a, Statement *b)
-{
-    if (!a->hasNext())
-    {
-        a->setNext(b);
-        return a;
-    }
-
-    Stmt *last = a;
-    while (last->hasNext())
-        last = last->getNext();
-    last->setNext(b);
-    return a;
-}
-
-Statement::Statement()
-{
-    nextStatement = nullptr;
-} */
-
-std::ostream &operator<<(std::ostream &out, const Type value)
-{
-
-    switch (value)
-    {
-    case INT:
-        return out << "int";
-    case BOOLEAN:
-        return out << "boolean";
-    case VOID:
-        return out << "void";
-    default:
-        return out << "";
-    }
-}
-
+// Helper function to output NodeName objects
 std::ostream &operator<<(std::ostream &out, const NodeName value)
 {
 
@@ -98,13 +69,13 @@ std::ostream &operator<<(std::ostream &out, const NodeName value)
     {
 
     case binop:
-        return out << "Binary Operation" << opFormatStr;
+        return out << "Binary Operation" << typeFormatStr;
 
     case unop:
-        return out << "Unary Operation" << opFormatStr;
+        return out << "Unary Operation" << typeFormatStr;
 
     case assignment:
-        return out << "Assignment" << opFormatStr;
+        return out << "Assignment" << typeFormatStr;
 
     case num:
         return out << "Number" << typeFormatStr;
@@ -112,8 +83,8 @@ std::ostream &operator<<(std::ostream &out, const NodeName value)
     case statementexpression:
         return out << "statement expression" << typeFormatStr;
 
-    case none:
-        return out << "empty" << typeFormatStr;
+    case nullstm:
+        return out << "null statement" << regFormatStr;
 
     case program:
         return out << "program" << regFormatStr;
@@ -125,61 +96,61 @@ std::ostream &operator<<(std::ostream &out, const NodeName value)
         return out << "type" << attrFormatStr;
 
     case globaldeclarations:
-        return out << "global declarations" << typeFormatStr;
+        return out << "global declarations" << regFormatStr;
 
     case variabledeclaration:
-        return out << "variable declaration" << typeFormatStr;
+        return out << "variable declaration" << regFormatStr;
 
     case identifier:
         return out << "identifier" << attrFormatStr;
 
     case functiondeclaration:
-        return out << "function declaration" << typeFormatStr;
+        return out << "function declaration" << regFormatStr;
 
     case functionheader:
         return out << "function header" << typeFormatStr;
 
     case functiondeclarator:
-        return out << "function declarator" << typeFormatStr;
+        return out << "function declarator" << regFormatStr;
 
     case formalparameterlist:
-        return out << "formal parameter list" << typeFormatStr;
+        return out << "formal parameter list" << regFormatStr;
 
     case formalparameter:
-        return out << "formal parameter" << typeFormatStr;
+        return out << "formal parameter" << regFormatStr;
 
     case mainfunctiondeclaration:
-        return out << "main function declaration" << typeFormatStr;
+        return out << "main function declaration" << regFormatStr;
 
     case mainfunctiondeclarator:
-        return out << "main function declarator" << typeFormatStr;
+        return out << "main function declarator" << regFormatStr;
 
     case block:
-        return out << "block" << typeFormatStr;
+        return out << "block" << regFormatStr;
 
     case blockstatements:
-        return out << "block statements" << typeFormatStr;
+        return out << "block statements" << regFormatStr;
 
     case statement:
-        return out << "statement" << typeFormatStr;
+        return out << "statement" << regFormatStr;
 
     case ifstm:
         return out << "if" << typeFormatStr;
 
     case whilestm:
-        return out << "while" << typeFormatStr;
+        return out << "while" << regFormatStr;
 
     case returnstm:
-        return out << "return" << typeFormatStr;
+        return out << "return" << regFormatStr;
 
     case breakstm:
-        return out << "break" << typeFormatStr;
+        return out << "break" << regFormatStr;
 
     case argumentlist:
-        return out << "argument list" << typeFormatStr;
+        return out << "argument list" << regFormatStr;
 
     case functioncall:
-        return out << "function call" << typeFormatStr;
+        return out << "function call" << regFormatStr;
 
     default:
         return out << "" << regFormatStr;

@@ -16,11 +16,11 @@
     #include "parser.hh"
 
     using Token = JCC::Parser::token;
-
+    
      
     #undef  YY_DECL
     #define YY_DECL int JCC::Lexer::yylex(JCC::Parser::semantic_type *yylval, JCC::Parser::location_type *loc)
-
+    
     // Everytime yylex is called, the location is updated for a token
     // loc->step() sets the begin character for the token. 
     // And loc->columns sets the number of characters for the token
