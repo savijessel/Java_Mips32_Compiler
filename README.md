@@ -18,7 +18,7 @@ Savipal Jessel, UCID: 30039257, savipal.jessel@ucalgary.ca
 5. If the test file contains syntaxically correct input, you should see output formatted similarly to the following: <br />
    &emsp;Program: { 'example' } <br />
    &emsp;&emsp;main function declaration { line: # } <br />
-   &emsp;&emsp;&emsp;;main function declarator { line: # } <br />
+   &emsp;&emsp;&emsp;main function declarator { line: # } <br />
    &emsp;&emsp;&emsp;&emsp;identifier { Attr: 'example', line: # } <br />
 
    If the test file contains syntax or lexical errors, you may see a warning or error message. 
