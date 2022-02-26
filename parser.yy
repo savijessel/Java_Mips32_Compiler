@@ -190,10 +190,8 @@ start           : %empty /* empty */        {driver.tree = new Prog(std::string(
                 ;
 
 literal         : NUM                   {$$ = new AST("number', 'Attr': " + std::to_string($1), NodeName::literal, @$.begin.line);}
-
-                | STRING                {std::string input = *$1; input.replace(input.find('\0'),1,"\\x00"); 
-                                         $$ = new AST("string', 'Attr': " + input, NodeName::literal, @$.begin.line); 
-                                         std::cout<<*$1<<std::endl;}
+                | STRING                {$$ = new AST("string', 'Attr': " + *$1, NodeName::literal, @$.begin.line);}
+                                         
 
                 | TRUE                  {$$ = new AST("boolean', Attr': TRUE", NodeName::literal, @$.begin.line);}
                 | FALSE                 {$$ = new AST("boolean', Attr': FALSE", NodeName::literal, @$.begin.line);}

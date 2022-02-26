@@ -105,7 +105,9 @@ public:
     {
 
         std::cout << std::string(INDENT * 4, INDENT_CHAR);
-        std::cout << name << nodeType << "line: " << lineNum << " }"
+        std::string tempType = nodeType;
+        tempType.replace(tempType.find('\0'), 1, "\\x00");
+        std::cout << tempType << nodeType << "line: " << lineNum << " }"
                   << "\n";
         INDENT++;
         for (auto child : children)
