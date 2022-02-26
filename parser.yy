@@ -189,8 +189,9 @@ start           : %empty /* empty */        {driver.tree = new Prog(std::string(
                 | globaldeclarations        {driver.tree = $1;}
                 ;
 
-literal         : NUM                   {$$ = new AST("number', 'Attr': " + std::to_string($1), NodeName::literal, @$.begin.line);}
-                | STRING                {$$ = new AST("string', 'Attr': " + *$1, NodeName::literal, @$.begin.line);}
+literal         : NUM                   {$$ = new AST("number', 'Attr': '" + std::to_string($1), NodeName::literal, @$.begin.line);}
+
+                | STRING                {$$ = new AST("string', 'Attr': '" + *$1, NodeName::literal, @$.begin.line);} 
                                          
 
                 | TRUE                  {$$ = new AST("boolean', Attr': TRUE", NodeName::literal, @$.begin.line);}
