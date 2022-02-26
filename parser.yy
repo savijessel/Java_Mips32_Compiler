@@ -140,14 +140,13 @@
 
 %token <strVal> STRING "string"
 
-/* Left associativity */
 
 
 
 /* Define the start symbol */
 %start start
 
-/* The symbols E and F are of type int and return an int */
+/* The following are all of symbols from the grammar */
 %type <node> globaldeclarations
 %type <node> globaldeclaration
 %type <node> variabledeclaration
@@ -222,7 +221,7 @@ identifier              : ID {$$ = new AST(*$1,NodeName::identifier,@$.begin.lin
 functiondeclaration     : functionheader block {$$ = new AST(NodeName::functiondeclaration,{$1,$2},@$.begin.line);}
                         ;
 
-functionheader          : type functiondeclarator {$$ = new AST(NodeName::functionheader,{$1,$2},@$.begin.line);}
+functionheader          : type functiondeclarator {$$ = new AST("",NodeName::functionheader,{$1,$2},@$.begin.line);}
                         | VOID functiondeclarator {$$ = new AST( "void",NodeName::functionheader,{$2},@$.begin.line);}
                         ;
 
@@ -261,7 +260,7 @@ statement               : block
                         | BREAK SEM { $$ = new AST(NodeName::breakstm,@$.begin.line); }
                         | RETURN expression SEM { $$ = new AST(NodeName::returnstm, {$2},@$.begin.line); }
                         | RETURN SEM { $$ = new AST(NodeName::returnstm,@$.begin.line); }
-                        | IF LPAR expression RPAR statement { $$ = new AST( NodeName::ifstm, {$3, $5},@$.begin.line); }
+                        | IF LPAR expression RPAR statement { $$ = new AST("", NodeName::ifstm, {$3, $5},@$.begin.line); }
                         | IF LPAR expression RPAR statement ELSE statement { $$ = new AST( "if else statement",NodeName::ifstm, {$3, $5, $7},@$.begin.line); }
                         | WHILE LPAR expression RPAR statement { $$ = new AST(NodeName::whilestm, {$3, $5},@$.begin.line); }
                         ;
