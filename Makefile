@@ -1,8 +1,8 @@
 CC := clang++
 CXXFLAGS := -std=c++14 -Wall
-objs := parser.o scanner.o driver.o ast.o main.o util.o
+objs := parser.o scanner.o driver.o ast.o symbol.o main.o util.o
 
-all: parser
+all: semantic
 
 %.cc %.hh: %.yy
 	bison -o $*.cc $<
@@ -23,7 +23,7 @@ tools: parser.yy scanner.l
 	bison -o parser.cc parser.yy
 	flex --c++ -o scanner.cc scanner.l
 
-parser: $(objs)
+semantic: $(objs)
 	$(CC) $(CXXFLAGS) -o $@ $^
 
 
