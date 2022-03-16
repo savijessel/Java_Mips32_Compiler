@@ -26,6 +26,7 @@ bool Driver::start(std::istream &in)
     if (!res)
     {
         tree->print();
+        semanticAnalyzer(tree);
     }
 
     return res;

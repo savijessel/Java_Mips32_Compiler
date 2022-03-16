@@ -5,6 +5,8 @@
 #ifndef SYMBOL_HPP
 #define SYMBOL_HPP
 
+int symbolError(std::string message, int line);
+
 class SymbolTableEntry;
 class SymbolTable;
 
@@ -22,7 +24,24 @@ public:
     SymbolTableEntry(std::string symbol, std::string type, int scope, int lineNum);
     SymbolTableEntry(std::string symbol, std::string type, std::vector<std::string> paramTypes, int scope, int lineNum);
 
-    void test(int test);
+    void print()
+    {
+        std::cout << "symbol: " << symbol << std::endl;
+        std::cout << "  type: " << type << std::endl;
+        std::cout << "  paramTypes: " << std::endl;
+        for (auto type : paramTypes)
+        {
+            std::cout << type << std::endl;
+        }
+        std::cout << "  scope: " << scope << std::endl;
+    }
+
+    void clear()
+    {
+        symbol.clear();
+        type.clear();
+        paramTypes.clear();
+    }
 };
 
 class SymbolTable
@@ -45,14 +64,13 @@ public:
         // check if entry is already in top table
         if (tables.back().find(entry.symbol) != tables.back().end())
         {
-            std::cerr << "Error: Multiply declared identifier on line" << entry.lineNum << std::endl;
-            // *** IMPORTANT **** FIX ERROR HANDLING LATER
+            exit(symbolError("Multiple declared identifier", entry.lineNum));
         }
 
         else
         {
             tables.back()[entry.symbol] = entry;
-            std::cout << "success in defining entry!";
+            std::cout << "success in defining entry!" << std::endl;
         }
     }
 
@@ -67,15 +85,32 @@ public:
             }
         }
 
-        std::cerr << "Error: Undeclared identifier on line" << std::endl;
-        exit(EXIT_FAILURE);
-        // *** IMPORTANT **** FIX ERROR HANDLING LATER
+        return nullptr;
     }
 
     void closeScope()
     {
         tables.pop_back();
         scope--;
+    }
+
+    void print()
+    {
+        for (auto iter = tables.rbegin(); iter != tables.rend(); ++iter)
+        {
+            for (auto it = (*iter).cbegin(); it != (*iter).cend(); ++it)
+            {
+                std::cout << "key: " << (*it).first << std::endl;
+                std::cout << "  symbol: " << (*it).second.symbol << std::endl;
+                std::cout << "  type: " << (*it).second.type << std::endl;
+                std::cout << "  paramTypes: " << std::endl;
+                for (auto type : (*it).second.paramTypes)
+                {
+                    std::cout << type << std::endl;
+                }
+                std::cout << "  scope: " << (*it).second.scope << std::endl;
+            }
+        }
     }
 };
 

@@ -22,3 +22,9 @@ SymbolTableEntry::SymbolTableEntry(std::string mySymbol, std::string myType, std
     scope = myScope;
     lineNum = myLineNum;
 }
+
+int symbolError(std::string message, int line)
+{
+    std::cerr << "Semantic Error: " << message << " on or near line " << line << std::endl;
+    return EXIT_FAILURE;
+}

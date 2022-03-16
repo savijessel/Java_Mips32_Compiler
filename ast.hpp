@@ -7,6 +7,7 @@
 #include <iostream>
 #include <regex>
 #include <vector>
+#include "symbol.hpp"
 
 #ifndef AST_HPP
 #define AST_HPP
@@ -56,7 +57,7 @@ std::ostream &operator<<(std::ostream &out, const NodeName value);
 // base AST Class
 class AST
 {
-protected:
+public:
     // children nodes
     std::vector<AST *> children;
 
@@ -66,7 +67,6 @@ protected:
         children.push_back(child);
     }
 
-public:
     // Name or reference of Node
     NodeName name;
 
@@ -75,6 +75,8 @@ public:
 
     // line number corresponding to node
     int lineNum;
+
+    SymbolTableEntry *symbolRef;
 
     // various constructors
     AST() = default;

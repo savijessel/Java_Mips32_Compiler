@@ -3,10 +3,11 @@
 
 #include <string>
 #include <istream>
-
+#include <iostream>
 #include "scanner.hpp"
 #include "parser.hh"
 #include "ast.hpp"
+#include "semantic.hpp"
 
 class Driver
 {
@@ -21,7 +22,7 @@ public:
     // Stores AST. Parser will fill this.
     AST *tree = nullptr;
 
-    std::string getFileName() { return file_name; }
+        std::string getFileName() { return file_name; }
 
     // Makes it easy to debug. Parser will set this as yylex.
     // getToken will then actually call yylex, print out the token if needed and returns the token
