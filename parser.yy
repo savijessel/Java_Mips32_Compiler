@@ -189,13 +189,13 @@ start           : %empty /* empty */        {driver.tree = new Prog(std::string(
                 | globaldeclarations        {driver.tree = $1;}
                 ;
 
-literal         : NUM                   {$$ = new AST("number', 'Attr': '" + std::to_string($1), NodeName::literal, @$.begin.line);}
+literal         : NUM                   {$$ = new AST("number",std::to_string($1), NodeName::literal, @$.begin.line);}
 
-                | STRING                {$$ = new AST("string', 'Attr': '" + *$1, NodeName::literal, @$.begin.line);} 
+                | STRING                {$$ = new AST("string", *$1, NodeName::literal, @$.begin.line);} 
                                          
 
-                | TRUE                  {$$ = new AST("boolean', Attr': TRUE", NodeName::literal, @$.begin.line);}
-                | FALSE                 {$$ = new AST("boolean', Attr': FALSE", NodeName::literal, @$.begin.line);}
+                | TRUE                  {$$ = new AST("boolean", "TRUE", NodeName::literal, @$.begin.line);}
+                | FALSE                 {$$ = new AST("boolean", "FALSE", NodeName::literal, @$.begin.line);}
                 ;
 
 type            : BOOLEAN               {$$ = new AST("boolean", NodeName::type, @$.begin.line);}
@@ -214,7 +214,7 @@ globaldeclaration       : variabledeclaration
 variabledeclaration     : type identifier SEM {$$ = new AST(NodeName::variabledeclaration,{$1,$2},@$.begin.line);}
                         ;
 
-identifier              : ID {$$ = new AST(*$1,NodeName::identifier,@$.begin.line);}
+identifier              : ID {$$ = new AST("",*$1,NodeName::identifier,@$.begin.line);}
                         ;
 
 functiondeclaration     : functionheader block {$$ = new AST(NodeName::functiondeclaration,{$1,$2},@$.begin.line);}

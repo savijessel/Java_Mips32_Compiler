@@ -34,6 +34,7 @@ public:
             std::cout << type << std::endl;
         }
         std::cout << "  scope: " << scope << std::endl;
+        std::cout << "  lineNum: " << lineNum << std::endl;
     }
 
     void clear()
@@ -109,6 +110,7 @@ public:
                     std::cout << type << std::endl;
                 }
                 std::cout << "  scope: " << (*it).second.scope << std::endl;
+                std::cout << "  line: " << (*it).second.lineNum << std::endl;
             }
         }
     }

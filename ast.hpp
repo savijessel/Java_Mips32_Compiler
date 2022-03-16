@@ -73,6 +73,8 @@ public:
     // String to characterize type of node - typically extraneous properties or attributes
     std::string nodeType;
 
+    std::string attribute;
+
     // line number corresponding to node
     int lineNum;
 
@@ -80,8 +82,10 @@ public:
 
     // various constructors
     AST() = default;
+    AST(std::string nodeType, std::string attribute, NodeName name, std::vector<AST *> nodes, int lineNum);
     AST(std::string nodeType, NodeName name, std::vector<AST *> nodes, int lineNum);
     AST(NodeName name, std::vector<AST *> nodes, int lineNum);
+    AST(std::string nodeType, std::string attribute, NodeName name, int lineNum);
     AST(std::string nodeType, NodeName name, int lineNum);
     AST(NodeName myName, int myLineNum);
 
@@ -113,8 +117,17 @@ public:
         std::string tempType = nodeType;
         tempType = std::regex_replace(tempType, std::regex("\\0"), "\\x00");
 
-        std::cout << name << tempType << "line: " << lineNum << " }"
-                  << "\n";
+        std::string properties = " { ";
+        if (tempType != "")
+            properties += "Type: '" + tempType + "', ";
+        if (attribute != "")
+        {
+            properties += "Attr: '" + attribute + "', ";
+        }
+
+        std::cout
+            << name << properties << "line: " << lineNum << " }"
+            << "\n";
         INDENT++;
         for (auto child : children)
         {
