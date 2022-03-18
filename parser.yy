@@ -189,13 +189,13 @@ start           : %empty /* empty */        {driver.tree = new Prog(std::string(
                 | globaldeclarations        {driver.tree = $1;}
                 ;
 
-literal         : NUM                   {$$ = new AST("number",std::to_string($1), NodeName::literal, @$.begin.line);}
+literal         : NUM                   {$$ = new AST("integer",std::to_string($1), NodeName::literal, @$.begin.line);}
 
                 | STRING                {$$ = new AST("string", *$1, NodeName::literal, @$.begin.line);} 
                                          
 
-                | TRUE                  {$$ = new AST("boolean", "TRUE", NodeName::literal, @$.begin.line);}
-                | FALSE                 {$$ = new AST("boolean", "FALSE", NodeName::literal, @$.begin.line);}
+                | TRUE                  {$$ = new AST("boolean", "true", NodeName::literal, @$.begin.line);}
+                | FALSE                 {$$ = new AST("boolean", "false", NodeName::literal, @$.begin.line);}
                 ;
 
 type            : BOOLEAN               {$$ = new AST("boolean", NodeName::type, @$.begin.line);}
@@ -285,40 +285,40 @@ postfixexpression       : primary
                         | identifier
                         ;
 
-unaryexpression         : SUB unaryexpression { $$ = new AST( "-", NodeName::unop, {$2},@$.begin.line); }
-                        | NOT unaryexpression { $$ = new AST( "!", NodeName::unop, {$2}, @$.begin.line); }
+unaryexpression         : SUB unaryexpression { $$ = new AST("", "-", NodeName::unop, {$2},@$.begin.line); }
+                        | NOT unaryexpression { $$ = new AST("", "!", NodeName::unop, {$2}, @$.begin.line); }
                         | postfixexpression
                         ;
 
 multiplicativeexpression: unaryexpression
-                        | multiplicativeexpression MULT unaryexpression { $$ = new AST( "*", NodeName::binop, {$1,$3},@$.begin.line); }
-                        | multiplicativeexpression DIV unaryexpression  { $$ = new AST( "/", NodeName::binop, {$1,$3},@$.begin.line); }
-                        | multiplicativeexpression PS unaryexpression   { $$ = new AST( "%", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | multiplicativeexpression MULT unaryexpression { $$ = new AST("", "*", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | multiplicativeexpression DIV unaryexpression  { $$ = new AST("", "/", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | multiplicativeexpression PS unaryexpression   { $$ = new AST("", "%", NodeName::binop, {$1,$3},@$.begin.line); }
                         ;
 
 additiveexpression      : multiplicativeexpression
-                        | additiveexpression ADD multiplicativeexpression { $$ = new AST( "+", NodeName::binop, {$1,$3},@$.begin.line); }
-                        | additiveexpression SUB multiplicativeexpression { $$ = new AST( "-", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | additiveexpression ADD multiplicativeexpression { $$ = new AST("", "+", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | additiveexpression SUB multiplicativeexpression { $$ = new AST("", "-", NodeName::binop, {$1,$3},@$.begin.line); }
                         ;
 
 relationalexpression    : additiveexpression
-                        | relationalexpression LT additiveexpression { $$ = new AST( "<", NodeName::binop, {$1,$3},@$.begin.line); }
-                        | relationalexpression GT additiveexpression { $$ = new AST( ">", NodeName::binop, {$1,$3},@$.begin.line); }
-                        | relationalexpression LE additiveexpression { $$ = new AST( "<=", NodeName::binop, {$1,$3},@$.begin.line); }
-                        | relationalexpression GE additiveexpression { $$ = new AST( ">=", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | relationalexpression LT additiveexpression { $$ = new AST("", "<", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | relationalexpression GT additiveexpression { $$ = new AST("", ">", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | relationalexpression LE additiveexpression { $$ = new AST("", "<=", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | relationalexpression GE additiveexpression { $$ = new AST("", ">=", NodeName::binop, {$1,$3},@$.begin.line); }
                         ;
 
 equalityexpression      : relationalexpression
-                        | equalityexpression DEQ relationalexpression { $$ = new AST( "==", NodeName::binop, {$1,$3},@$.begin.line); }
-                        | equalityexpression NEQ relationalexpression { $$ = new AST( "!=", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | equalityexpression DEQ relationalexpression { $$ = new AST("", "==", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | equalityexpression NEQ relationalexpression { $$ = new AST("", "!=", NodeName::binop, {$1,$3},@$.begin.line); }
                         ;
 
 conditionalandexpression: equalityexpression
-                        | conditionalandexpression AND equalityexpression { $$ = new AST( "&&", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | conditionalandexpression AND equalityexpression { $$ = new AST("", "&&", NodeName::binop, {$1,$3},@$.begin.line); }
                         ;
 
 conditionalorexpression : conditionalandexpression
-                        | conditionalorexpression OR conditionalandexpression { $$ = new AST( "||", NodeName::binop, {$1,$3},@$.begin.line); }
+                        | conditionalorexpression OR conditionalandexpression { $$ = new AST( "","||", NodeName::binop, {$1,$3},@$.begin.line); }
                         ;
 
 assignmentexpression    : conditionalorexpression

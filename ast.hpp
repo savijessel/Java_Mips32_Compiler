@@ -72,14 +72,12 @@ public:
 
     // String to characterize type of node - typically extraneous properties or attributes
     std::string nodeType;
-
     std::string attribute;
 
     // line number corresponding to node
     int lineNum;
 
     SymbolTableEntry *symbolRef;
-
     // various constructors
     AST() = default;
     AST(std::string nodeType, std::string attribute, NodeName name, std::vector<AST *> nodes, int lineNum);

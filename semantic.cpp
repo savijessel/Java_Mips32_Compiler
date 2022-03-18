@@ -6,20 +6,22 @@ bool declAcceptID = false;
 bool decl = false;
 bool declRet = false;
 bool needsRet = false;
-bool acceptIDs = false;
 bool declAcceptFormals = false;
 bool acceptID = false;
 bool acceptCallID = false;
 bool acceptArgs = false;
+bool argList = false;
 bool stmtOp = false;
 int mainCount = 0;
 SymbolTableEntry *tempSymbolRef = new SymbolTableEntry();
 SymbolTableEntry *tempCheckSymbolRef = new SymbolTableEntry();
+SymbolTableEntry *globalRef = new SymbolTableEntry();
 std::vector<std::string> assignOp;
 std::vector<std::string> binaryOp;
 std::string funcRet;
 int argCount = 0;
-std::unordered_multimap<std::string, std::vector<std::string>> opTable({
+int opCount = 0;
+/* std::unordered_multimap<std::string, std::vector<std::string>> opTable({
 
     {"||", {"boolean", "boolean", "boolean"}},
     {"&&", {"boolean", "boolean", "boolean"}},
@@ -42,7 +44,101 @@ std::unordered_multimap<std::string, std::vector<std::string>> opTable({
     {"!", {"boolean", "boolean"}},
 
 });
+ */
+std::map<std::vector<std::string>, std::string> opTable({
 
+    {{"||", "boolean", "boolean"}, "boolean"},
+    {{"&&", "boolean", "boolean"}, "boolean"},
+    {{"==", "boolean", "boolean"}, "boolean"},
+    {{"==", "integer", "integer"}, "boolean"},
+    {{"!=", "boolean", "boolean"}, "boolean"},
+    {{"!=", "integer", "integer"}, "boolean"},
+    {{"=", "integer", "integer"}, "integer"},
+    {{"=", "boolean", "boolean"}, "boolean"}, // {{"=", "integer", "integer"}, "boolean"},
+    {{"<", "integer", "integer"}, "boolean"},
+    {{">", "integer", "integer"}, "boolean"},
+    {{"<=", "integer", "integer"}, "boolean"},
+    {{">=", "integer", "integer"}, "boolean"},
+    {{"+", "integer", "integer"}, "integer"},
+    {{"*", "integer", "integer"}, "integer"},
+    {{"/", "integer", "integer"}, "integer"},
+    {{"%", "integer", "integer"}, "integer"},
+    {{"-", "integer", "integer"}, "integer"},
+
+});
+
+std::map<std::vector<std::string>, std::string> unOpTable({
+
+    {{"-", "integer"}, "integer"},
+    {{"!", "boolean"}, "boolean"},
+
+});
+
+/* void opType(AST *node)
+{
+    if (acceptArgs)
+    {
+        std::vector<std::string> tempOp;
+        tempOp.push_back(tempCheckSymbolRef->paramTypes[argCount]);
+        for (auto t : binaryOp)
+            tempOp.push_back(t);
+        bool error = true;
+        auto its = opTable.equal_range(node->nodeType);
+        for (auto it = its.first; it != its.second; it++)
+        {
+            for (auto s : it->second)
+                std::cout << "hash: " << s << std::endl;
+            for (auto s : tempOp)
+                std::cout << "assignOp: " << s << std::endl;
+            if (it->second == tempOp)
+                error = false;
+        }
+        acceptIDs = false;
+        binaryOp.clear();
+        if (error)
+            exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
+        tempSymbolRef->paramTypes.push_back(binaryOp.front());
+    }
+
+    else
+    {
+
+        bool error = true;
+        auto its = opTable.equal_range(node->nodeType);
+        std::string retVal;
+        for (auto it = its.first; it != its.second; it++)
+        {
+
+            if (!stmtOp)
+            {
+                if (it->second == assignOp)
+                    error = false;
+            }
+            else
+            {
+                std::vector<std::string> temp = it->second;
+                if (declRet)
+                    retVal = temp.front();
+                temp.erase(temp.begin());
+                if (temp == binaryOp)
+                    error = false;
+            }
+        }
+        acceptIDs = false;
+        assignOp.clear();
+        binaryOp.clear();
+        if (error)
+            exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
+        if (declRet)
+        {
+            needsRet = false;
+            declRet = false;
+            if (retVal != funcRet)
+                exit(semanticError("returned value has the wrong type", node->lineNum));
+        }
+    }
+    stmtOp = false;
+} */
 void postOrder(AST *node, std::function<void(AST *)> action)
 {
 
@@ -85,6 +181,130 @@ void prePostOrder(AST *node, std::function<void(AST *)> preAction, std::function
     postAction(node);
 }
 
+void opType(AST *node)
+{
+    opCount++;
+    if (acceptID)
+    {
+        assignOp.push_back(node->nodeType);
+        acceptID = false;
+    }
+
+    if (acceptArgs)
+    {
+
+        tempSymbolRef->paramTypes.push_back(node->nodeType);
+        acceptArgs = false;
+    }
+
+    if (declRet)
+    {
+        if (funcRet == "void")
+            exit(semanticError("void function returns a value", node->lineNum));
+        if (funcRet != node->nodeType)
+            exit(semanticError("returned value has the wrong type", node->lineNum));
+        declRet = false;
+        needsRet = false;
+    }
+
+    if (stmtOp)
+    {
+        if (node->nodeType != "boolean")
+            exit(semanticError("Need a boolean in conditional", node->lineNum));
+        stmtOp = false;
+    }
+}
+
+void idType(AST *node, const NodeName value)
+{
+    if (stmtOp)
+    {
+
+        if (value == identifier)
+        {
+            if (node->symbolRef->type != "boolean")
+                exit(semanticError("Need a boolean in conditional", node->lineNum));
+        }
+        else
+        {
+            if (node->nodeType != "boolean")
+                exit(semanticError("Need a boolean in conditional", node->lineNum));
+        }
+
+        stmtOp = false;
+    }
+
+    if (decl)
+    {
+        if (value == identifier)
+            funcRet = node->symbolRef->type;
+
+        else
+        {
+            funcRet = node->nodeType;
+        }
+        if (funcRet != "void")
+            needsRet = true;
+        decl = false;
+    }
+
+    if (declRet)
+    {
+        if (funcRet == "void")
+            exit(semanticError("void function returns a value", node->lineNum));
+        if (value == identifier)
+        {
+            std::cout << "funcRet: " << funcRet << std::endl;
+            std::cout << "node: " << node->symbolRef->type << std::endl;
+            if (funcRet != node->symbolRef->type)
+                exit(semanticError("returned value has the wrong type", node->lineNum));
+        }
+        else
+        {
+            if (funcRet != node->nodeType)
+                exit(semanticError("returned value has the wrong type", node->lineNum));
+        }
+        declRet = false;
+        needsRet = false;
+    }
+
+    if ((acceptID) && !acceptCallID && !acceptArgs)
+    {
+        if (value == identifier)
+            assignOp.push_back(node->symbolRef->type);
+        else
+        {
+            assignOp.push_back(node->nodeType);
+        }
+    }
+
+    if (acceptCallID)
+    {
+
+        tempCheckSymbolRef->clear();
+        if (assignOp.empty())
+            assignOp.push_back(node->symbolRef->type);
+
+        tempCheckSymbolRef->paramTypes = node->symbolRef->paramTypes;
+        tempCheckSymbolRef->type = node->symbolRef->type;
+        std::cout << "test1" << std::endl;
+        // node->symbolRef->print();
+        //  binaryOp.push_back(node->symbolRef->type);
+        acceptCallID = false;
+    }
+
+    if (acceptArgs)
+    {
+        argCount++;
+        if (value == identifier)
+            tempSymbolRef->paramTypes.push_back(node->symbolRef->type);
+        else
+        {
+            tempSymbolRef->paramTypes.push_back(node->nodeType);
+        }
+    }
+}
+
 void preGlobalDecs(AST *node)
 {
     switch (node->name)
@@ -94,6 +314,7 @@ void preGlobalDecs(AST *node)
         if (node->nodeType == "void")
         {
             tempSymbolRef->type = "void";
+            globalRef->type = "void";
             declAcceptID = true;
         }
         else
@@ -105,6 +326,7 @@ void preGlobalDecs(AST *node)
 
     case variabledeclaration:
         tempSymbolRef->clear();
+        // std::cout << "table->scope:" << table->scope << std::endl;
         if (table->scope == 2)
         {
             declAcceptType = true;
@@ -125,12 +347,14 @@ void preGlobalDecs(AST *node)
         if (declAcceptType)
         {
             tempSymbolRef->type = node->nodeType;
+            globalRef->type = node->nodeType;
             declAcceptType = false;
         }
 
         if (declAcceptFormals)
         {
-            table->lookup(tempSymbolRef->symbol)->paramTypes.push_back(node->nodeType);
+            tempSymbolRef->paramTypes.push_back(node->nodeType);
+            globalRef->paramTypes.push_back(node->nodeType);
         }
         break;
 
@@ -140,8 +364,12 @@ void preGlobalDecs(AST *node)
             tempSymbolRef->symbol = node->attribute;
             tempSymbolRef->scope = table->scope;
             tempSymbolRef->lineNum = node->lineNum;
-            table->define(*tempSymbolRef);
-            node->symbolRef = table->lookup(tempSymbolRef->symbol);
+            std::cout << "pint01" << std::endl;
+            globalRef->symbol = node->attribute;
+            globalRef->scope = table->scope;
+            globalRef->lineNum = node->lineNum;
+            node->symbolRef = globalRef;
+            std::cout << "pint02" << std::endl;
             declAcceptID = false;
         }
 
@@ -174,6 +402,7 @@ void postGlobalDecs(AST *node)
         break;
     case functionheader:
         declAcceptFormals = false;
+        table->define(*tempSymbolRef);
         table->openScope();
         break;
     case functiondeclaration:
@@ -251,10 +480,6 @@ void preIDs(AST *node)
             table->define(*tempSymbolRef);
             node->symbolRef = table->lookup(tempSymbolRef->symbol);
             declAcceptID = false;
-            std::cout << "non declaration" << std::endl;
-            std::cout << "Line Number: " << node->lineNum << std::endl;
-            node->symbolRef->print();
-            std::cout << "end" << std::endl;
         }
 
         if (table->scope == 3 && acceptID)
@@ -263,10 +488,6 @@ void preIDs(AST *node)
             if (table->lookup(node->attribute) != nullptr)
             {
                 node->symbolRef = table->lookup(node->attribute);
-                std::cout << "non declaration" << std::endl;
-                std::cout << "Line Number: " << node->lineNum << std::endl;
-                node->symbolRef->print();
-                std::cout << "end" << std::endl;
             }
             else
             {
@@ -320,6 +541,86 @@ void postIDs(AST *node)
     }
 }
 
+void preArith(AST *node)
+{
+}
+
+void postArith(AST *node)
+{
+    switch (node->name)
+    {
+
+    case binop:
+    {
+        std::string lOp;
+        std::string rOp;
+        if (node->children[0]->name == unop || node->children[0]->name == binop || node->children[0]->name == literal)
+        {
+            lOp = node->children[0]->nodeType;
+        }
+        else
+        {
+            lOp = node->children[0]->symbolRef->type;
+        }
+
+        if (node->children[1]->name == unop || node->children[1]->name == binop || node->children[1]->name == literal)
+        {
+            rOp = node->children[1]->nodeType;
+        }
+        else
+        {
+            rOp = node->children[1]->symbolRef->type;
+        }
+
+        auto ret = opTable.find({node->attribute, lOp, rOp});
+        if (ret != opTable.end())
+        {
+            node->nodeType = ret->second;
+        }
+
+        else
+        {
+            exit(semanticError("mismatched types for '" + node->attribute + "' operation", node->lineNum));
+        }
+    }
+    break;
+
+    case unop:
+    {
+
+        std::string op;
+        if (node->children[0]->name == unop || node->children[0]->name == binop || node->children[0]->name == literal)
+        {
+            op = node->children[0]->nodeType;
+        }
+        else
+        {
+            op = node->children[0]->symbolRef->type;
+        }
+
+        std::cout << "op1" << op << std::endl;
+        std::cout << node->attribute << std::endl;
+        auto ret = unOpTable.find({node->attribute, op});
+        std::cout << "op2" << op << std::endl;
+        if (ret != unOpTable.end())
+        {
+            std::cout << "op3" << op << std::endl;
+            node->nodeType = ret->second;
+            std::cout << "ret" << ret->second << std::endl;
+        }
+
+        else
+        {
+            exit(semanticError("mismatched types for '" + node->attribute + "' operation", node->lineNum));
+        }
+    }
+    break;
+
+    default:
+        break;
+    }
+}
+
 void preTypes(AST *node)
 {
 
@@ -338,6 +639,7 @@ void preTypes(AST *node)
 
     case argumentlist:
         acceptArgs = true;
+        argList = true;
         break;
 
     case assignment:
@@ -354,72 +656,23 @@ void preTypes(AST *node)
         break;
 
     case returnstm:
-        stmtOp = true;
         declRet = true;
         break;
 
     case binop:
-        binaryOp.clear();
-        argCount = 0;
-        acceptIDs = true;
+        opType(node);
         break;
     case unop:
-        argCount = 0;
-        acceptIDs = true;
+        opType(node);
         break;
+
+    case literal:
+        idType(node, node->name);
+        break;
+
     case identifier:
-
-        if (decl)
-        {
-            funcRet = node->symbolRef->type;
-            if (funcRet != "void")
-                needsRet = true;
-            decl = false;
-        }
-
-        if (declRet) // *** IMPORTANT *** INVESTIGATE BEHAVIOR ON EDGE CASES (X=Y=Z)
-        {
-            std::cout << "ret: " << funcRet << std::endl;
-            std::cout << "nodetype: " << node->symbolRef->type << node->lineNum << std::endl;
-            node->symbolRef->print();
-            if (funcRet == "void")
-                exit(semanticError("void function returns a value", node->lineNum));
-
-            if (funcRet != node->symbolRef->type)
-                exit(semanticError("returned value has the wrong type", node->lineNum));
-            declRet = false;
-            needsRet = false;
-        }
-
-        if ((acceptID) && !acceptCallID && !acceptArgs)
-        {
-            assignOp.push_back(node->symbolRef->type);
-        }
-
-        if (acceptIDs)
-        {
-            binaryOp.push_back(node->symbolRef->type);
-        }
-
-        if (acceptCallID)
-        {
-
-            tempCheckSymbolRef->clear();
-            std::cout << "node" << std::endl;
-            if (assignOp.empty() && node->symbolRef->type == "void")
-                assignOp.push_back(node->symbolRef->type);
-            node->symbolRef->print();
-            tempCheckSymbolRef->paramTypes = node->symbolRef->paramTypes;
-            tempCheckSymbolRef->type = node->symbolRef->type;
-            // binaryOp.push_back(node->symbolRef->type);
-            acceptCallID = false;
-        }
-
-        if (acceptArgs && !acceptIDs)
-        {
-            argCount++;
-            tempSymbolRef->paramTypes.push_back(node->symbolRef->type);
-        }
+        idType(node, node->name);
+        break;
 
     default:
         break;
@@ -434,7 +687,7 @@ void postTypes(AST *node)
 
     case functiondeclaration:
         if (needsRet == true)
-            exit(semanticError("non-void function missing return satement", node->lineNum));
+            exit(semanticError("non-void function missing return statement", node->lineNum));
         break;
     case assignment:
         if (assignOp.size() == 2)
@@ -444,123 +697,48 @@ void postTypes(AST *node)
         }
 
         acceptID = false;
+        assignOp.clear();
         break;
 
     case binop:
     {
-        if (acceptArgs)
+        opCount--;
+        if (argList)
         {
-            std::vector<std::string> tempOp;
-            tempOp.push_back(tempCheckSymbolRef->paramTypes[argCount]);
-            for (auto t : binaryOp)
-                tempOp.push_back(t);
-            bool error = true;
-            auto its = opTable.equal_range(node->nodeType);
-            for (auto it = its.first; it != its.second; it++)
-            {
-                for (auto s : it->second)
-                    std::cout << "hash: " << s << std::endl;
-                for (auto s : tempOp)
-                    std::cout << "assignOp: " << s << std::endl;
-                if (it->second == tempOp)
-                    error = false;
-            }
-            acceptIDs = false;
-            binaryOp.clear();
-            if (error)
-                exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
-            tempSymbolRef->paramTypes.push_back(binaryOp.front());
-        }
-
-        else
-        {
-
-            bool error = true;
-            auto its = opTable.equal_range(node->nodeType);
-            for (auto it = its.first; it != its.second; it++)
-            {
-
-                if (!stmtOp)
-                {
-                    if (it->second == assignOp)
-                        error = false;
-                }
-                else
-                {
-                    std::vector<std::string> temp = it->second;
-                    temp.erase(temp.begin());
-                    if (temp == binaryOp)
-                        error = false;
-                }
-            }
-            acceptIDs = false;
-            assignOp.clear();
-            binaryOp.clear();
-            if (error)
-                exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
+            if (opCount == 0)
+                acceptArgs = true;
         }
         break;
-        stmtOp = false;
     }
     case unop:
     {
-        if (acceptArgs)
+        opCount--;
+        if (argList)
         {
-            std::vector<std::string> tempOp;
-            tempOp.push_back(tempCheckSymbolRef->paramTypes[argCount]);
-            for (auto t : binaryOp)
-                tempOp.push_back(t);
-            bool error = true;
-            auto its = opTable.equal_range(node->nodeType);
-            for (auto it = its.first; it != its.second; it++)
-            {
-                for (auto s : it->second)
-                    std::cout << "hash: " << s << std::endl;
-                for (auto s : tempOp)
-                    std::cout << "assignOp: " << s << std::endl;
-                if (it->second == tempOp)
-                    error = false;
-            }
-            acceptIDs = false;
-            binaryOp.clear();
-            if (error)
-                exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
-            tempSymbolRef->paramTypes.push_back(binaryOp.front());
-        }
-
-        else
-        {
-
-            bool error = true;
-            auto its = opTable.equal_range(node->nodeType);
-            for (auto it = its.first; it != its.second; it++)
-            {
-                for (auto s : it->second)
-                    std::cout << "hash: " << s << std::endl;
-                for (auto s : assignOp)
-                    std::cout << "assignOp: " << s << std::endl;
-                if (it->second == assignOp)
-                    error = false;
-            }
-            acceptIDs = false;
-            assignOp.clear();
-            if (error)
-                exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
+            if (opCount == 0)
+                acceptArgs = true;
         }
         break;
     }
 
     case argumentlist:
         acceptArgs = false;
+        argList = false;
         break;
 
     case functioncall:
-        tempCheckSymbolRef->print();
-        tempSymbolRef->print();
+        // std::cout << "tempSymbolRef: " << std::endl;
+        // tempSymbolRef->print();
+        // std::cout << "tempCheckSymbolRef: " << std::endl;
+        // tempCheckSymbolRef->print();
         if (tempSymbolRef->paramTypes.size() != tempCheckSymbolRef->paramTypes.size())
             exit(semanticError("Incorrect number of arguments", node->lineNum));
         if (tempSymbolRef->paramTypes != tempCheckSymbolRef->paramTypes)
             exit(semanticError("Incorrect argument types", node->lineNum));
+        if (assignOp.back() != tempCheckSymbolRef->type && tempCheckSymbolRef->type == "void")
+        {
+            exit(semanticError("Void function cannot return value", node->lineNum));
+        }
         if (assignOp.back() != tempCheckSymbolRef->type)
             exit(semanticError("Mismatched return type", node->lineNum));
 
@@ -573,14 +751,18 @@ void postTypes(AST *node)
 
 void semanticAnalyzer(AST *root)
 {
+    std::cout << "testpomt1" << std::endl;
 
     table->openScope(); // predefined
     table->openScope(); // global scope
     prePostOrder(root, &preGlobalDecs, &postGlobalDecs);
     prePostOrder(root, &preIDs, &postIDs);
+    prePostOrder(root, &preArith, &postArith);
+    std::cout << "table scope:" << table->scope << std::endl;
+    table->print();
     prePostOrder(root, &preTypes, &postTypes);
-    //    table->print();
-    /*   std::cout << "table scope:" << table->scope << std::endl;
+
+    /*
 
       table->openScope();
       table->define(SymbolTableEntry("sym", "type", {"int", "int"}, table->scope, 1));

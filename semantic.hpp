@@ -3,6 +3,7 @@
 #include <functional>
 #include "ast.hpp"
 #include "symbol.hpp"
+#include <unordered_map>
 
 #ifndef SEMANTIC_HPP
 #define SEMANTIC_HPP
@@ -13,6 +14,8 @@ void preGlobalDecs(AST *node);
 void postGlobalDecs(AST *node);
 void preIDs(AST *node);
 void postIDs(AST *node);
+void preArith(AST *node);
+void postArith(AST *node);
 void preTypes(AST *node);
 void postTypes(AST *node);
 

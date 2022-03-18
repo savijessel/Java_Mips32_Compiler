@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <map>
+#include <tuple>
 
 #ifndef SYMBOL_HPP
 #define SYMBOL_HPP
