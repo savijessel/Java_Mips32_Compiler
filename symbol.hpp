@@ -82,7 +82,10 @@ public:
             auto search = (*iter).find(symbol);
             if (search != (*iter).end())
             {
-                return &search->second;
+                auto searchCopy = search->second;
+                auto returnSym = new SymbolTableEntry(
+                    searchCopy.symbol, searchCopy.type, searchCopy.paramTypes, searchCopy.scope, searchCopy.lineNum);
+                return returnSym;
             }
         }
 
