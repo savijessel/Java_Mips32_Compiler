@@ -12,6 +12,7 @@ bool acceptCallID = false;
 bool acceptArgs = false;
 bool argList = false;
 bool stmtOp = false;
+bool skipAssign = true;
 int mainCount = 0;
 int ifCount = 0;
 int whileCount = 0;
@@ -76,71 +77,6 @@ std::map<std::vector<std::string>, std::string> unOpTable({
 
 });
 
-/* void opType(AST *node)
-{
-    if (acceptArgs)
-    {
-        std::vector<std::string> tempOp;
-        tempOp.push_back(tempCheckSymbolRef->paramTypes[argCount]);
-        for (auto t : binaryOp)
-            tempOp.push_back(t);
-        bool error = true;
-        auto its = opTable.equal_range(node->nodeType);
-        for (auto it = its.first; it != its.second; it++)
-        {
-            for (auto s : it->second)
-                std::cout << "hash: " << s << std::endl;
-            for (auto s : tempOp)
-                std::cout << "assignOp: " << s << std::endl;
-            if (it->second == tempOp)
-                error = false;
-        }
-        acceptIDs = false;
-        binaryOp.clear();
-        if (error)
-            exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
-        tempSymbolRef->paramTypes.push_back(binaryOp.front());
-    }
-
-    else
-    {
-
-        bool error = true;
-        auto its = opTable.equal_range(node->nodeType);
-        std::string retVal;
-        for (auto it = its.first; it != its.second; it++)
-        {
-
-            if (!stmtOp)
-            {
-                if (it->second == assignOp)
-                    error = false;
-            }
-            else
-            {
-                std::vector<std::string> temp = it->second;
-                if (declRet)
-                    retVal = temp.front();
-                temp.erase(temp.begin());
-                if (temp == binaryOp)
-                    error = false;
-            }
-        }
-        acceptIDs = false;
-        assignOp.clear();
-        binaryOp.clear();
-        if (error)
-            exit(semanticError("mismatched types for '" + node->nodeType + "' operation", node->lineNum));
-        if (declRet)
-        {
-            needsRet = false;
-            declRet = false;
-            if (retVal != funcRet)
-                exit(semanticError("returned value has the wrong type", node->lineNum));
-        }
-    }
-    stmtOp = false;
-} */
 void postOrder(AST *node, std::function<void(AST *)> action)
 {
 
@@ -186,7 +122,7 @@ void prePostOrder(AST *node, std::function<void(AST *)> preAction, std::function
 void opType(AST *node)
 {
     opCount++;
-    if (acceptID)
+    if (acceptID && !acceptArgs)
     {
         assignOp.push_back(node->nodeType);
         acceptID = false;
@@ -272,8 +208,11 @@ void idType(AST *node, const NodeName value)
 
     if ((acceptID) && !acceptCallID && !acceptArgs)
     {
+        std::cout << "identifier for assignment: " << assignOp.size() << std::endl;
+        node->symbolRef->print();
         if (value == identifier)
             assignOp.push_back(node->symbolRef->type);
+
         else
         {
             assignOp.push_back(node->nodeType);
@@ -284,14 +223,22 @@ void idType(AST *node, const NodeName value)
     {
 
         tempCheckSymbolRef->clear();
+
         if (assignOp.empty())
             assignOp.push_back(node->symbolRef->type);
 
         tempCheckSymbolRef->paramTypes = node->symbolRef->paramTypes;
         tempCheckSymbolRef->type = node->symbolRef->type;
         std::cout << "test1" << std::endl;
-        // node->symbolRef->print();
-        //  binaryOp.push_back(node->symbolRef->type);
+        tempCheckSymbolRef->print();
+        if (assignOp.back() != tempCheckSymbolRef->type)
+        {
+            exit(semanticError("mismatched types for assignment123", node->lineNum));
+        }
+        else
+        {
+            skipAssign = true;
+        }
         acceptCallID = false;
     }
 
@@ -316,7 +263,7 @@ void preGlobalDecs(AST *node)
         if (node->nodeType == "void")
         {
             tempSymbolRef->type = "void";
-            globalRef->type = "void";
+            // globalRef->type = "void";
             declAcceptID = true;
         }
         else
@@ -349,14 +296,16 @@ void preGlobalDecs(AST *node)
         if (declAcceptType)
         {
             tempSymbolRef->type = node->nodeType;
-            globalRef->type = node->nodeType;
+            // globalRef->type = node->nodeType;
             declAcceptType = false;
         }
 
         if (declAcceptFormals)
         {
-            tempSymbolRef->paramTypes.push_back(node->nodeType);
+
+            globalRef = table->lookup(tempSymbolRef->symbol);
             globalRef->paramTypes.push_back(node->nodeType);
+            table->lookup(tempSymbolRef->symbol)->print();
         }
         break;
 
@@ -367,10 +316,11 @@ void preGlobalDecs(AST *node)
             tempSymbolRef->scope = table->scope;
             tempSymbolRef->lineNum = node->lineNum;
             std::cout << "pint01" << std::endl;
-            globalRef->symbol = node->attribute;
-            globalRef->scope = table->scope;
-            globalRef->lineNum = node->lineNum;
-            node->symbolRef = globalRef;
+            // globalRef->symbol = node->attribute;
+            // globalRef->scope = table->scope;
+            // globalRef->lineNum = node->lineNum;
+            table->define(new SymbolTableEntry(tempSymbolRef->symbol, tempSymbolRef->type, tempSymbolRef->scope, tempSymbolRef->lineNum));
+            node->symbolRef = table->lookup(tempSymbolRef->symbol);
             std::cout << "pint02" << std::endl;
             declAcceptID = false;
         }
@@ -395,8 +345,7 @@ void postGlobalDecs(AST *node)
         {
             exit(semanticError("No main declarations"));
         }
-        /*  if (table->lookup("hello") == nullptr)
-             semanticError("No declaration", 5); */
+
         break;
 
     case mainfunctiondeclaration:
@@ -404,7 +353,6 @@ void postGlobalDecs(AST *node)
         break;
     case functionheader:
         declAcceptFormals = false;
-        table->define(*tempSymbolRef);
         table->openScope();
         break;
     case functiondeclaration:
@@ -479,8 +427,10 @@ void preIDs(AST *node)
             tempSymbolRef->symbol = node->attribute;
             tempSymbolRef->lineNum = node->lineNum;
             tempSymbolRef->scope = table->scope;
-            table->define(*tempSymbolRef);
+            table->define(new SymbolTableEntry(tempSymbolRef->symbol, tempSymbolRef->type, tempSymbolRef->scope, tempSymbolRef->lineNum));
             node->symbolRef = table->lookup(tempSymbolRef->symbol);
+            std::cout << "decl" << std::endl;
+            node->symbolRef->print();
             declAcceptID = false;
         }
 
@@ -493,6 +443,8 @@ void preIDs(AST *node)
             if (table->lookup(node->attribute) != nullptr)
             {
                 node->symbolRef = table->lookup(node->attribute);
+                std::cout << "assignment" << std::endl;
+                node->symbolRef->print();
             }
             else
             {
@@ -648,6 +600,7 @@ void preTypes(AST *node)
         break;
 
     case assignment:
+
         assignOp.clear();
         acceptID = true;
         break;
@@ -695,11 +648,15 @@ void postTypes(AST *node)
             exit(semanticError("non-void function missing return statement", node->lineNum));
         break;
     case assignment:
-        if (assignOp.size() == 2)
+        if (!skipAssign)
         {
-            if (assignOp[0] != assignOp[1])
-                exit(semanticError("mismatched types for assignment", node->lineNum));
+            if (assignOp.size() == 2)
+            {
+                if (assignOp[0] != assignOp[1])
+                    exit(semanticError("mismatched types for assignment", node->lineNum));
+            }
         }
+        skipAssign = false;
 
         acceptID = false;
         assignOp.clear();
@@ -734,18 +691,13 @@ void postTypes(AST *node)
     case functioncall:
         // std::cout << "tempSymbolRef: " << std::endl;
         // tempSymbolRef->print();
-        // std::cout << "tempCheckSymbolRef: " << std::endl;
-        // tempCheckSymbolRef->print();
+        std::cout << "tempCheckSymbolRef: " << std::endl;
+        tempCheckSymbolRef->print();
+        std::cout << "assignOp" << assignOp.back() << assignOp.size() << std::endl;
         if (tempSymbolRef->paramTypes.size() != tempCheckSymbolRef->paramTypes.size())
             exit(semanticError("Incorrect number of arguments", node->lineNum));
         if (tempSymbolRef->paramTypes != tempCheckSymbolRef->paramTypes)
             exit(semanticError("Incorrect argument types", node->lineNum));
-        if (assignOp.back() != tempCheckSymbolRef->type && tempCheckSymbolRef->type == "void")
-        {
-            exit(semanticError("Void function cannot return value", node->lineNum));
-        }
-        if (assignOp.back() != tempCheckSymbolRef->type)
-            exit(semanticError("Mismatched return type", node->lineNum));
 
         break;
 
@@ -800,35 +752,37 @@ void semanticAnalyzer(AST *root)
 
     table->openScope(); // predefined
 
-    table->define(SymbolTableEntry("getchar", "integer", table->scope, 0));
-    table->define(SymbolTableEntry("halt", "void", table->scope, 0));
-    table->define(SymbolTableEntry("printb", "void", {"boolean"}, table->scope, 0));
-    table->define(SymbolTableEntry("printc", "void", {"integer"}, table->scope, 0));
-    table->define(SymbolTableEntry("printi", "void", {"integer"}, table->scope, 0));
-    table->define(SymbolTableEntry("prints", "void", {"string"}, table->scope, 0));
+    table->define(new SymbolTableEntry("getchar", "integer", table->scope, 0));
+    table->define(new SymbolTableEntry("halt", "void", table->scope, 0));
+    table->define(new SymbolTableEntry("printb", "void", {"boolean"}, table->scope, 0));
+    table->define(new SymbolTableEntry("printc", "void", {"integer"}, table->scope, 0));
+    table->define(new SymbolTableEntry("printi", "void", {"integer"}, table->scope, 0));
+    table->define(new SymbolTableEntry("prints", "void", {"string"}, table->scope, 0));
     table->openScope(); // global scope
     prePostOrder(root, &preGlobalDecs, &postGlobalDecs);
     prePostOrder(root, &preIDs, &postIDs);
     prePostOrder(root, &preArith, &postArith);
     prePostOrder(root, &preTypes, &postTypes);
     prePostOrder(root, &preGeneral, &postGeneral);
+    std::cout << "TABLE" << std::endl;
     table->print();
 
-    /*
-
-      table->openScope();
-      table->define(SymbolTableEntry("sym", "type", {"int", "int"}, table->scope, 1));
-      SymbolTableEntry *ref = table->lookup("sym");
-      table->closeScope();
-      ref->print();
-      table->openScope();
-      if (table->lookup("sym") == nullptr)
-      {
-          std::cout << "!!!!null!!!!" << std::endl;
-      }
-      table->define(SymbolTableEntry("sym", "type", table->scope, 7));
-      table->closeScope();
-      ref->print(); */
+    /* table->openScope();
+    table->define(new SymbolTableEntry("sym", "type", {"int", "int"}, table->scope, 1));
+    SymbolTableEntry *ref = table->lookup("sym");
+    table->closeScope();
+    ref->print();
+    table->openScope();
+    if (table->lookup("sym") == nullptr)
+    {
+        std::cout << "!!!!null!!!!" << std::endl;
+    }
+    table->define(new SymbolTableEntry("sym", "type", table->scope, 7));
+    SymbolTableEntry *ref2 = table->lookup("sym");
+    ref2->scope = 999;
+    ref2->print();
+    table->closeScope();
+    // ref->print(); */
 }
 
 int semanticError(std::string message, int line)

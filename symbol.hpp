@@ -51,28 +51,28 @@ class SymbolTable
 {
 public:
     int scope = 0;
-    std::vector<std::unordered_map<std::string, SymbolTableEntry>> tables;
+    std::vector<std::unordered_map<std::string, SymbolTableEntry *>> tables;
 
     SymbolTable() = default;
 
     void openScope()
     {
-        std::unordered_map<std::string, SymbolTableEntry> table;
+        std::unordered_map<std::string, SymbolTableEntry *> table;
         tables.push_back(table);
         scope++;
     }
 
-    void define(SymbolTableEntry entry)
+    void define(SymbolTableEntry *entry)
     {
         // check if entry is already in top table
-        if (tables.back().find(entry.symbol) != tables.back().end())
+        if (tables.back().find(entry->symbol) != tables.back().end())
         {
-            exit(symbolError("Multiple declared identifier", entry.lineNum));
+            exit(symbolError("Multiple declared identifier", entry->lineNum));
         }
 
         else
         {
-            tables.back()[entry.symbol] = entry;
+            tables.back()[entry->symbol] = entry;
             std::cout << "success in defining entry!" << std::endl;
         }
     }
@@ -85,9 +85,7 @@ public:
             if (search != (*iter).end())
             {
                 auto searchCopy = search->second;
-                auto returnSym = new SymbolTableEntry(
-                    searchCopy.symbol, searchCopy.type, searchCopy.paramTypes, searchCopy.scope, searchCopy.lineNum);
-                return returnSym;
+                return searchCopy;
             }
         }
 
@@ -106,16 +104,16 @@ public:
         {
             for (auto it = (*iter).cbegin(); it != (*iter).cend(); ++it)
             {
-                std::cout << "key: " << (*it).first << std::endl;
-                std::cout << "  symbol: " << (*it).second.symbol << std::endl;
-                std::cout << "  type: " << (*it).second.type << std::endl;
+                std::cout << "key: " << (it)->first << std::endl;
+                std::cout << "  symbol: " << (it)->second->symbol << std::endl;
+                std::cout << "  type: " << (it)->second->type << std::endl;
                 std::cout << "  paramTypes: " << std::endl;
-                for (auto type : (*it).second.paramTypes)
+                for (auto type : (it)->second->paramTypes)
                 {
                     std::cout << type << std::endl;
                 }
-                std::cout << "  scope: " << (*it).second.scope << std::endl;
-                std::cout << "  line: " << (*it).second.lineNum << std::endl;
+                std::cout << "  scope: " << (it)->second->scope << std::endl;
+                std::cout << "  line: " << (it)->second->lineNum << std::endl;
             }
         }
     }
