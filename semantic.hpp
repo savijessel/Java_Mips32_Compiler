@@ -18,6 +18,8 @@ void preArith(AST *node);
 void postArith(AST *node);
 void preTypes(AST *node);
 void postTypes(AST *node);
+void preGeneral(AST *node);
+void postGeneral(AST *node);
 
 void postOrder(AST *node, std::function<void(AST *)> action);
 void preOrder(AST *node, std::function<void(AST *)> action);

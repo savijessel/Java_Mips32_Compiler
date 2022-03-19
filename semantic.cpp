@@ -13,6 +13,8 @@ bool acceptArgs = false;
 bool argList = false;
 bool stmtOp = false;
 int mainCount = 0;
+int ifCount = 0;
+int whileCount = 0;
 SymbolTableEntry *tempSymbolRef = new SymbolTableEntry();
 SymbolTableEntry *tempCheckSymbolRef = new SymbolTableEntry();
 SymbolTableEntry *globalRef = new SymbolTableEntry();
@@ -484,7 +486,10 @@ void preIDs(AST *node)
 
         if (table->scope == 3 && acceptID)
         {
-
+            if (node->attribute == "main")
+            {
+                exit(semanticError("Main function called", node->lineNum));
+            }
             if (table->lookup(node->attribute) != nullptr)
             {
                 node->symbolRef = table->lookup(node->attribute);
@@ -749,18 +754,65 @@ void postTypes(AST *node)
     }
 }
 
+void preGeneral(AST *node)
+{
+    switch (node->name)
+    {
+    case whilestm:
+        whileCount++;
+        break;
+    case ifstm:
+        ifCount++;
+        break;
+    case breakstm:
+        if (whileCount == 0)
+        {
+            exit(semanticError("break statement not in while statement", node->lineNum));
+        }
+    case variabledeclaration:
+        if (whileCount != 0 || ifCount != 0)
+        {
+            exit(semanticError("local declaration found in while of if statement", node->lineNum));
+        }
+
+    default:
+        break;
+    }
+}
+
+void postGeneral(AST *node)
+{
+    switch (node->name)
+    {
+    case whilestm:
+        whileCount--;
+        break;
+    case ifstm:
+        ifCount--;
+        break;
+    default:
+        break;
+    }
+}
 void semanticAnalyzer(AST *root)
 {
     std::cout << "testpomt1" << std::endl;
 
     table->openScope(); // predefined
+
+    table->define(SymbolTableEntry("getchar", "integer", table->scope, 0));
+    table->define(SymbolTableEntry("halt", "void", table->scope, 0));
+    table->define(SymbolTableEntry("printb", "void", {"boolean"}, table->scope, 0));
+    table->define(SymbolTableEntry("printc", "void", {"integer"}, table->scope, 0));
+    table->define(SymbolTableEntry("printi", "void", {"integer"}, table->scope, 0));
+    table->define(SymbolTableEntry("prints", "void", {"string"}, table->scope, 0));
     table->openScope(); // global scope
     prePostOrder(root, &preGlobalDecs, &postGlobalDecs);
     prePostOrder(root, &preIDs, &postIDs);
     prePostOrder(root, &preArith, &postArith);
-    std::cout << "table scope:" << table->scope << std::endl;
-    table->print();
     prePostOrder(root, &preTypes, &postTypes);
+    prePostOrder(root, &preGeneral, &postGeneral);
+    table->print();
 
     /*
 
