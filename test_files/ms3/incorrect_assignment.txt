@@ -1,0 +1,8 @@
+main(){
+    int x;
+    x = func();
+}
+
+boolean func(){
+    return false;
+}

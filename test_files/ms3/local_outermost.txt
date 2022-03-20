@@ -1,0 +1,6 @@
+main(){
+    while(){
+        int x;
+        }
+    )
+}
