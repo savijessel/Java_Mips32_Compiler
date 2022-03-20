@@ -103,7 +103,7 @@ public:
         // check if entry is already in current scope
         if (tables.back().find(entry->symbol) != tables.back().end())
         {
-            exit(symbolError("Multiple declared identifier", entry->lineNum));
+            exit(symbolError("Identifier '" + entry->symbol + "' redefined", entry->lineNum));
         }
 
         else

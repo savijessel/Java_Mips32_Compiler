@@ -13,23 +13,17 @@ bool declAcceptFormals = false;
 bool acceptID = false;
 bool acceptCallID = false;
 bool acceptArgs = false;
-bool argList = false;
 bool stmtOp = false;
-bool skipAssign = false;
 
 // Global Counters
 int mainCount = 0;
 int ifCount = 0;
 int whileCount = 0;
-int opCount = 0;
 
 //  Global SymbolTableEntries for intermediate/temporary operations
 SymbolTableEntry *tempSymbolRef = new SymbolTableEntry();
 SymbolTableEntry *tempCheckSymbolRef = new SymbolTableEntry();
 SymbolTableEntry *globalRef = new SymbolTableEntry();
-
-// Track assignment types
-std::vector<std::string> assignOp;
 
 // Track return type
 std::string funcRet;
@@ -142,22 +136,6 @@ void prePostOrder(AST *node, std::function<void(AST *)> preAction, std::function
 // Pre order actions for binary and unary operation type checking
 void opType(AST *node)
 {
-    opCount++;
-
-    // If identifier is assigned an op, track the resolved type of the op
-    if (acceptID && !acceptArgs)
-    {
-        assignOp.push_back(node->nodeType);
-        acceptID = false;
-    }
-
-    // if arguments contain ops, track resolved types of the ops
-    if (acceptArgs)
-    {
-
-        tempSymbolRef->paramTypes.push_back(node->nodeType);
-        acceptArgs = false;
-    }
 
     // if return statement contains op, check if function dec is void or if the return type is wrong
     if (declRet)
@@ -236,56 +214,6 @@ void idType(AST *node, const NodeName value)
         declRet = false;
         needsRet = false;
     }
-
-    // if identifier/literal is for id/lit -> id/lit assignment, track type of id/lit
-    if ((acceptID) && !acceptCallID && !acceptArgs)
-    {
-        if (value == identifier)
-            assignOp.push_back(node->symbolRef->type);
-
-        else
-        {
-            assignOp.push_back(node->nodeType);
-        }
-    }
-
-    // if identifier/literal is for function call, track return type and args, and
-    // check for mismatched types
-    if (acceptCallID)
-    {
-
-        tempCheckSymbolRef->clear();
-
-        // if function call is made without assignment, track the resolved return type
-        // to skip error checking
-        if (assignOp.empty())
-            assignOp.push_back(node->symbolRef->type);
-
-        // track return types and args
-        tempCheckSymbolRef->paramTypes = node->symbolRef->paramTypes;
-        tempCheckSymbolRef->type = node->symbolRef->type;
-
-        if (assignOp.back() != tempCheckSymbolRef->type)
-        {
-            exit(semanticError("mismatched types for assignment", node->lineNum));
-        }
-        else
-        {
-            skipAssign = true;
-        }
-        acceptCallID = false;
-    }
-
-    // if identifier/literal is for list of args, track each arg
-    if (acceptArgs)
-    {
-        if (value == identifier)
-            tempSymbolRef->paramTypes.push_back(node->symbolRef->type);
-        else
-        {
-            tempSymbolRef->paramTypes.push_back(node->nodeType);
-        }
-    }
 }
 
 // Pre order action for global declaration pass
@@ -323,14 +251,19 @@ void preGlobalDecs(AST *node)
 
     // check for multiple main declarations
     case mainfunctiondeclaration:
+    {
+        // define entry in symbol table
+        SymbolTableEntry *temp = new SymbolTableEntry(node->children[0]->children[0]->attribute, "main", table->scope, node->lineNum);
+        table->define(temp);
         // open seperate scope for main func decl
         table->openScope();
         mainCount++;
         if (mainCount > 1)
         {
-            exit(semanticError("Multiple main declarations", node->lineNum));
+            exit(semanticError("Multiple main declarations found", node->lineNum));
         }
-        break;
+    }
+    break;
 
     // track types for variable decls and function decls and params
     case type:
@@ -383,7 +316,7 @@ void postGlobalDecs(AST *node)
     case program:
         if (mainCount == 0)
         {
-            exit(semanticError("No main declarations"));
+            exit(semanticError("No main declarations found"));
         }
 
         break;
@@ -509,7 +442,8 @@ void preIDs(AST *node)
             if (acceptCallID)
             {
                 temp = table->lookupGlobal(node->attribute);
-                acceptCallID = false;
+                if (temp != nullptr && temp->type == "main")
+                    exit(semanticError("Main function cannot be called", node->lineNum));
             }
             else
             {
@@ -521,8 +455,10 @@ void preIDs(AST *node)
             }
             else
             {
-                exit(semanticError("Undefined identifier", node->lineNum));
+                exit(semanticError("Undefined identifier '" + node->attribute + "'", node->lineNum));
             }
+
+            acceptCallID = false;
         }
 
         break;
@@ -684,25 +620,6 @@ void preTypes(AST *node)
         decl = true;
         break;
 
-        // set flags for func call
-        /* case functioncall:
-            tempSymbolRef->clear();
-            acceptCallID = true;
-            break; */
-
-        // set flags for func args
-        /* case argumentlist:
-            acceptArgs = true;
-            argList = true;
-            break; */
-
-        // set flags for assignment
-        /* case assignment:
-
-            assignOp.clear();
-            acceptID = true;
-            break; */
-
     case whilestm:
         stmtOp = true;
         break;
@@ -792,19 +709,16 @@ void postTypes(AST *node)
     // hand all function call cases
     case functioncall:
     {
+
         node->attribute = "sig";
         node->nodeType = node->children[0]->symbolRef->type;
+
         std::vector<std::string> types = node->children[0]->symbolRef->paramTypes;
 
-        // check if main function is being called
-        if (node->children[0]->attribute == "main")
-        {
-            exit(semanticError("Main function called", node->lineNum));
-        }
-
         // if there are arguments, check if the arguments match in type
-        if (node->children[1] != nullptr)
+        if (node->children[1] != nullptr && node->children[1]->name == argumentlist)
         {
+
             if (types.size() != getChildrenTypes(node->children[1]).size())
                 exit(semanticError("Incorrect number of arguments", node->lineNum));
 
@@ -814,6 +728,7 @@ void postTypes(AST *node)
 
         else
         {
+
             if (!types.empty())
                 exit(semanticError("Incorrect number of arguments", node->lineNum));
         }
@@ -844,13 +759,13 @@ void preGeneral(AST *node)
     case breakstm:
         if (whileCount == 0)
         {
-            exit(semanticError("break statement not in while statement", node->lineNum));
+            exit(semanticError("break statement must be in a while statement", node->lineNum));
         }
     // check if a variable declaration does not occur in the outermost block
     case variabledeclaration:
         if (whileCount != 0 || ifCount != 0)
         {
-            exit(semanticError("local declaration found in while of if statement", node->lineNum));
+            exit(semanticError("local declaration not in outermost block", node->lineNum));
         }
 
     default:
