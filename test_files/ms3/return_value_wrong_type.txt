@@ -1,0 +1,8 @@
+main(){
+    
+}
+
+boolean func(){
+    int x;
+    return x;
+}

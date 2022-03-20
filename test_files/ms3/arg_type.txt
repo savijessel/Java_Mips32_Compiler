@@ -1,0 +1,8 @@
+boolean func(int x, boolean y){
+    return y && x == 3;
+}
+
+main(){
+    boolean z;
+    z = func(z,z);
+}
