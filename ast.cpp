@@ -5,11 +5,6 @@
 
 int INDENT = 0;
 
-/*
-std::string attrFormatStr = " { Attr: '";
-std::string regFormatStr = " { ";
-std::string typeFormatStr = " { Type: '"; */
-
 // AST constructor with all paramaters
 AST::AST(std::string myNodeType, std::string myAttribute, NodeName myName, std::vector<AST *> nodes, int myLineNum)
 {

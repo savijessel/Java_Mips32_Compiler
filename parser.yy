@@ -325,7 +325,7 @@ assignmentexpression    : conditionalorexpression
                         | assignment
                         ;
 
-assignment              : identifier EQ assignmentexpression  { $$ = new AST( "=", NodeName::assignment, {$1,$3},@$.begin.line); }
+assignment              : identifier EQ assignmentexpression  { $$ = new AST("", "=", NodeName::assignment, {$1,$3},@$.begin.line); }
                         ;
 
 expression              : assignmentexpression

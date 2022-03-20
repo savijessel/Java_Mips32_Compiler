@@ -70,14 +70,16 @@ public:
     // Name or reference of Node
     NodeName name;
 
-    // String to characterize type of node - typically extraneous properties or attributes
+    // Strings to characterize type of node - typically extraneous properties or attributes
     std::string nodeType;
     std::string attribute;
 
     // line number corresponding to node
     int lineNum;
 
-    SymbolTableEntry *symbolRef;
+    // symbol table entry reference
+    SymbolTableEntry *symbolRef = new SymbolTableEntry();
+
     // various constructors
     AST() = default;
     AST(std::string nodeType, std::string attribute, NodeName name, std::vector<AST *> nodes, int lineNum);
@@ -115,12 +117,39 @@ public:
         std::string tempType = nodeType;
         tempType = std::regex_replace(tempType, std::regex("\\0"), "\\x00");
 
+        // build output AST output
         std::string properties = " { ";
-        if (tempType != "")
+        if (tempType != "" && name != unop && name != binop && name != assignment && name != functioncall)
             properties += "Type: '" + tempType + "', ";
         if (attribute != "")
         {
-            properties += "Attr: '" + attribute + "', ";
+            if (name == unop || name == binop || name == assignment)
+            {
+                properties += "Type: '" + attribute + "', ";
+                properties += "Sig: '" + nodeType + "', ";
+            }
+
+            else
+            {
+                if (attribute == "sig")
+                {
+                    properties += "Sig: '" + nodeType + "', ";
+                }
+                else
+                {
+                    properties += "Attr: '" + attribute + "', ";
+                }
+            }
+        }
+
+        // add signature from symbol table to AST output
+        if (symbolRef != nullptr && name == identifier && attribute != "main")
+        {
+            properties += symbolRef->signature();
+            std::ostringstream address;
+            address << (void const *)symbolRef;
+            std::string ad = address.str();
+            properties += "SymTab Address: '" + ad + +"', ";
         }
 
         std::cout
