@@ -103,6 +103,10 @@ public:
         // check if entry is already in current scope
         if (tables.back().find(entry->symbol) != tables.back().end())
         {
+            if (entry->type == "main")
+            {
+                exit(symbolError("Multiple main declarations found", entry->lineNum));
+            }
             exit(symbolError("Identifier '" + entry->symbol + "' redefined", entry->lineNum));
         }
 
@@ -135,7 +139,18 @@ public:
     {
         // attempt to find entry from global scope
         auto search = tables[1].find(symbol);
+
         if (search != tables[1].end())
+        {
+            auto searchCopy = search->second;
+            return searchCopy;
+        }
+
+        // attempt to find entry from predefined scope
+
+        search = tables[0].find(symbol);
+
+        if (search != tables[0].end())
         {
             auto searchCopy = search->second;
             return searchCopy;

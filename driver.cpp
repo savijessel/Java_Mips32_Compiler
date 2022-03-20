@@ -25,9 +25,9 @@ bool Driver::start(std::istream &in)
     bool res = parse(in);
     if (!res)
     {
-        // tree->print();
-        //  if no semantic errors, print annotated AST
-        //  otherwise, return in failure
+
+        //   if no semantic errors, print annotated AST
+        //   otherwise, return in failure
         if (semanticAnalyzer(tree) != EXIT_FAILURE)
         {
             tree->print();

@@ -258,10 +258,6 @@ void preGlobalDecs(AST *node)
         // open seperate scope for main func decl
         table->openScope();
         mainCount++;
-        if (mainCount > 1)
-        {
-            exit(semanticError("Multiple main declarations found", node->lineNum));
-        }
     }
     break;
 
@@ -805,7 +801,7 @@ int semanticAnalyzer(AST *root)
     table->define(new SymbolTableEntry("printc", "void", {"integer"}, table->scope, 0));
     table->define(new SymbolTableEntry("printi", "void", {"integer"}, table->scope, 0));
     table->define(new SymbolTableEntry("prints", "void", {"string"}, table->scope, 0));
-
+    table->print();
     // open global scope
     table->openScope();
 

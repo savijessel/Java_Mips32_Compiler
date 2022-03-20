@@ -1,0 +1,31 @@
+int x;
+boolean y;
+
+main(){
+    func1();
+    func2(1+-1,true);
+    y = func2(x,y);
+    boolean g;
+    if(!g==true){
+        g = func2(x,y);
+    }
+
+    x = 21 * 5 + 6 + 7;
+
+    x = func0(x + 4 + 6 + 7);
+}
+
+int func0(int num){
+    return 999;
+}
+void func1(){
+    halt();
+}
+
+boolean func2(int arg1, boolean arg2){
+    while(arg2){
+        if(arg1 == 2){
+            return (-arg1 * 44 + 5) == (999);
+        }
+    }
+}
