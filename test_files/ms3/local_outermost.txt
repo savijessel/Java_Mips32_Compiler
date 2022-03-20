@@ -1,5 +1,5 @@
 main(){
-    while(){
+    while(true){
         int x;
         }
 }
