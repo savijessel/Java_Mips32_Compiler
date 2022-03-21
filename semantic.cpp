@@ -14,6 +14,7 @@ bool acceptID = false;
 bool acceptCallID = false;
 bool acceptArgs = false;
 bool stmtOp = false;
+bool test = false;
 
 // Global Counters
 int mainCount = 0;
@@ -142,8 +143,12 @@ void opType(AST *node)
     {
         if (funcRet == "void")
             exit(semanticError("void function returns a value", node->lineNum));
+
+        // check if the return type does not match the operation's resolved type
         if (funcRet != node->nodeType)
             exit(semanticError("returned value has the wrong type", node->lineNum));
+
+        // set flags to indicate that the return value has been processed
         declRet = false;
         needsRet = false;
     }
@@ -153,6 +158,7 @@ void opType(AST *node)
     {
         if (node->nodeType != "boolean")
             exit(semanticError("Need a boolean in conditional", node->lineNum));
+
         stmtOp = false;
     }
 }
@@ -163,7 +169,7 @@ void idType(AST *node, const NodeName value)
     // if conditional contains id/literal, check if id/literal is not boolean
     if (stmtOp)
     {
-
+        // if the value is an identifier, ensure that it is a boolean
         if (value == identifier)
         {
             if (node->symbolRef->type != "boolean")
@@ -511,154 +517,11 @@ void postIDs(AST *node)
     }
 }
 
-// Post order traversal for arithmetic type checking
-void postArith(AST *node)
-{
-    switch (node->name)
-    {
-
-    // handle binary operations
-    case binop:
-    {
-        // left bin operand
-        std::string lOp;
-
-        // right bin operand
-        std::string rOp;
-
-        // get left child node type if it is a unop, binop, or a literal
-        if (node->children[0]->name == unop || node->children[0]->name == binop || node->children[0]->name == literal)
-        {
-            lOp = node->children[0]->nodeType;
-        }
-
-        // get left child node type if it is an identifier
-        else
-        {
-            lOp = node->children[0]->symbolRef->type;
-        }
-
-        // get right child node type if it is a unop, binop, or a literal
-        if (node->children[1]->name == unop || node->children[1]->name == binop || node->children[1]->name == literal)
-        {
-            rOp = node->children[1]->nodeType;
-        }
-
-        // get right node type child if it is an identifier
-        else
-        {
-            rOp = node->children[1]->symbolRef->type;
-        }
-
-        // find return type corresponding to operation and operands
-        // prompt error if not found
-        auto ret = opTable.find({node->attribute, lOp, rOp});
-        if (ret != opTable.end())
-        {
-            // store resolved type in AST node
-            node->nodeType = ret->second;
-        }
-
-        else
-        {
-            exit(semanticError("mismatched types for '" + node->attribute + "' operation", node->lineNum));
-        }
-    }
-    break;
-
-    case unop:
-    {
-        // single operand for unop
-        std::string op;
-
-        // get child node type if it is a unop, binop, or a literal
-        if (node->children[0]->name == unop || node->children[0]->name == binop || node->children[0]->name == literal)
-        {
-            op = node->children[0]->nodeType;
-        }
-
-        // get child node type if it an identifier
-        else
-        {
-            op = node->children[0]->symbolRef->type;
-        }
-
-        // find return type corresponding to operation and operands
-        // prompt error if not found
-        auto ret = unOpTable.find({node->attribute, op});
-        if (ret != unOpTable.end())
-        {
-            node->nodeType = ret->second;
-        }
-
-        else
-        {
-            exit(semanticError("mismatched types for '" + node->attribute + "' operation", node->lineNum));
-        }
-    }
-    break;
-
-    default:
-        break;
-    }
-}
-
-// Pre order actions for type checking pass
-void preTypes(AST *node)
-{
-
-    switch (node->name)
-    {
-
-    // set flags for func decl
-    case functiondeclaration:
-        funcRet.clear();
-        decl = true;
-        break;
-
-    case whilestm:
-        stmtOp = true;
-        break;
-
-    case ifstm:
-        stmtOp = true;
-        break;
-
-    case returnstm:
-        declRet = true;
-        break;
-
-    // call helper function to handle ops
-    case binop:
-        opType(node);
-        break;
-    case unop:
-        opType(node);
-        break;
-
-    // call helper function to handle ids and literals
-    case literal:
-        idType(node, node->name);
-        break;
-
-    case identifier:
-        idType(node, node->name);
-        break;
-
-    default:
-        break;
-    }
-}
-
 // Post order actions for initial type checking pass
 void postTypes(AST *node)
 {
     switch (node->name)
     {
-    case functiondeclaration:
-        if (needsRet == true)
-            exit(semanticError("non-void function missing return statement", node->lineNum));
-        break;
 
     // handle all assignment cases
     case assignment:
@@ -731,6 +594,88 @@ void postTypes(AST *node)
     }
     break;
 
+    // handle binary operations
+    case binop:
+    {
+        // left bin operand
+        std::string lOp;
+
+        // right bin operand
+        std::string rOp;
+
+        // get left child node type if it is a unop, binop, or a literal
+        if (node->children[0]->name == unop || node->children[0]->name == binop || node->children[0]->name == literal || node->children[0]->name == assignment || node->children[0]->name == functioncall)
+        {
+
+            lOp = node->children[0]->nodeType;
+        }
+
+        // get left child node type if it is an identifier
+        else
+        {
+            lOp = node->children[0]->symbolRef->type;
+        }
+
+        // get right child node type if it is a unop, binop, or a literal
+        if (node->children[1]->name == unop || node->children[1]->name == binop || node->children[1]->name == literal || node->children[1]->name == assignment || node->children[1]->name == functioncall)
+        {
+            rOp = node->children[1]->nodeType;
+        }
+
+        // get right node type child if it is an identifier
+        else
+        {
+            rOp = node->children[1]->symbolRef->type;
+        }
+
+        // find return type corresponding to operation and operands
+        // prompt error if not found
+        auto ret = opTable.find({node->attribute, lOp, rOp});
+        if (ret != opTable.end())
+        {
+            // store resolved type in AST node
+            node->nodeType = ret->second;
+        }
+
+        else
+        {
+            exit(semanticError("mismatched types for '" + node->attribute + "' operation", node->lineNum));
+        }
+    }
+    break;
+
+    case unop:
+    {
+        // single operand for unop
+        std::string op;
+
+        // get child node type if it is a unop, binop, or a literal
+        if (node->children[0]->name == unop || node->children[0]->name == binop || node->children[0]->name == literal || node->children[0]->name == assignment || node->children[0]->name == functioncall)
+        {
+            op = node->children[0]->nodeType;
+        }
+
+        // get child node type if it an identifier
+        else
+        {
+            op = node->children[0]->symbolRef->type;
+        }
+
+        // find return type corresponding to operation and operands
+        // prompt error if not found
+        auto ret = unOpTable.find({node->attribute, op});
+        if (ret != unOpTable.end())
+        {
+            node->nodeType = ret->second;
+        }
+
+        else
+        {
+            exit(semanticError("mismatched types for '" + node->attribute + "' operation", node->lineNum));
+        }
+    }
+    break;
+
     default:
         break;
     }
@@ -741,14 +686,43 @@ void preGeneral(AST *node)
 {
     switch (node->name)
     {
-
-    // Track occurances of if and while statements
-    case whilestm:
-        whileCount++;
+    // set flags for func decl
+    case functiondeclaration:
+        funcRet.clear();
+        decl = true;
         break;
 
+    // increment while count
+    case whilestm:
+        whileCount++;
+        stmtOp = true;
+        break;
+
+    // increment if stmt count
     case ifstm:
+        stmtOp = true;
         ifCount++;
+        break;
+
+    case returnstm:
+        declRet = true;
+        break;
+
+    // call helper function to handle ops
+    case binop:
+        opType(node);
+        break;
+    case unop:
+        opType(node);
+        break;
+
+    // call helper function to handle ids and literals
+    case literal:
+        idType(node, node->name);
+        break;
+
+    case identifier:
+        idType(node, node->name);
         break;
 
     // check if a break is encountered outside of a while loop
@@ -774,11 +748,16 @@ void postGeneral(AST *node)
 {
     switch (node->name)
     {
+    case functiondeclaration:
+        if (needsRet == true)
+            exit(semanticError("non-void function missing return statement", node->lineNum));
+        break;
 
     // decrement count of if and while statements after traversing them
     case whilestm:
         whileCount--;
         break;
+
     case ifstm:
         ifCount--;
         break;
@@ -808,8 +787,7 @@ int semanticAnalyzer(AST *root)
     // perform AST traversals for each pass
     prePostOrder(root, &preGlobalDecs, &postGlobalDecs);
     prePostOrder(root, &preIDs, &postIDs);
-    postOrder(root, &postArith);
-    prePostOrder(root, &preTypes, &postTypes);
+    postOrder(root, &postTypes);
     prePostOrder(root, &preGeneral, &postGeneral);
 
     // close global scope
