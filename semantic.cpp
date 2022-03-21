@@ -20,6 +20,7 @@ bool test = false;
 int mainCount = 0;
 int ifCount = 0;
 int whileCount = 0;
+int blockCount = 0;
 
 //  Global SymbolTableEntries for intermediate/temporary operations
 SymbolTableEntry *tempSymbolRef = new SymbolTableEntry();
@@ -264,6 +265,10 @@ void preGlobalDecs(AST *node)
         // open seperate scope for main func decl
         table->openScope();
         mainCount++;
+        if (mainCount > 1)
+        {
+            exit(symbolError("Multiple main declarations found", node->lineNum));
+        }
     }
     break;
 
@@ -692,6 +697,9 @@ void preGeneral(AST *node)
         decl = true;
         break;
 
+    case block:
+        blockCount++;
+        break;
     // increment while count
     case whilestm:
         whileCount++;
@@ -705,7 +713,15 @@ void preGeneral(AST *node)
         break;
 
     case returnstm:
-        declRet = true;
+        if (node->children.empty())
+        {
+            declRet = false;
+        }
+        else
+        {
+            declRet = true;
+        }
+
         break;
 
     // call helper function to handle ops
@@ -731,9 +747,10 @@ void preGeneral(AST *node)
         {
             exit(semanticError("break statement must be in a while statement", node->lineNum));
         }
+        break;
     // check if a variable declaration does not occur in the outermost block
     case variabledeclaration:
-        if (whileCount != 0 || ifCount != 0)
+        if (node->children[1]->symbolRef->scope != 2 && blockCount != 1)
         {
             exit(semanticError("local declaration not in outermost block", node->lineNum));
         }
@@ -760,6 +777,10 @@ void postGeneral(AST *node)
 
     case ifstm:
         ifCount--;
+        break;
+
+    case block:
+        blockCount--;
         break;
 
     default:
