@@ -292,6 +292,16 @@ void postSecondPass(AST *node)
             freeReg(reg);
             genSingleInst("j", globRetLabel);
         }
+
+        else if (!node->children.empty() && node->children[0]->name == assignment)
+        {
+
+            reg = reserveReg();
+            genLoadID(node->children[0]->children[0], reg);
+            genDoubleInst("move", "$v0", reg);
+            freeReg(reg);
+            genSingleInst("j", globRetLabel);
+        }
         else if (!node->children.empty())
         {
             reg = node->children[0]->reg;
