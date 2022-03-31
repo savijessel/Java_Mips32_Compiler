@@ -333,7 +333,12 @@ void postSecondPass(AST *node)
         std::string jumpLabel;
         std::vector<std::string> regs;
 
-        if (node->children[0]->attribute == "prints")
+        if (node->children[0]->attribute == "halt")
+        {
+            genHalt();
+        }
+
+        else if (node->children[0]->attribute == "prints")
         {
             genPrints(node);
         }
