@@ -455,7 +455,7 @@ void postSecondPass(AST *node)
 
         if (node->attribute == "+")
         {
-            genArithInst("add", opReg, left, right);
+            genArithInst("addu", opReg, left, right);
         }
 
         else if (node->attribute == "-")
