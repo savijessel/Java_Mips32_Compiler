@@ -460,7 +460,7 @@ void postSecondPass(AST *node)
 
         else if (node->attribute == "-")
         {
-            genArithInst("sub", opReg, left, right);
+            genArithInst("subu", opReg, left, right);
         }
 
         else if (node->attribute == "*")
