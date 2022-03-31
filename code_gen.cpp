@@ -322,7 +322,7 @@ void postSecondPass(AST *node)
                 saveRegisters(regs);
                 genArgs(node->children[1]);
                 genSingleInst("jal", jumpLabel);
-                std::string reg = reserveSReg();
+                std::string reg = reserveReg();
                 genDoubleInst("move", reg, "$v0");
                 node->reg = reg;
                 loadRegisters(regs);
@@ -332,7 +332,7 @@ void postSecondPass(AST *node)
                 regs = getReserved();
                 saveRegisters(regs);
                 genSingleInst("jal", jumpLabel);
-                std::string reg = reserveSReg();
+                std::string reg = reserveReg();
                 genDoubleInst("move", reg, "$v0");
                 node->reg = reg;
                 loadRegisters(regs);
