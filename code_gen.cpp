@@ -51,14 +51,52 @@ void preGlobPass(AST *node)
             for (int i = 0; i < attr.length(); i++)
             {
 
-                if (attr[i] == '\\' && attr[i + 1] != '\0' && attr[i + 1] == 'n')
+                if (attr[i] == '\\' && attr[i + 1] != '\0')
                 {
-                    output += std::to_string(int('\n')) + " , ";
+                    switch (attr[i + 1])
+                    {
+                    case 'n':
+                        output += std::to_string(int('\n')) + " , ";
+                        i++;
+                        break;
+
+                    case 'b':
+                        output += std::to_string(int('\b')) + " , ";
+                        i++;
+                        break;
+
+                    case 't':
+                        output += std::to_string(int('\t')) + " , ";
+                        i++;
+                        break;
+
+                    case 'f':
+                        output += std::to_string(int('\f')) + " , ";
+                        i++;
+                        break;
+
+                    case '\'':
+                        output += std::to_string(int('\'')) + " , ";
+                        i++;
+                        break;
+
+                    case '\"':
+                        output += std::to_string(int('\"')) + " , ";
+                        i++;
+                        break;
+
+                    case 'r':
+                        output += std::to_string(int('\r')) + " , ";
+                        i++;
+                        break;
+
+                    default:
+                        break;
+                    }
                 }
                 else
                 {
-                    if (attr[i] != 'n')
-                        output += std::to_string(int(attr[i])) + " , ";
+                    output += std::to_string(int(attr[i])) + " , ";
                 }
             }
             output.pop_back();

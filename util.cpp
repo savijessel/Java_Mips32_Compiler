@@ -261,9 +261,10 @@ void genArgs(AST *node)
     std::string reg;
     for (auto child : node->children)
     {
-        reg = reserveReg();
+
         if (child->name == identifier && child->symbolRef->paramTypes.empty())
         {
+            reg = reserveReg();
             genLoadID(child, reg);
             genDoubleInst("move", "$a" + std::to_string(argCount), reg);
         }
