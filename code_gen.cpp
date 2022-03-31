@@ -312,6 +312,13 @@ void postSecondPass(AST *node)
             genStoreID(node->children[0], reg);
             freeReg(reg);
         }
+        else if (node->children[1]->name == assignment)
+        {
+            reg = reserveReg();
+            genLoadID(node->children[1]->children[0], reg);
+            genStoreID(node->children[0], reg);
+            freeReg(reg);
+        }
         else
         {
             reg = node->children[1]->reg;
