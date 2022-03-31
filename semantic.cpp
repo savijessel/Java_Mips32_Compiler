@@ -1,7 +1,7 @@
 #include "semantic.hpp"
 
 // Create reference to symbol table
-SymbolTable *table = new SymbolTable();
+SymbolTable *table;
 
 // Global Control flags
 bool declAcceptType = false;
@@ -88,51 +88,6 @@ std::vector<std::string> getChildrenTypes(AST *node)
     }
 
     return types;
-}
-
-// Post order AST traversal with callback action
-void postOrder(AST *node, std::function<void(AST *)> action)
-{
-
-    if (node == nullptr)
-        return;
-    for (auto child : node->children)
-    {
-        postOrder(child, action);
-    }
-    action(node);
-}
-
-// Pre order AST traversal with callback action
-void preOrder(AST *node, std::function<void(AST *)> action)
-{
-
-    if (node == nullptr)
-        return;
-
-    action(node);
-
-    for (auto child : node->children)
-    {
-        preOrder(child, action);
-    }
-}
-
-// Pre and post order AST traversal with callback actions for both pre and post
-void prePostOrder(AST *node, std::function<void(AST *)> preAction, std::function<void(AST *)> postAction)
-{
-
-    if (node == nullptr)
-        return;
-
-    preAction(node);
-
-    for (auto child : node->children)
-    {
-        prePostOrder(child, preAction, postAction);
-    }
-
-    postAction(node);
 }
 
 // Pre order actions for binary and unary operation type checking
@@ -788,9 +743,9 @@ void postGeneral(AST *node)
     }
 }
 
-int semanticAnalyzer(AST *root)
+int semanticAnalyzer(AST *root, SymbolTable *symTable)
 {
-
+    table = symTable;
     // open predefined scope
     table->openScope();
 
@@ -812,10 +767,10 @@ int semanticAnalyzer(AST *root)
     prePostOrder(root, &preGeneral, &postGeneral);
 
     // close global scope
-    table->closeScope();
+    // table->closeScope();
 
     // close predefined scope
-    table->closeScope();
+    // table->closeScope();
 
     return EXIT_SUCCESS;
 }

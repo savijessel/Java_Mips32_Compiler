@@ -73,6 +73,11 @@ public:
     // Strings to characterize type of node - typically extraneous properties or attributes
     std::string nodeType;
     std::string attribute;
+    std::string label;
+    std::string altLabel;
+    std::string reg;
+    bool prune = false;
+    int offsetCount;
 
     // line number corresponding to node
     int lineNum;
@@ -143,7 +148,7 @@ public:
         }
 
         // add signature from symbol table to AST output
-        if (symbolRef != nullptr && name == identifier && attribute != "main")
+        if (symbolRef != nullptr && name == identifier && nodeType != "main")
         {
             properties += symbolRef->signature();
             std::ostringstream address;

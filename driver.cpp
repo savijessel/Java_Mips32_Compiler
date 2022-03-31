@@ -22,16 +22,31 @@ bool Driver::start(std::istream &in)
     {
         return 1;
     }
+
+    // defining global symbol table entry
+    SymbolTable *table = new SymbolTable();
+
+    // parser result
     bool res = parse(in);
     if (!res)
     {
+
         // tree->print();
         //     if no semantic errors, print annotated AST
         //     otherwise, return in failure
-        if (semanticAnalyzer(tree) != EXIT_FAILURE)
+        if (semanticAnalyzer(tree, table) != EXIT_FAILURE)
         {
             tree->print();
         }
+        else
+        {
+            return EXIT_FAILURE;
+        }
+
+        if (codeGeneration(tree, table) != EXIT_FAILURE)
+        {
+        }
+
         else
         {
             return EXIT_FAILURE;

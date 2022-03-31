@@ -1,11 +1,12 @@
+
+#ifndef SYMBOL_HPP
+#define SYMBOL_HPP
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <map>
 #include <tuple>
-
-#ifndef SYMBOL_HPP
-#define SYMBOL_HPP
 
 // Helper function to output error messages
 int symbolError(std::string message, int line);
@@ -23,6 +24,13 @@ public:
 
     // type of identifier
     std::string type;
+
+    // label for code generation
+    std::string label;
+
+    // offset for code generation
+
+    int offset;
 
     // type of params if applicable
     std::vector<std::string> paramTypes;
