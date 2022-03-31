@@ -17,14 +17,14 @@ void preGlobPass(AST *node)
     {
 
     case functiondeclarator:
-        node->children[0]->symbolRef->label = node->children[0]->symbolRef->symbol;
+        node->children[0]->symbolRef->label = "_" + node->children[0]->symbolRef->symbol;
         break;
 
     case variabledeclaration:
         if (node->children[1]->symbolRef->scope == 2 && node->children[1]->symbolRef->paramTypes.empty())
         {
-            std::cout << data << node->children[1]->symbolRef->symbol << ":" << globalword;
-            node->children[1]->symbolRef->label = node->children[1]->symbolRef->symbol;
+            node->children[1]->symbolRef->label = "_" + node->children[1]->symbolRef->symbol; // possible bug point
+            std::cout << data << node->children[1]->symbolRef->label << ":" << globalword;
         }
 
         else if (node->children[1]->symbolRef->scope > 2 && node->children[1]->symbolRef->paramTypes.empty())
@@ -152,8 +152,9 @@ void preSecondPass(AST *node)
         break;
 
     case functiondeclarator:
-        globRetLabel = node->children[0]->symbolRef->symbol + "_end"; // *** IMPORTANT *** Possible bug point for multiple func decs
-        node->children[0]->symbolRef->label = node->children[0]->symbolRef->symbol;
+
+        node->children[0]->symbolRef->label = "_" + node->children[0]->symbolRef->symbol;
+        globRetLabel = node->children[0]->symbolRef->label + "_end"; // *** IMPORTANT *** Possible bug point for multiple func decs
         std::cout << text;
         std::cout << node->children[0]->symbolRef->label << ":" << std::endl;
         genArithInst("addiu", "$sp", "$sp", std::to_string(-node->offsetCount));

@@ -38,7 +38,7 @@ digit               [0-9]
 escapeChar          \\[bftrn'"\\] 
 
 /* any escape character except those mentioned above */
-invalidEscapeChar   \\[^bftrnx'"\\]   
+invalidEscapeChar   \\[^bftrn'"\\]   
 
 /* any characters except quote characters, newlines, and slash characters */
 strChar             [^\"\n\\]                      
@@ -94,7 +94,7 @@ ID                  {alpha}({alpha}|{digit})*
 "return"    return Token::T_RETURN;
 
 {ID}        {yylval->strVal = new std::string(YYText()); return Token::T_ID;}
-{num}       {yylval->ival = std::stoi(YYText()); return Token::T_NUM;}
+{num}       {yylval->ival = std::stol(YYText()); return Token::T_NUM;}
 
 
 "//"        BEGIN(COMMENT);                                    

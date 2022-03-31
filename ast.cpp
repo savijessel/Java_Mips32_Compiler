@@ -39,6 +39,10 @@ AST::AST(std::string myNodeType, std::string myAttribute, NodeName myName, int m
     attribute = myAttribute;
     name = myName;
     lineNum = myLineNum;
+    if (name == literal && nodeType == "integer" && attribute == "-2147483648")
+    {
+        attribute.erase(0, 1);
+    }
 }
 
 AST::AST(std::string myNodeType, NodeName myName, int myLineNum)

@@ -198,6 +198,11 @@ void genMemInst(std::string op, std::string dest, std::string source)
     std::cout << op << tab << dest << "," << source << std::endl;
 }
 
+void genMemInst(std::string op, std::string dest, int source)
+{
+    std::cout << op << tab << dest << "," << source << std::endl;
+}
+
 void genPopStack(std::string value, int offset)
 {
     genMemInst("lw", value, "$sp", std::to_string(offset));
@@ -266,6 +271,12 @@ void genArgs(AST *node)
         {
             reg = reserveReg();
             genLoadID(child, reg);
+            genDoubleInst("move", "$a" + std::to_string(argCount), reg);
+        }
+        else if (child->name == assignment)
+        {
+            reg = reserveReg();
+            genLoadID(child->children[0], reg);
             genDoubleInst("move", "$a" + std::to_string(argCount), reg);
         }
         else
@@ -395,7 +406,7 @@ std::ostream &operator<<(std::ostream &out, const printHelper value)
     {
 
     case tab:
-        return out << "     ";
+        return out << "\t";
 
     case newline:
         return out << "\n";

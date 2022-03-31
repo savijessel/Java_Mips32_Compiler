@@ -46,6 +46,7 @@ void genArithInst(std::string op, std::string source1, std::string source2);
 void genSingleInst(std::string op, std::string dest);
 void genDoubleInst(std::string op, std::string dest, std::string source);
 void genMemInst(std::string op, std::string dest, std::string source);
+void genMemInst(std::string op, std::string dest, int source);
 void genMemInst(std::string op, std::string reg, std::string source, std::string offset);
 void genPopStack(std::string reg, int offset);
 void genPushStackVal(std::string value, int offset);
