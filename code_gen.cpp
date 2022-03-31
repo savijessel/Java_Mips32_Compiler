@@ -245,7 +245,7 @@ void postSecondPass(AST *node)
     case returnstm:
     {
         std::string reg;
-        if (node->children[0]->name == identifier)
+        if (!node->children.empty() && node->children[0]->name == identifier)
         {
             reg = reserveReg();
             genLoadID(node->children[0], reg);
@@ -253,7 +253,7 @@ void postSecondPass(AST *node)
             freeReg(reg);
             genSingleInst("j", globRetLabel);
         }
-        else
+        else if (!node->children.empty())
         {
             reg = node->children[0]->reg;
             genDoubleInst("move", "$v0", reg);
