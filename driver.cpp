@@ -36,7 +36,7 @@ bool Driver::start(std::istream &in)
         //     otherwise, return in failure
         if (semanticAnalyzer(tree, table) != EXIT_FAILURE)
         {
-            tree->print();
+            // tree->print();
         }
         else
         {
