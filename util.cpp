@@ -261,7 +261,7 @@ void genGlobalID(std::string value, std::string label)
 void genHalt()
 {
     genMemInst("li", "$v0", "10");
-    std::cout << "syscall" << std::endl;
+    std::cout << tab << "syscall" << std::endl;
 }
 
 void genArgs(AST *node)
@@ -320,7 +320,7 @@ void genPrints(AST *node)
 
     // make print char sys call
     genDoubleInst("li", "$v0", "11");
-    std::cout << "syscall" << std::endl;
+    std::cout << tab << "syscall" << std::endl;
 
     genArithInst("addi", countReg, countReg, "1");
     genArithInst("addi", reg, reg, "1");
@@ -339,14 +339,14 @@ void genPrinti(AST *node)
 {
     genArgs(node->children[1]);
     genDoubleInst("li", "$v0", "1");
-    std::cout << "syscall" << std::endl;
+    std::cout << tab << "syscall" << std::endl;
 }
 
 void genPrintc(AST *node)
 {
     genArgs(node->children[1]);
     genDoubleInst("li", "$v0", "11");
-    std::cout << "syscall" << std::endl;
+    std::cout << tab << "syscall" << std::endl;
 }
 
 void genPrintb(AST *node)
@@ -384,7 +384,7 @@ void genGetChar(AST *node)
 {
 
     genDoubleInst("li", "$v0", "12");
-    std::cout << "syscall" << std::endl;
+    std::cout << tab << "syscall" << std::endl;
     node->reg = "$v0";
 }
 
@@ -408,7 +408,7 @@ void genRetError(std::string message)
     std::cout << text;
     genDoubleInst("la", "$a0", "err" + std::to_string(genErrCount));
     genDoubleInst("li", "$v0", "4");
-    std::cout << "syscall" << std::endl;
+    std::cout << tab << "syscall" << std::endl;
     genHalt();
     genErrCount++;
 }
