@@ -325,7 +325,13 @@ void preSecondPass(AST *node)
             reg = node->children[0]->reg;
         }
 
-        genArithInst("beq", reg, "$0", node->label);
+        // *** IMPORTANT BUG POINT ***
+        // genArithInst("beq", reg, "$0", node->label);
+        genArithInst("beq", reg, "$0", "intermediate_" + node->label);
+        genSingleInst("j", "intermediate_end" + node->label);
+        std::cout << "intermediate_" << node->label << ":" << std::endl;
+        genSingleInst("j", node->label);
+        std::cout << "intermediate_end" << node->label << ":" << std::endl;
         freeReg(reg);
 
         if (node->children[1]->name == block && !node->children[1]->children.empty())
@@ -383,11 +389,23 @@ void preSecondPass(AST *node)
 
         if (node->nodeType == "if else statement")
         {
-            genArithInst("beq", reg, "$0", node->altLabel);
+            // *** Possible Bug Point ***
+            // genArithInst("beq", reg, "$0", node->altLabel);
+            genArithInst("beq", reg, "$0", "intermediate_" + node->altLabel);
+            genSingleInst("j", "intermediate_end" + node->altLabel);
+            std::cout << "intermediate_" << node->altLabel << ":" << std::endl;
+            genSingleInst("j", node->altLabel);
+            std::cout << "intermediate_end" << node->altLabel << ":" << std::endl;
         }
         else
         {
-            genArithInst("beq", reg, "$0", node->label);
+            // *** Possible Bug Point ***
+            // genArithInst("beq", reg, "$0", node->label);
+            genArithInst("beq", reg, "$0", "intermediate_" + node->label);
+            genSingleInst("j", "intermediate_end" + node->label);
+            std::cout << "intermediate_" << node->label << ":" << std::endl;
+            genSingleInst("j", node->label);
+            std::cout << "intermediate_end" << node->label << ":" << std::endl;
         }
         freeReg(reg);
 
