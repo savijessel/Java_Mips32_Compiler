@@ -61,6 +61,8 @@ void genPrinti(AST *node);
 void genPrintc(AST *node);
 void genPrintb(AST *node);
 void genGetChar(AST *node);
+void genByteArr(std::string str);
+void genRetError(std::string str);
 void labelBreak(AST *node);
 int genError(std::string message);
 

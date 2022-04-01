@@ -367,11 +367,11 @@ void preSecondPass(AST *node)
         if (!node->children[1]->children.empty())
         {
             prePostOrder(node->children[1], &preSecondPass, &postSecondPass);
-            genSingleInst("j", node->label); // *** IMPORTANT LOOK INTO POSITIONING ONE LINE AFTER LATER ***
         }
 
         if (node->nodeType == "if else statement" && !node->children[1]->children.empty())
         {
+            genSingleInst("j", node->label); // ***POSSIBLE - ERROR IMPORTANT LOOK INTO POSITIONING ONE LINE AFTER LATER ***
             std::cout << node->altLabel << ":" << std::endl;
             prePostOrder(node->children[2], &preSecondPass, &postSecondPass);
         }
@@ -400,15 +400,16 @@ void postSecondPass(AST *node)
 
     case functiondeclaration:
         int offset;
-        if (node->children[0]->children[0]->name == type)
-        {
-            std::cout << node->children[0]->children[1]->children[0]->symbolRef->label << "_end:" << std::endl;
-            offset = node->children[0]->children[1]->offsetCount;
-        }
-        else
+        if (!(node->children[0]->children[0]->name == type))
         {
             std::cout << node->children[0]->children[0]->children[0]->symbolRef->label << "_end:" << std::endl;
             offset = node->children[0]->children[0]->offsetCount;
+        }
+        else
+        {
+            genRetError(node->children[0]->children[1]->children[0]->symbolRef->symbol);
+            std::cout << node->children[0]->children[1]->children[0]->symbolRef->label << "_end:" << std::endl;
+            offset = node->children[0]->children[1]->offsetCount;
         }
         genPopStack("$ra", 0);
         genArithInst("addiu", "$sp", "$sp", std::to_string(offset));

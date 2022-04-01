@@ -7,6 +7,8 @@ int genPrintsCount = 0;
 // keep track of printb() calls
 int genPrintbCount = 0;
 
+int genStrCount = 0;
+
 std::map<std::string, int, std::greater<std::string>> regManager({
 
     {"$t0", 0},
@@ -171,36 +173,36 @@ void prePostOrder(AST *node, std::function<void(AST *)> preAction, std::function
 
 void genArithInst(std::string op, std::string dest, std::string source1, std::string source2)
 {
-    std::cout << op << tab << dest << "," << source1 << "," << source2 << std::endl;
+    std::cout << tab << op << tab << dest << "," << source1 << "," << source2 << std::endl;
 }
 
 void genArithInst(std::string op, std::string source1, std::string source2)
 {
-    std::cout << op << tab << source1 << "," << source2 << std::endl;
+    std::cout << tab << op << tab << source1 << "," << source2 << std::endl;
 }
 
 void genSingleInst(std::string op, std::string dest)
 {
-    std::cout << op << tab << dest << std::endl;
+    std::cout << tab << op << tab << dest << std::endl;
 }
 
 void genDoubleInst(std::string op, std::string dest, std::string source)
 {
-    std::cout << op << tab << dest << "," << source << std::endl;
+    std::cout << tab << op << tab << dest << "," << source << std::endl;
 }
 void genMemInst(std::string op, std::string dest, std::string source, std::string offset)
 {
-    std::cout << op << tab << dest << "," << offset << "(" << source << ")" << std::endl;
+    std::cout << tab << op << tab << dest << "," << offset << "(" << source << ")" << std::endl;
 }
 
 void genMemInst(std::string op, std::string dest, std::string source)
 {
-    std::cout << op << tab << dest << "," << source << std::endl;
+    std::cout << tab << op << tab << dest << "," << source << std::endl;
 }
 
 void genMemInst(std::string op, std::string dest, int source)
 {
-    std::cout << op << tab << dest << "," << source << std::endl;
+    std::cout << tab << op << tab << dest << "," << source << std::endl;
 }
 
 void genPopStack(std::string value, int offset)
@@ -395,6 +397,82 @@ void labelBreak(AST *node)
     }
 }
 
+void genRetError(std::string func)
+{
+    std::cout << data;
+    std::cout << "retErr:" << std::endl;
+    std::cout << ".asciiz\t"
+              << "\"Error: Non-void function " << func << " must return a value\\n\"" << std::endl;
+    std::cout << text;
+    genDoubleInst("la", "$a0", "retErr");
+    genDoubleInst("li", "$v0", "4");
+    std::cout << "syscall" << std::endl;
+}
+void genByteArr(std::string str)
+{
+    std::cout << data;
+    std::string label = "cS" + std::to_string(genStrCount);
+    std::cout << label << ":" << bytearr;
+    std::string output;
+    std::string attr = str + '\0';
+
+    for (int i = 0; i < attr.length(); i++)
+    {
+
+        if (attr[i] == '\\' && attr[i + 1] != '\0')
+        {
+            switch (attr[i + 1])
+            {
+            case 'n':
+                output += std::to_string(int('\n')) + " , ";
+                i++;
+                break;
+
+            case 'b':
+                output += std::to_string(int('\b')) + " , ";
+                i++;
+                break;
+
+            case 't':
+                output += std::to_string(int('\t')) + " , ";
+                i++;
+                break;
+
+            case 'f':
+                output += std::to_string(int('\f')) + " , ";
+                i++;
+                break;
+
+            case '\'':
+                output += std::to_string(int('\'')) + " , ";
+                i++;
+                break;
+
+            case '\"':
+                output += std::to_string(int('\"')) + " , ";
+                i++;
+                break;
+
+            case 'r':
+                output += std::to_string(int('\r')) + " , ";
+                i++;
+                break;
+
+            default:
+                break;
+            }
+        }
+        else
+        {
+            output += std::to_string(int(attr[i])) + " , ";
+        }
+    }
+    output.pop_back();
+    output.pop_back();
+    std::cout << output << std::endl;
+    std::cout << align << std::endl;
+    genStrCount++;
+}
 int genError(std::string message)
 {
     std::cerr << "Error: " << message << std::endl;
@@ -414,28 +492,28 @@ std::ostream &operator<<(std::ostream &out, const printHelper value)
         return out << "\n";
 
     case data:
-        return out << tab << ".data" << std::endl;
+        return out << ".data" << std::endl;
 
     case text:
-        return out << tab << ".text" << std::endl;
+        return out << ".text" << std::endl;
 
     case globalword:
-        return out << tab << ".word 0" << std::endl;
+        return out << ".word 0" << std::endl;
 
     case maindec:
-        return out << std::setw(8) << text << std::setw(8) << tab << ".globl main" << newline << "main:" << std::endl;
+        return out << text << std::setw(8) << tab << ".globl main" << newline << "main:" << std::endl;
 
     case bytearr:
-        return out << std::setw(8) << tab << ".byte ";
+        return out << tab << ".byte ";
 
     case align:
-        return out << std::setw(8) << tab << ".align 2 ";
+        return out << tab << ".align 2 ";
 
     case falsestr:
-        return out << std::setw(8) << tab << ".asciiz \"false\" " << std::endl;
+        return out << tab << ".asciiz \"false\" " << std::endl;
 
     case truestr:
-        return out << std::setw(8) << tab << ".asciiz \"true\" " << std::endl;
+        return out << tab << ".asciiz \"true\" " << std::endl;
 
     case sp:
         return out
