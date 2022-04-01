@@ -10,6 +10,7 @@ int whileStmtCount = 0;
 int shortCirCount = 0;
 int notCount = 0;
 std::string globRetLabel;
+std::string globBreakLabel;
 
 void preGlobPass(AST *node)
 {
@@ -277,9 +278,6 @@ void preSecondPass(AST *node)
     }
     break;
 
-    case breakstm:
-        genSingleInst("j", node->label);
-        break;
     case mainfunctiondeclaration:
         std::cout << maindec;
         genArithInst("addiu", "$sp", "$sp", std::to_string(-node->offsetCount));
@@ -307,6 +305,7 @@ void preSecondPass(AST *node)
         node->altLabel = "loop" + std::to_string(whileStmtCount);
         whileStmtCount++;
 
+        std::string tempLabel;
         std::string reg;
         std::cout << node->altLabel << ":" << std::endl;
         if (node->children[0]->name == identifier && node->children[0]->symbolRef->paramTypes.empty())
@@ -326,12 +325,23 @@ void preSecondPass(AST *node)
 
         if (!node->children[1]->children.empty())
         {
-            labelBreak(node);
+            tempLabel = globBreakLabel;
+            globBreakLabel = node->label;
             prePostOrder(node->children[1], &preSecondPass, &postSecondPass);
+            globBreakLabel = tempLabel;
         }
         genSingleInst("j", node->altLabel);
         node->prune = true;
         std::cout << node->label << ":" << std::endl;
+    }
+
+    break;
+
+    case breakstm:
+    {
+
+        node->label = globBreakLabel;
+        genSingleInst("j", node->label);
     }
 
     break;
@@ -634,7 +644,7 @@ void postSecondPass(AST *node)
         else if (node->attribute == "/")
         {
             genArithInst("bne", right, "$0", "divNorm");
-            genRetError("\"Error: division by zero on " + std::to_string(node->lineNum) + "\\n\"");
+            genRetError("\"Error: division by zero on line " + std::to_string(node->lineNum) + "\\n\"");
             std::cout << "divNorm:" << std::endl;
             genArithInst("div", opReg, left, right);
         }
