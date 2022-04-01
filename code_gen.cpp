@@ -143,6 +143,140 @@ void preSecondPass(AST *node)
     switch (node->name)
     {
 
+    case binop:
+    {
+        std::string left;
+        std::string right;
+        std::string opReg;
+        std::string lfLabel;
+        std::string endLabel;
+
+        if (node->attribute == "&&")
+        {
+            lfLabel = "and_left_false" + std::to_string(shortCirCount);
+            endLabel = "and_end" + std::to_string(shortCirCount);
+
+            prePostOrder(node->children[0], &preSecondPass, &postSecondPass);
+            if (node->children[0]->name == identifier)
+            {
+
+                left = reserveReg();
+                genLoadID(node->children[0], left);
+            }
+            else if (node->children[0]->name == assignment)
+            {
+                left = reserveReg();
+                genLoadID(node->children[0]->children[0], left);
+            }
+
+            else
+            {
+
+                left = node->children[0]->reg;
+            }
+
+            opReg = reserveReg();
+
+            genArithInst("beq", left, "$0", lfLabel);
+
+            prePostOrder(node->children[1], &preSecondPass, &postSecondPass);
+            if (node->children[1]->name == identifier)
+            {
+
+                right = reserveReg();
+                genLoadID(node->children[1], right);
+            }
+            else if (node->children[1]->name == assignment)
+            {
+                right = reserveReg();
+                genLoadID(node->children[1]->children[0], right);
+            }
+
+            else
+            {
+
+                right = node->children[1]->reg;
+            }
+
+            genDoubleInst("move", opReg, right);
+            genSingleInst("j", endLabel);
+            std::cout << lfLabel << ":" << std::endl;
+            genDoubleInst("li", opReg, "0");
+            std::cout << endLabel << ":" << std::endl;
+            shortCirCount++;
+            node->reg = opReg;
+            freeReg(left);
+            if (!right.empty())
+            {
+                freeReg(right);
+            }
+            node->prune = true;
+        }
+
+        else if (node->attribute == "||")
+        {
+            lfLabel = "or_left_true" + std::to_string(shortCirCount);
+            endLabel = "or_end" + std::to_string(shortCirCount);
+
+            prePostOrder(node->children[0], &preSecondPass, &postSecondPass);
+            if (node->children[0]->name == identifier)
+            {
+
+                left = reserveReg();
+                genLoadID(node->children[0], left);
+            }
+            else if (node->children[0]->name == assignment)
+            {
+                left = reserveReg();
+                genLoadID(node->children[0]->children[0], left);
+            }
+
+            else
+            {
+
+                left = node->children[0]->reg;
+            }
+
+            opReg = reserveReg();
+
+            genArithInst("bne", left, "$0", lfLabel);
+
+            prePostOrder(node->children[1], &preSecondPass, &postSecondPass);
+            if (node->children[1]->name == identifier)
+            {
+
+                right = reserveReg();
+                genLoadID(node->children[1], right);
+            }
+            else if (node->children[1]->name == assignment)
+            {
+                right = reserveReg();
+                genLoadID(node->children[1]->children[0], right);
+            }
+
+            else
+            {
+
+                right = node->children[1]->reg;
+            }
+
+            genDoubleInst("move", opReg, right);
+            genSingleInst("j", endLabel);
+            std::cout << lfLabel << ":" << std::endl;
+            genDoubleInst("li", opReg, "1");
+            std::cout << endLabel << ":" << std::endl;
+            shortCirCount++;
+            node->reg = opReg;
+            freeReg(left);
+            if (!right.empty())
+            {
+                freeReg(right);
+            }
+            node->prune = true;
+        }
+    }
+    break;
+
     case breakstm:
         genSingleInst("j", node->label);
         break;
@@ -530,32 +664,6 @@ void postSecondPass(AST *node)
         else if (node->attribute == ">=")
         {
             genArithInst("sge", opReg, left, right);
-        }
-
-        else if (node->attribute == "&&")
-        {
-            std::string lfLabel = "and_left_false" + std::to_string(shortCirCount);
-            std::string endLabel = "and_end" + std::to_string(shortCirCount);
-            genArithInst("beq", left, "$0", lfLabel);
-            genDoubleInst("move", opReg, right);
-            genSingleInst("j", endLabel);
-            std::cout << lfLabel << ":" << std::endl;
-            genDoubleInst("li", opReg, "0");
-            std::cout << endLabel << ":" << std::endl;
-            shortCirCount++;
-        }
-
-        else if (node->attribute == "||")
-        {
-            std::string lfLabel = "or_left_true" + std::to_string(shortCirCount);
-            std::string endLabel = "or_end" + std::to_string(shortCirCount);
-            genArithInst("bne", left, "$0", lfLabel);
-            genDoubleInst("move", opReg, right);
-            genSingleInst("j", endLabel);
-            std::cout << lfLabel << ":" << std::endl;
-            genDoubleInst("li", opReg, "1");
-            std::cout << endLabel << ":" << std::endl;
-            shortCirCount++;
         }
 
         node->reg = opReg;

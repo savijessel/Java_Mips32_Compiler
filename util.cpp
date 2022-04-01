@@ -262,6 +262,7 @@ void genHalt()
 
 void genArgs(AST *node)
 {
+
     int argCount = 0;
     std::string reg;
     for (auto child : node->children)
@@ -279,6 +280,7 @@ void genArgs(AST *node)
             genLoadID(child->children[0], reg);
             genDoubleInst("move", "$a" + std::to_string(argCount), reg);
         }
+
         else
         {
             reg = child->reg;
