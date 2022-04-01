@@ -481,6 +481,11 @@ void postSecondPass(AST *node)
             freeReg(reg);
             genSingleInst("j", globRetLabel);
         }
+
+        else if (node->children.empty())
+        {
+            genSingleInst("j", globRetLabel);
+        }
     }
     break;
 
@@ -552,8 +557,8 @@ void postSecondPass(AST *node)
             if (node->children[1] != nullptr && node->children[1]->name == argumentlist)
             {
                 regs = getReserved();
-                saveRegisters(regs);
                 genArgs(node->children[1]);
+                saveRegisters(regs);
                 genSingleInst("jal", jumpLabel);
                 std::string reg = reserveReg();
                 genDoubleInst("move", reg, "$v0");
