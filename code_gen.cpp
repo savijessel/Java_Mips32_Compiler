@@ -154,6 +154,7 @@ void preSecondPass(AST *node)
 
         if (node->attribute == "&&")
         {
+            shortCirCount++;
             lfLabel = "and_left_false" + std::to_string(shortCirCount);
             endLabel = "and_end" + std::to_string(shortCirCount);
 
@@ -204,7 +205,6 @@ void preSecondPass(AST *node)
             std::cout << lfLabel << ":" << std::endl;
             genDoubleInst("li", opReg, "0");
             std::cout << endLabel << ":" << std::endl;
-            shortCirCount++;
             node->reg = opReg;
             freeReg(left);
             if (!right.empty())
@@ -216,6 +216,7 @@ void preSecondPass(AST *node)
 
         else if (node->attribute == "||")
         {
+            shortCirCount++;
             lfLabel = "or_left_true" + std::to_string(shortCirCount);
             endLabel = "or_end" + std::to_string(shortCirCount);
 
@@ -266,7 +267,6 @@ void preSecondPass(AST *node)
             std::cout << lfLabel << ":" << std::endl;
             genDoubleInst("li", opReg, "1");
             std::cout << endLabel << ":" << std::endl;
-            shortCirCount++;
             node->reg = opReg;
             freeReg(left);
             if (!right.empty())
@@ -313,6 +313,11 @@ void preSecondPass(AST *node)
             reg = reserveReg();
             genLoadID(node->children[0], reg);
         }
+        else if (node->children[0]->name == assignment)
+        {
+            reg = reserveReg();
+            genLoadID(node->children[0]->children[0], reg);
+        }
         else
         {
 
@@ -323,7 +328,15 @@ void preSecondPass(AST *node)
         genArithInst("beq", reg, "$0", node->label);
         freeReg(reg);
 
-        if (!node->children[1]->children.empty())
+        if (node->children[1]->name == block && !node->children[1]->children.empty())
+        {
+            tempLabel = globBreakLabel;
+            globBreakLabel = node->label;
+            prePostOrder(node->children[1], &preSecondPass, &postSecondPass);
+            globBreakLabel = tempLabel;
+        }
+
+        else if (!node->children.empty() && node->children[1]->name != block)
         {
             tempLabel = globBreakLabel;
             globBreakLabel = node->label;
@@ -356,6 +369,11 @@ void preSecondPass(AST *node)
         {
             reg = reserveReg();
             genLoadID(node->children[0], reg);
+        }
+        else if (node->children[0]->name == assignment)
+        {
+            reg = reserveReg();
+            genLoadID(node->children[0]->children[0], reg);
         }
         else
         {
