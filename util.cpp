@@ -9,6 +9,8 @@ int genPrintbCount = 0;
 
 int genStrCount = 0;
 
+int genErrCount = 0;
+
 std::map<std::string, int, std::greater<std::string>> regManager({
 
     {"$t0", 0},
@@ -397,16 +399,18 @@ void labelBreak(AST *node)
     }
 }
 
-void genRetError(std::string func)
+void genRetError(std::string message)
 {
     std::cout << data;
-    std::cout << "retErr:" << std::endl;
+    std::cout << "err" << genErrCount << ":" << std::endl;
     std::cout << ".asciiz\t"
-              << "\"Error: Non-void function " << func << " must return a value\\n\"" << std::endl;
+              << message << std::endl;
     std::cout << text;
-    genDoubleInst("la", "$a0", "retErr");
+    genDoubleInst("la", "$a0", "err" + std::to_string(genErrCount));
     genDoubleInst("li", "$v0", "4");
     std::cout << "syscall" << std::endl;
+    genHalt();
+    genErrCount++;
 }
 void genByteArr(std::string str)
 {

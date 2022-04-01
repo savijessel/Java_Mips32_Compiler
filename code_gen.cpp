@@ -399,7 +399,9 @@ void postSecondPass(AST *node)
         break;
 
     case functiondeclaration:
+    {
         int offset;
+        std::string sym;
         if (!(node->children[0]->children[0]->name == type))
         {
             std::cout << node->children[0]->children[0]->children[0]->symbolRef->label << "_end:" << std::endl;
@@ -407,7 +409,8 @@ void postSecondPass(AST *node)
         }
         else
         {
-            genRetError(node->children[0]->children[1]->children[0]->symbolRef->symbol);
+            sym = node->children[0]->children[1]->children[0]->symbolRef->symbol;
+            genRetError("\"Error: Non-void function " + sym + " must return a value\\n\"");
             std::cout << node->children[0]->children[1]->children[0]->symbolRef->label << "_end:" << std::endl;
             offset = node->children[0]->children[1]->offsetCount;
         }
@@ -415,7 +418,8 @@ void postSecondPass(AST *node)
         genArithInst("addiu", "$sp", "$sp", std::to_string(offset));
         genSingleInst("jr", "$ra");
         paramCount = 0;
-        break;
+    }
+    break;
 
     case returnstm:
     {
@@ -629,6 +633,9 @@ void postSecondPass(AST *node)
 
         else if (node->attribute == "/")
         {
+            genArithInst("bne", right, "$0", "divNorm");
+            genRetError("\"Error: division by zero on " + std::to_string(node->lineNum) + "\\n\"");
+            std::cout << "divNorm:" << std::endl;
             genArithInst("div", opReg, left, right);
         }
 
