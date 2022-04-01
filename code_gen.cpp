@@ -596,6 +596,11 @@ void postSecondPass(AST *node)
             operand = reserveReg();
             genLoadID(node->children[0], operand);
         }
+        else if (node->children[0]->name == assignment)
+        {
+            operand = reserveReg();
+            genLoadID(node->children[0]->children[0], operand);
+        }
 
         else
         {
@@ -638,6 +643,11 @@ void postSecondPass(AST *node)
             left = reserveReg();
             genLoadID(node->children[0], left);
         }
+        else if (node->children[0]->name == assignment)
+        {
+            left = reserveReg();
+            genLoadID(node->children[0]->children[0], left);
+        }
         else
         {
             left = node->children[0]->reg;
@@ -646,6 +656,11 @@ void postSecondPass(AST *node)
         {
             right = reserveReg();
             genLoadID(node->children[1], right);
+        }
+        else if (node->children[1]->name == assignment)
+        {
+            left = reserveReg();
+            genLoadID(node->children[1]->children[0], left);
         }
         else
         {
