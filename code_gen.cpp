@@ -149,6 +149,7 @@ void preSecondPass(AST *node)
     case mainfunctiondeclaration:
         std::cout << maindec;
         genArithInst("addiu", "$sp", "$sp", std::to_string(-node->offsetCount));
+
         break;
 
     case functiondeclarator:
@@ -386,6 +387,10 @@ void postSecondPass(AST *node)
                 std::string reg = reserveReg();
                 genDoubleInst("move", reg, "$v0");
                 node->reg = reg;
+                if (node->nodeType == "void")
+                {
+                    freeReg(reg);
+                }
                 loadRegisters(regs);
             }
             else
@@ -396,6 +401,10 @@ void postSecondPass(AST *node)
                 std::string reg = reserveReg();
                 genDoubleInst("move", reg, "$v0");
                 node->reg = reg;
+                if (node->nodeType == "void")
+                {
+                    freeReg(reg);
+                }
                 loadRegisters(regs);
             }
         }
