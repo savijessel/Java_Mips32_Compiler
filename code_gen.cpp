@@ -339,7 +339,6 @@ void preSecondPass(AST *node)
 
     case breakstm:
     {
-
         node->label = globBreakLabel;
         genSingleInst("j", node->label);
     }
@@ -374,7 +373,12 @@ void preSecondPass(AST *node)
         }
         freeReg(reg);
 
-        if (!node->children[1]->children.empty())
+        if (node->children[1]->name == block && !node->children[1]->children.empty())
+        {
+            prePostOrder(node->children[1], &preSecondPass, &postSecondPass);
+        }
+
+        else if (!node->children.empty() && node->children[1]->name != block)
         {
             prePostOrder(node->children[1], &preSecondPass, &postSecondPass);
         }
