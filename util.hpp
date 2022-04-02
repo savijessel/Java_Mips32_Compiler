@@ -21,19 +21,11 @@ enum printHelper
     align,
     truestr,
     falsestr,
-    sp,
-    t0,
-    t1,
-    t2,
-    t3,
-    t4,
-    t5,
-    t6,
-    t7,
-    zeroreg,
 
 };
 
+// various function headers for codegen utility functions
+// most headers defined here are for code generation
 std::string reserveReg();
 std::string reserveSReg();
 void freeReg(std::string reg);

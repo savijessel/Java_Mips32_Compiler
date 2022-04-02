@@ -31,11 +31,12 @@ bool Driver::start(std::istream &in)
     if (!res)
     {
 
-        // tree->print();
-        //     if no semantic errors, print annotated AST
-        //     otherwise, return in failure
+        // if no semantic errors, print annotated AST
+        // otherwise, return in failure
+
         if (semanticAnalyzer(tree, table) != EXIT_FAILURE)
         {
+            // commented out for code gen, but useful for debugging
             // tree->print();
         }
         else
@@ -43,11 +44,9 @@ bool Driver::start(std::istream &in)
             return EXIT_FAILURE;
         }
 
-        if (codeGeneration(tree, table) != EXIT_FAILURE)
-        {
-        }
-
-        else
+        // run codegen
+        // if an error appears, return in failure
+        if (codeGeneration(tree, table) == EXIT_FAILURE)
         {
             return EXIT_FAILURE;
         }

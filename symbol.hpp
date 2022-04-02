@@ -29,7 +29,6 @@ public:
     std::string label;
 
     // offset for code generation
-
     int offset;
 
     // type of params if applicable

@@ -73,6 +73,8 @@ public:
     // Strings to characterize type of node - typically extraneous properties or attributes
     std::string nodeType;
     std::string attribute;
+
+    // properties to store CodegGenInfo
     std::string label;
     std::string altLabel;
     std::string reg;
