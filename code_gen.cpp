@@ -100,8 +100,14 @@ void preGlobPass(AST *node)
                     output += std::to_string(int(attr[i])) + " , ";
                 }
             }
+            //*** POSSIBLE BUG POINT ***
             output.pop_back();
             output.pop_back();
+            output.pop_back();
+            output.pop_back();
+            output.pop_back();
+            output.pop_back();
+
             std::cout << output << std::endl;
             std::cout << align << std::endl;
 
