@@ -4,6 +4,7 @@ Savipal Jessel, UCID: 30039257, savipal.jessel@ucalgary.ca
 
 ### Build and Run Instructions
 
+#### Please note that my output files for the final project are located in the FINAL_PROJECT_OUTPUT directory
 1. Please clone/copy this repository to your testing environment
 2. Using a unix shell, please navigate to the top level directory of this repository
 3. Type 'make' into the shell and press enter. <br />
