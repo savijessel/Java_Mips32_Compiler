@@ -375,7 +375,7 @@ void genPrintb(AST *node)
     std::cout << endLabel << ":" << std::endl;
 
     genDoubleInst("li", "$v0", "4");
-    std::cout << "syscall" << std::endl;
+    std::cout << tab << "syscall" << std::endl;
 
     genPrintbCount++;
 }
