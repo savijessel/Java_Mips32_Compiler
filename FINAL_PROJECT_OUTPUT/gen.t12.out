@@ -1,119 +1,48 @@
-.data
-s0:	.byte 102 , 105 , 98 , 40 , 48 , 41 , 32 , 61 , 32 , 48 , 10 
-	.align 2 
-.data
-s1:	.byte 102 , 105 , 98 , 40 , 49 , 41 , 32 , 61 , 32 , 49 , 10 
-	.align 2 
-.data
-s2:	.byte 102 , 105 , 98 , 40 
-	.align 2 
-.data
-s3:	.byte 41 , 32 , 61 , 32 
-	.align 2 
-.data
-s4:	.byte 10 
-	.align 2 
-.text
-       	.globl main
-main:
-	addiu	$sp,$sp,-20
-	li	$t9,2
-	sw	$t9,4($sp)
-	li	$t9,1
-	sw	$t9,12($sp)
-	li	$t9,0
-	sw	$t9,16($sp)
-	la	$t9,s0
-	li	$t8,0
-	li	$t7,11
-prints_begin_0:
-	lb	$a0,0($t9)
-	beq	$t8,$t7,prints_exit_0
-	li	$v0,11
-	syscall
-	addi	$t8,$t8,1
-	addi	$t9,$t9,1
-	j	prints_begin_0
-prints_exit_0:
-	la	$t9,s1
-	li	$t8,0
-	li	$t7,11
-prints_begin_1:
-	lb	$a0,0($t9)
-	beq	$t8,$t7,prints_exit_1
-	li	$v0,11
-	syscall
-	addi	$t8,$t8,1
-	addi	$t9,$t9,1
-	j	prints_begin_1
-prints_exit_1:
-loop0:
-	li	$t9,47
-	lw	$t8,4($sp)
-	slt	$t7,$t8,$t9
-	beq	$t7,$0,intermediate_while0
-	j	intermediate_endwhile0
-intermediate_while0:
-	j	while0
-intermediate_endwhile0:
-	la	$t9,s2
-	li	$t8,0
-	li	$t7,4
-prints_begin_2:
-	lb	$a0,0($t9)
-	beq	$t8,$t7,prints_exit_2
-	li	$v0,11
-	syscall
-	addi	$t8,$t8,1
-	addi	$t9,$t9,1
-	j	prints_begin_2
-prints_exit_2:
-	lw	$t9,4($sp)
-	move	$a0,$t9
-	li	$v0,1
-	syscall
-	la	$t9,s3
-	li	$t8,0
-	li	$t7,4
-prints_begin_3:
-	lb	$a0,0($t9)
-	beq	$t8,$t7,prints_exit_3
-	li	$v0,11
-	syscall
-	addi	$t8,$t8,1
-	addi	$t9,$t9,1
-	j	prints_begin_3
-prints_exit_3:
-	lw	$t9,12($sp)
-	lw	$t8,16($sp)
-	addu	$t7,$t9,$t8
-	sw	$t7,8($sp)
-	lw	$t9,8($sp)
-	move	$a0,$t9
-	li	$v0,1
-	syscall
-	lw	$t9,12($sp)
-	sw	$t9,16($sp)
-	lw	$t9,8($sp)
-	sw	$t9,12($sp)
-	la	$t9,s4
-	li	$t8,0
-	li	$t7,1
-prints_begin_4:
-	lb	$a0,0($t9)
-	beq	$t8,$t7,prints_exit_4
-	li	$v0,11
-	syscall
-	addi	$t8,$t8,1
-	addi	$t9,$t9,1
-	j	prints_begin_4
-prints_exit_4:
-	li	$t9,1
-	lw	$t8,4($sp)
-	addu	$t7,$t8,$t9
-	sw	$t7,4($sp)
-	j	loop0
-while0:
-	addiu	$sp,$sp,20
-	li	$v0,10
-	syscall
+Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s
+fib(0) = 0
+fib(1) = 1
+fib(2) = 1
+fib(3) = 2
+fib(4) = 3
+fib(5) = 5
+fib(6) = 8
+fib(7) = 13
+fib(8) = 21
+fib(9) = 34
+fib(10) = 55
+fib(11) = 89
+fib(12) = 144
+fib(13) = 233
+fib(14) = 377
+fib(15) = 610
+fib(16) = 987
+fib(17) = 1597
+fib(18) = 2584
+fib(19) = 4181
+fib(20) = 6765
+fib(21) = 10946
+fib(22) = 17711
+fib(23) = 28657
+fib(24) = 46368
+fib(25) = 75025
+fib(26) = 121393
+fib(27) = 196418
+fib(28) = 317811
+fib(29) = 514229
+fib(30) = 832040
+fib(31) = 1346269
+fib(32) = 2178309
+fib(33) = 3524578
+fib(34) = 5702887
+fib(35) = 9227465
+fib(36) = 14930352
+fib(37) = 24157817
+fib(38) = 39088169
+fib(39) = 63245986
+fib(40) = 102334155
+fib(41) = 165580141
+fib(42) = 267914296
+fib(43) = 433494437
+fib(44) = 701408733
+fib(45) = 1134903170
+fib(46) = 1836311903
