@@ -49,6 +49,7 @@ void preGlobPass(AST *node)
             node->symbolRef->label = label;
             std::cout << label << ":" << bytearr;
             std::string attr = node->attribute;
+            node->strLen = attr.length();
             for (int i = 0; i < attr.length(); i++)
             {
 
@@ -58,36 +59,43 @@ void preGlobPass(AST *node)
                     {
                     case 'n':
                         output += std::to_string(int('\n')) + " , ";
+                        node->strLen--;
                         i++;
                         break;
 
                     case 'b':
                         output += std::to_string(int('\b')) + " , ";
+                        node->strLen--;
                         i++;
                         break;
 
                     case 't':
                         output += std::to_string(int('\t')) + " , ";
+                        node->strLen--;
                         i++;
                         break;
 
                     case 'f':
                         output += std::to_string(int('\f')) + " , ";
+                        node->strLen--;
                         i++;
                         break;
 
                     case '\'':
                         output += std::to_string(int('\'')) + " , ";
+                        node->strLen--;
                         i++;
                         break;
 
                     case '\"':
                         output += std::to_string(int('\"')) + " , ";
+                        node->strLen--;
                         i++;
                         break;
 
                     case 'r':
                         output += std::to_string(int('\r')) + " , ";
+                        node->strLen--;
                         i++;
                         break;
 

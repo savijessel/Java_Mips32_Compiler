@@ -76,6 +76,7 @@ public:
     std::string label;
     std::string altLabel;
     std::string reg;
+    int strLen = 0;
     bool prune = false;
     int offsetCount;
 

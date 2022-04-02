@@ -310,7 +310,7 @@ void genPrints(AST *node)
     // load string and initalize registers for use in loop
     genMemInst("la", reg, strLabel);
     genDoubleInst("li", countReg, "0");
-    genMemInst("li", sizeReg, std::to_string(node->children[1]->children[0]->attribute.size()));
+    genMemInst("li", sizeReg, std::to_string(node->children[1]->children[0]->strLen));
 
     std::cout << beginLabel << ":" << std::endl;
 
