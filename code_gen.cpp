@@ -97,14 +97,10 @@ void preGlobPass(AST *node)
                 }
                 else
                 {
-                    output += std::to_string(int(attr[i])) + " , ";
+                    if (attr[i] != '\0')
+                        output += std::to_string(int(attr[i])) + " , ";
                 }
             }
-            //*** POSSIBLE BUG POINT ***
-            output.pop_back();
-            output.pop_back();
-            output.pop_back();
-            output.pop_back();
             output.pop_back();
             output.pop_back();
 
