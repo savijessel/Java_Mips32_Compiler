@@ -48,11 +48,11 @@ void preGlobPass(AST *node)
             std::string label = "s" + std::to_string(strLabelCount);
             node->symbolRef->label = label;
             std::cout << label << ":" << bytearr;
-            std::string attr = node->attribute + '\0';
+            std::string attr = node->attribute;
             for (int i = 0; i < attr.length(); i++)
             {
 
-                if (attr[i] == '\\' && attr[i + 1] != '\0')
+                if (attr[i] == '\\' && (i + 1) < attr.length())
                 {
                     switch (attr[i + 1])
                     {
@@ -97,13 +97,12 @@ void preGlobPass(AST *node)
                 }
                 else
                 {
-                    if (attr[i] != '\0')
-                        output += std::to_string(int(attr[i])) + " , ";
+                    output += std::to_string(int(attr[i])) + " , ";
                 }
             }
-            output.pop_back();
-            output.pop_back();
 
+            output.pop_back();
+            output.pop_back();
             std::cout << output << std::endl;
             std::cout << align << std::endl;
 
