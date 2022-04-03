@@ -547,7 +547,7 @@ void postSecondPass(AST *node)
         {
             // handle missing labels in code execution
             sym = node->children[0]->children[1]->children[0]->symbolRef->symbol;
-            genRetError("\"Error: Non-void function " + sym + " must return a value\\n\"");
+            genRetError("\"Error: Non-void function \"" + sym + "\" must return a value\\n\"");
             std::cout << node->children[0]->children[1]->children[0]->symbolRef->label << "_end:" << std::endl;
             offset = node->children[0]->children[1]->offsetCount;
         }
@@ -831,7 +831,7 @@ void postSecondPass(AST *node)
         {
             genArithInst("bne", right, "$0", "divNorm");
             // detect division by 0
-            genRetError("\"Error: division by zero on line " + std::to_string(node->lineNum) + "\\n\"");
+            genRetError("\"Error: division by zero on line \\n\"");
             std::cout << "divNorm:" << std::endl;
             genArithInst("div", opReg, left, right);
         }
