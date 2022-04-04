@@ -115,7 +115,7 @@ prints_exit_0:
 	j	_A_end
 .data
 err0:
-.asciiz	"Error: Non-void function A must return a value\n"
+.asciiz	"Error: function 'A' must return a value\n"
 .text
 	la	$a0,err0
 	li	$v0,4
@@ -147,7 +147,7 @@ prints_exit_1:
 	j	_B_end
 .data
 err1:
-.asciiz	"Error: Non-void function B must return a value\n"
+.asciiz	"Error: function 'B' must return a value\n"
 .text
 	la	$a0,err1
 	li	$v0,4
@@ -179,7 +179,7 @@ prints_exit_2:
 	j	_C_end
 .data
 err2:
-.asciiz	"Error: Non-void function C must return a value\n"
+.asciiz	"Error: function 'C' must return a value\n"
 .text
 	la	$a0,err2
 	li	$v0,4

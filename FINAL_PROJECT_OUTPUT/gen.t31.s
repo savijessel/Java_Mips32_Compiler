@@ -19,7 +19,7 @@ main:
 	bne	$t7,$0,divNorm
 .data
 err0:
-.asciiz	"Error: division by zero on line 6\n"
+.asciiz	"Error: division by zero\n"
 .text
 	la	$a0,err0
 	li	$v0,4

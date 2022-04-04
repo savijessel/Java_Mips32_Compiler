@@ -136,7 +136,7 @@ if1:
 	j	_fib_end
 .data
 err0:
-.asciiz	"Error: Non-void function fib must return a value\n"
+.asciiz	"Error: function 'fib' must return a value\n"
 .text
 	la	$a0,err0
 	li	$v0,4

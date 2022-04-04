@@ -7551,7 +7551,7 @@ _INTERNALrandom:
 	j	_INTERNALrandom_end
 .data
 err0:
-.asciiz	"Error: Non-void function INTERNALrandom must return a value\n"
+.asciiz	"Error: function 'INTERNALrandom' must return a value\n"
 .text
 	la	$a0,err0
 	li	$v0,4

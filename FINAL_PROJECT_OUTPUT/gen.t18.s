@@ -110,7 +110,7 @@ if0:
 	j	_getc_end
 .data
 err0:
-.asciiz	"Error: Non-void function getc must return a value\n"
+.asciiz	"Error: function 'getc' must return a value\n"
 .text
 	la	$a0,err0
 	li	$v0,4
@@ -181,7 +181,7 @@ if2:
 	j	_peek_end
 .data
 err1:
-.asciiz	"Error: Non-void function peek must return a value\n"
+.asciiz	"Error: function 'peek' must return a value\n"
 .text
 	la	$a0,err1
 	li	$v0,4
@@ -430,7 +430,7 @@ prints_exit_3:
 	syscall
 .data
 err2:
-.asciiz	"Error: Non-void function scanner must return a value\n"
+.asciiz	"Error: function 'scanner' must return a value\n"
 .text
 	la	$a0,err2
 	li	$v0,4
@@ -462,7 +462,7 @@ and_end1:
 	j	_isdigit_end
 .data
 err3:
-.asciiz	"Error: Non-void function isdigit must return a value\n"
+.asciiz	"Error: function 'isdigit' must return a value\n"
 .text
 	la	$a0,err3
 	li	$v0,4
@@ -503,7 +503,7 @@ or_end2:
 	j	_isspace_end
 .data
 err4:
-.asciiz	"Error: Non-void function isspace must return a value\n"
+.asciiz	"Error: function 'isspace' must return a value\n"
 .text
 	la	$a0,err4
 	li	$v0,4
@@ -654,7 +654,7 @@ while3:
 	j	_E_end
 .data
 err5:
-.asciiz	"Error: Non-void function E must return a value\n"
+.asciiz	"Error: function 'E' must return a value\n"
 .text
 	la	$a0,err5
 	li	$v0,4
@@ -737,7 +737,7 @@ elseIf14:
 	bne	$t8,$0,divNorm
 .data
 err6:
-.asciiz	"Error: division by zero on line 158\n"
+.asciiz	"Error: division by zero\n"
 .text
 	la	$a0,err6
 	li	$v0,4
@@ -755,7 +755,7 @@ while4:
 	j	_T_end
 .data
 err7:
-.asciiz	"Error: Non-void function T must return a value\n"
+.asciiz	"Error: function 'T' must return a value\n"
 .text
 	la	$a0,err7
 	li	$v0,4
@@ -864,7 +864,7 @@ if15:
 	j	_F_end
 .data
 err8:
-.asciiz	"Error: Non-void function F must return a value\n"
+.asciiz	"Error: function 'F' must return a value\n"
 .text
 	la	$a0,err8
 	li	$v0,4

@@ -23675,7 +23675,7 @@ if630:
 	j	_neighbours_end
 .data
 err0:
-.asciiz	"Error: Non-void function neighbours must return a value\n"
+.asciiz	"Error: function 'neighbours' must return a value\n"
 .text
 	la	$a0,err0
 	li	$v0,4
@@ -26728,7 +26728,7 @@ _morerandom:
 	move	$t9,$v0
 .data
 err1:
-.asciiz	"Error: Non-void function morerandom must return a value\n"
+.asciiz	"Error: function 'morerandom' must return a value\n"
 .text
 	la	$a0,err1
 	li	$v0,4
@@ -26767,7 +26767,7 @@ _INTERNALrandom:
 	j	_INTERNALrandom_end
 .data
 err2:
-.asciiz	"Error: Non-void function INTERNALrandom must return a value\n"
+.asciiz	"Error: function 'INTERNALrandom' must return a value\n"
 .text
 	la	$a0,err2
 	li	$v0,4

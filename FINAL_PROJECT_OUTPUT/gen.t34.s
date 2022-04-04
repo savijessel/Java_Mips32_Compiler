@@ -22,7 +22,7 @@ _foo:
 	j	_foo_end
 .data
 err0:
-.asciiz	"Error: Non-void function foo must return a value\n"
+.asciiz	"Error: function 'foo' must return a value\n"
 .text
 	la	$a0,err0
 	li	$v0,4
@@ -60,7 +60,7 @@ _bar:
 	j	_bar_end
 .data
 err1:
-.asciiz	"Error: Non-void function bar must return a value\n"
+.asciiz	"Error: function 'bar' must return a value\n"
 .text
 	la	$a0,err1
 	li	$v0,4
@@ -85,7 +85,7 @@ _baz:
 	j	_baz_end
 .data
 err2:
-.asciiz	"Error: Non-void function baz must return a value\n"
+.asciiz	"Error: function 'baz' must return a value\n"
 .text
 	la	$a0,err2
 	li	$v0,4
