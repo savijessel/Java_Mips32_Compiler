@@ -547,7 +547,7 @@ void postSecondPass(AST *node)
         {
             // handle missing labels in code execution
             sym = node->children[0]->children[1]->children[0]->symbolRef->symbol;
-            genRetError("\"Error: function \"" + sym + "\" must return a value\\n\"");
+            genRetError("\"Error: function " + sym + " must return a value\\n\"");
             std::cout << node->children[0]->children[1]->children[0]->symbolRef->label << "_end:" << std::endl;
             offset = node->children[0]->children[1]->offsetCount;
         }
