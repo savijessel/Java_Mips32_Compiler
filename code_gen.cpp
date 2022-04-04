@@ -107,6 +107,12 @@ void preGlobPass(AST *node)
                         i++;
                         break;
 
+                    case '\\':
+                        output += std::to_string(int('\"')) + " , ";
+                        node->strLen--;
+                        i++;
+                        break;
+
                     case 'r':
                         output += std::to_string(int('\r')) + " , ";
                         node->strLen--;
