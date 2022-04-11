@@ -428,8 +428,10 @@ void genGetChar(AST *node)
     std::cout << tab << "syscall" << std::endl;
     std::string reg = reserveReg();
     std::string reg1 = reserveReg();
+    std::string kReg = reserveReg();
     genDoubleInst("la", reg, charLabel);
     genMemInst("lb", reg1, reg, "0");
+    genMemInst("lb", kReg, reg, "0");
     genArithInst("bne", reg1, "\'-\'", endLabel);
 
     genDoubleInst("li", "$v0", "8");
@@ -442,8 +444,7 @@ void genGetChar(AST *node)
     genDoubleInst("li", "$v0", "-1");
     genSingleInst("j", finLabel);
     std::cout << endLabel << ":" << std::endl;
-    genMemInst("lb", reg, reg, "0");
-    genDoubleInst("move", "$v0", reg);
+    genDoubleInst("move", "$v0", kReg);
     std::cout << finLabel << ":" << std::endl;
     node->reg = "$v0";
     genCharCount++;

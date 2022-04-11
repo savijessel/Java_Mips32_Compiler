@@ -1,3 +1,8 @@
-Loaded: /home/profs/aycock/411/sw/share/spim/exceptions.s
- = 10
+1+1
+ = 2
+2+2
+ = 4
+(5*5)/5
+ = 5
+q
 Error: invalid character.
