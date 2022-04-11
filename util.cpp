@@ -13,6 +13,9 @@ int genStrCount = 0;
 // keeps track of genErr() calls
 int genErrCount = 0;
 
+// keeps track of genGetChar() calls
+int genCharCount = 0;
+
 // map to manage register allocation
 std::map<std::string, int, std::greater<std::string>> regManager({
 
@@ -448,6 +451,7 @@ void genGetChar(AST *node)
     std::cout << tab << "syscall" << std::endl;
 >>>>>>> bd657c7d76e81dced38d6ea58e475b398175026a
     node->reg = "$v0";
+    genCharCount++;
 }
 
 // Generates instruction to execute a runtime error
