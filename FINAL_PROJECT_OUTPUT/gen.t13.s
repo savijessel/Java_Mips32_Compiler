@@ -21,24 +21,20 @@ char_0_end:
 	move	$v0,$t9
 char_0_fin:
 	sw	$v0,4($sp)
-	lw	$t7,4($sp)
-	lw	$t6,_NL
-	sne	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if0
+	lw	$t9,4($sp)
+	lw	$t8,_NL
+	sne	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if0
 	j	intermediate_endif0
 intermediate_if0:
 	j	if0
 intermediate_endif0:
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_reverse
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	lw	$t7,4($sp)
-	move	$a0,$t7
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	lw	$t9,4($sp)
+	move	$a0,$t9
 	li	$v0,11
 	syscall
 if0:
@@ -50,16 +46,12 @@ _reverse_end:
        	.globl main
 main:
 	addiu	$sp,$sp,-4
-	li	$t7,10
-	sw	$t7,_NL
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	li	$t9,10
+	sw	$t9,_NL
+	addiu	$sp,$sp,0
 	jal	_reverse
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
+	addiu	$sp,$sp,0
+	move	$t9,$v0
 	addiu	$sp,$sp,4
 	li	$v0,10
 	syscall

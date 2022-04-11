@@ -140,31 +140,31 @@ _ungetc:
 	addiu	$sp,$sp,-8
 	sw	$ra,0($sp)
 	sw	$a0,4($sp)
-	lw	$t7,__havechar
-	beq	$t7,$0,intermediate_if1
+	lw	$t9,__havechar
+	beq	$t9,$0,intermediate_if1
 	j	intermediate_endif1
 intermediate_if1:
 	j	if1
 intermediate_endif1:
-	la	$t7,s0
-	li	$t6,0
-	li	$t5,33
+	la	$t9,s0
+	li	$t8,0
+	li	$t7,33
 prints_begin_0:
-	lb	$a0,0($t7)
-	beq	$t6,$t5,prints_exit_0
+	lb	$a0,0($t9)
+	beq	$t8,$t7,prints_exit_0
 	li	$v0,11
 	syscall
-	addi	$t6,$t6,1
-	addi	$t7,$t7,1
+	addi	$t8,$t8,1
+	addi	$t9,$t9,1
 	j	prints_begin_0
 prints_exit_0:
 	li	$v0,10
 	syscall
 if1:
-	li	$t7,1
-	sw	$t7,__havechar
-	lw	$t7,4($sp)
-	sw	$t7,__char
+	li	$t9,1
+	sw	$t9,__havechar
+	lw	$t9,4($sp)
+	sw	$t9,__char
 _ungetc_end:
 	lw	$ra,0($sp)
 	addiu	$sp,$sp,8
@@ -173,29 +173,25 @@ _ungetc_end:
 _peek:
 	addiu	$sp,$sp,-4
 	sw	$ra,0($sp)
-	lw	$t7,__havetoken
-	beq	$t7,$0,intermediate_if2
+	lw	$t9,__havetoken
+	beq	$t9,$0,intermediate_if2
 	j	intermediate_endif2
 intermediate_if2:
 	j	if2
 intermediate_endif2:
-	lw	$t7,__token
-	move	$v0,$t7
+	lw	$t9,__token
+	move	$v0,$t9
 	j	_peek_end
 if2:
-	li	$t7,1
-	sw	$t7,__havetoken
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	li	$t9,1
+	sw	$t9,__havetoken
+	addiu	$sp,$sp,0
 	jal	_scanner
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,__token
-	lw	$t7,__token
-	move	$v0,$t7
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,__token
+	lw	$t9,__token
+	move	$v0,$t9
 	j	_peek_end
 .data
 err1:
@@ -215,54 +211,50 @@ _match:
 	addiu	$sp,$sp,-8
 	sw	$ra,0($sp)
 	sw	$a0,4($sp)
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_peek
-	lw	$t9,0($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
 	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	lw	$t6,4($sp)
-	sne	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if3
+	sne	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if3
 	j	intermediate_endif3
 intermediate_if3:
 	j	if3
 intermediate_endif3:
-	la	$t7,s1
-	li	$t6,0
-	li	$t5,16
+	la	$t9,s1
+	li	$t8,0
+	li	$t7,16
 prints_begin_1:
-	lb	$a0,0($t7)
-	beq	$t6,$t5,prints_exit_1
+	lb	$a0,0($t9)
+	beq	$t8,$t7,prints_exit_1
 	li	$v0,11
 	syscall
-	addi	$t6,$t6,1
-	addi	$t7,$t7,1
+	addi	$t8,$t8,1
+	addi	$t9,$t9,1
 	j	prints_begin_1
 prints_exit_1:
-	lw	$t7,4($sp)
-	move	$a0,$t7
+	lw	$t9,4($sp)
+	move	$a0,$t9
 	li	$v0,11
 	syscall
-	la	$t7,s2
-	li	$t6,0
-	li	$t5,1
+	la	$t9,s2
+	li	$t8,0
+	li	$t7,1
 prints_begin_2:
-	lb	$a0,0($t7)
-	beq	$t6,$t5,prints_exit_2
+	lb	$a0,0($t9)
+	beq	$t8,$t7,prints_exit_2
 	li	$v0,11
 	syscall
-	addi	$t6,$t6,1
-	addi	$t7,$t7,1
+	addi	$t8,$t8,1
+	addi	$t9,$t9,1
 	j	prints_begin_2
 prints_exit_2:
 	li	$v0,10
 	syscall
 if3:
-	li	$t7,0
-	sw	$t7,__havetoken
+	li	$t9,0
+	sw	$t9,__havetoken
 _match_end:
 	lw	$ra,0($sp)
 	addiu	$sp,$sp,8
@@ -272,204 +264,180 @@ _scanner:
 	addiu	$sp,$sp,-8
 	sw	$ra,0($sp)
 loop0:
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_getc
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,4($sp)
-	lw	$t7,4($sp)
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,4($sp)
+	lw	$t9,4($sp)
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_isspace
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	beq	$t7,$0,intermediate_while0
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	beq	$t9,$0,intermediate_while0
 	j	intermediate_endwhile0
 intermediate_while0:
 	j	while0
 intermediate_endwhile0:
 	j	loop0
 while0:
-	lw	$t7,4($sp)
-	lw	$t6,_EOF
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if4
+	lw	$t9,4($sp)
+	lw	$t8,_EOF
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if4
 	j	intermediate_endif4
 intermediate_if4:
 	j	if4
 intermediate_endif4:
-	lw	$t7,_TK_EOF
-	move	$v0,$t7
+	lw	$t9,_TK_EOF
+	move	$v0,$t9
 	j	_scanner_end
 if4:
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_NL
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if5
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_NL
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if5
 	j	intermediate_endif5
 intermediate_if5:
 	j	if5
 intermediate_endif5:
-	lw	$t7,_TK_EOLN
-	move	$v0,$t7
+	lw	$t9,_TK_EOLN
+	move	$v0,$t9
 	j	_scanner_end
 if5:
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_PLUS
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if6
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_PLUS
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if6
 	j	intermediate_endif6
 intermediate_if6:
 	j	if6
 intermediate_endif6:
-	lw	$t7,_TK_ADD
-	move	$v0,$t7
+	lw	$t9,_TK_ADD
+	move	$v0,$t9
 	j	_scanner_end
 if6:
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_MINUS
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if7
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_MINUS
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if7
 	j	intermediate_endif7
 intermediate_if7:
 	j	if7
 intermediate_endif7:
-	lw	$t7,_TK_SUB
-	move	$v0,$t7
+	lw	$t9,_TK_SUB
+	move	$v0,$t9
 	j	_scanner_end
 if7:
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_STAR
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if8
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_STAR
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if8
 	j	intermediate_endif8
 intermediate_if8:
 	j	if8
 intermediate_endif8:
-	lw	$t7,_TK_MUL
-	move	$v0,$t7
+	lw	$t9,_TK_MUL
+	move	$v0,$t9
 	j	_scanner_end
 if8:
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_SLASH
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if9
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_SLASH
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if9
 	j	intermediate_endif9
 intermediate_if9:
 	j	if9
 intermediate_endif9:
-	lw	$t7,_TK_DIV
-	move	$v0,$t7
+	lw	$t9,_TK_DIV
+	move	$v0,$t9
 	j	_scanner_end
 if9:
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_LPAREN
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if10
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_LPAREN
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if10
 	j	intermediate_endif10
 intermediate_if10:
 	j	if10
 intermediate_endif10:
-	lw	$t7,_TK_LPAREN
-	move	$v0,$t7
+	lw	$t9,_TK_LPAREN
+	move	$v0,$t9
 	j	_scanner_end
 if10:
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_RPAREN
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_if11
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_RPAREN
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_if11
 	j	intermediate_endif11
 intermediate_if11:
 	j	if11
 intermediate_endif11:
-	lw	$t7,_TK_RPAREN
-	move	$v0,$t7
+	lw	$t9,_TK_RPAREN
+	move	$v0,$t9
 	j	_scanner_end
 if11:
-	lw	$t7,4($sp)
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	lw	$t9,4($sp)
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_isdigit
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	beq	$t7,$0,intermediate_if12
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	beq	$t9,$0,intermediate_if12
 	j	intermediate_endif12
 intermediate_if12:
 	j	if12
 intermediate_endif12:
-	li	$t7,0
-	sw	$t7,_attr
+	li	$t9,0
+	sw	$t9,_attr
 loop1:
-	lw	$t7,4($sp)
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	lw	$t9,4($sp)
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_isdigit
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	beq	$t7,$0,intermediate_while1
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	beq	$t9,$0,intermediate_while1
 	j	intermediate_endwhile1
 intermediate_while1:
 	j	while1
 intermediate_endwhile1:
-	li	$t7,10
-	lw	$t6,_attr
-	mul	$t5,$t6,$t7
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_0
-	subu	$t4,$t7,$t6
-	addu	$t7,$t5,$t4
-	sw	$t7,_attr
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	li	$t9,10
+	lw	$t8,_attr
+	mul	$t7,$t8,$t9
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_0
+	subu	$t6,$t9,$t8
+	addu	$t9,$t7,$t6
+	sw	$t9,_attr
+	addiu	$sp,$sp,0
 	jal	_getc
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,4($sp)
 	j	loop1
 while1:
-	lw	$t7,4($sp)
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	lw	$t9,4($sp)
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_ungetc
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	lw	$t7,_TK_NUMBER
-	move	$v0,$t7
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	lw	$t9,_TK_NUMBER
+	move	$v0,$t9
 	j	_scanner_end
 if12:
-	la	$t7,s3
-	li	$t6,0
-	li	$t5,26
+	la	$t9,s3
+	li	$t8,0
+	li	$t7,26
 prints_begin_3:
-	lb	$a0,0($t7)
-	beq	$t6,$t5,prints_exit_3
+	lb	$a0,0($t9)
+	beq	$t8,$t7,prints_exit_3
 	li	$v0,11
 	syscall
-	addi	$t6,$t6,1
-	addi	$t7,$t7,1
+	addi	$t8,$t8,1
+	addi	$t9,$t9,1
 	j	prints_begin_3
 prints_exit_3:
 	li	$v0,10
@@ -492,19 +460,19 @@ _isdigit:
 	addiu	$sp,$sp,-8
 	sw	$ra,0($sp)
 	sw	$a0,4($sp)
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_0
-	sge	$t5,$t7,$t6
-	beq	$t5,$0,and_left_false1
-	lw	$t6,4($sp)
-	lw	$t4,_ASCII_9
-	sle	$t3,$t6,$t4
-	move	$t7,$t3
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_0
+	sge	$t7,$t9,$t8
+	beq	$t7,$0,and_left_false1
+	lw	$t8,4($sp)
+	lw	$t6,_ASCII_9
+	sle	$t5,$t8,$t6
+	move	$t9,$t5
 	j	and_end1
 and_left_false1:
-	li	$t7,0
+	li	$t9,0
 and_end1:
-	move	$v0,$t7
+	move	$v0,$t9
 	j	_isdigit_end
 .data
 err3:
@@ -524,28 +492,28 @@ _isspace:
 	addiu	$sp,$sp,-8
 	sw	$ra,0($sp)
 	sw	$a0,4($sp)
-	lw	$t7,4($sp)
-	lw	$t6,_ASCII_SPACE
-	seq	$t5,$t7,$t6
-	bne	$t5,$0,or_left_true3
-	lw	$t6,4($sp)
-	lw	$t4,_ASCII_TAB
-	seq	$t3,$t6,$t4
-	move	$t7,$t3
+	lw	$t9,4($sp)
+	lw	$t8,_ASCII_SPACE
+	seq	$t7,$t9,$t8
+	bne	$t7,$0,or_left_true3
+	lw	$t8,4($sp)
+	lw	$t6,_ASCII_TAB
+	seq	$t5,$t8,$t6
+	move	$t9,$t5
 	j	or_end3
 or_left_true3:
-	li	$t7,1
+	li	$t9,1
 or_end3:
-	bne	$t7,$0,or_left_true2
-	lw	$t5,4($sp)
-	lw	$t4,_ASCII_CR
-	seq	$t3,$t5,$t4
-	move	$t6,$t3
+	bne	$t9,$0,or_left_true2
+	lw	$t7,4($sp)
+	lw	$t6,_ASCII_CR
+	seq	$t5,$t7,$t6
+	move	$t8,$t5
 	j	or_end2
 or_left_true2:
-	li	$t6,1
+	li	$t8,1
 or_end2:
-	move	$v0,$t6
+	move	$v0,$t8
 	j	_isspace_end
 .data
 err4:
@@ -565,66 +533,54 @@ _parser:
 	addiu	$sp,$sp,-8
 	sw	$ra,0($sp)
 loop2:
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_peek
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	lw	$t6,_TK_EOF
-	sne	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_while2
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	lw	$t8,_TK_EOF
+	sne	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_while2
 	j	intermediate_endwhile2
 intermediate_while2:
 	j	while2
 intermediate_endwhile2:
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_E
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,4($sp)
-	lw	$t7,_TK_EOLN
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,4($sp)
+	lw	$t9,_TK_EOLN
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_match
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	la	$t7,s4
-	li	$t6,0
-	li	$t5,3
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	la	$t9,s4
+	li	$t8,0
+	li	$t7,3
 prints_begin_4:
-	lb	$a0,0($t7)
-	beq	$t6,$t5,prints_exit_4
+	lb	$a0,0($t9)
+	beq	$t8,$t7,prints_exit_4
 	li	$v0,11
 	syscall
-	addi	$t6,$t6,1
-	addi	$t7,$t7,1
+	addi	$t8,$t8,1
+	addi	$t9,$t9,1
 	j	prints_begin_4
 prints_exit_4:
-	lw	$t7,4($sp)
-	move	$a0,$t7
+	lw	$t9,4($sp)
+	move	$a0,$t9
 	li	$v0,1
 	syscall
-	la	$t7,s5
-	li	$t6,0
-	li	$t5,1
+	la	$t9,s5
+	li	$t8,0
+	li	$t7,1
 prints_begin_5:
-	lb	$a0,0($t7)
-	beq	$t6,$t5,prints_exit_5
+	lb	$a0,0($t9)
+	beq	$t8,$t7,prints_exit_5
 	li	$v0,11
 	syscall
-	addi	$t6,$t6,1
-	addi	$t7,$t7,1
+	addi	$t8,$t8,1
+	addi	$t9,$t9,1
 	j	prints_begin_5
 prints_exit_5:
 	j	loop2
@@ -637,102 +593,78 @@ _parser_end:
 _E:
 	addiu	$sp,$sp,-16
 	sw	$ra,0($sp)
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_T
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,4($sp)
 loop3:
+	addiu	$sp,$sp,0
+	jal	_peek
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	lw	$t8,_TK_ADD
+	seq	$t7,$t9,$t8
+	bne	$t7,$0,or_left_true4
 	addiu	$sp,$sp,-8
 	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	sw	$t7,4($sp)
 	jal	_peek
 	lw	$t9,0($sp)
-	lw	$t8,4($sp)
+	lw	$t7,4($sp)
 	addiu	$sp,$sp,8
-	move	$t7,$v0
-	lw	$t6,_TK_ADD
-	seq	$t5,$t7,$t6
-	bne	$t5,$0,or_left_true4
-	addiu	$sp,$sp,-16
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
-	sw	$t7,8($sp)
-	sw	$t5,12($sp)
-	jal	_peek
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	lw	$t7,8($sp)
-	lw	$t5,12($sp)
-	addiu	$sp,$sp,16
-	move	$t6,$v0
-	lw	$t4,_TK_SUB
-	seq	$t3,$t6,$t4
-	move	$t7,$t3
+	move	$t8,$v0
+	lw	$t6,_TK_SUB
+	seq	$t5,$t8,$t6
+	move	$t9,$t5
 	j	or_end4
 or_left_true4:
-	li	$t7,1
+	li	$t9,1
 or_end4:
-	beq	$t7,$0,intermediate_while3
+	beq	$t9,$0,intermediate_while3
 	j	intermediate_endwhile3
 intermediate_while3:
 	j	while3
 intermediate_endwhile3:
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_peek
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,12($sp)
-	lw	$t7,12($sp)
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,12($sp)
+	lw	$t9,12($sp)
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_match
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	addiu	$sp,$sp,0
 	jal	_T
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,8($sp)
-	lw	$t7,12($sp)
-	lw	$t6,_TK_ADD
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_elseIf13
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,8($sp)
+	lw	$t9,12($sp)
+	lw	$t8,_TK_ADD
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_elseIf13
 	j	intermediate_endelseIf13
 intermediate_elseIf13:
 	j	elseIf13
 intermediate_endelseIf13:
-	lw	$t7,4($sp)
-	lw	$t6,8($sp)
-	addu	$t5,$t7,$t6
-	sw	$t5,4($sp)
+	lw	$t9,4($sp)
+	lw	$t8,8($sp)
+	addu	$t7,$t9,$t8
+	sw	$t7,4($sp)
 	j	if13
 elseIf13:
-	lw	$t7,4($sp)
-	lw	$t6,8($sp)
-	subu	$t5,$t7,$t6
-	sw	$t5,4($sp)
+	lw	$t9,4($sp)
+	lw	$t8,8($sp)
+	subu	$t7,$t9,$t8
+	sw	$t7,4($sp)
 if13:
 	j	loop3
 while3:
-	lw	$t7,4($sp)
-	move	$v0,$t7
+	lw	$t9,4($sp)
+	move	$v0,$t9
 	j	_E_end
 .data
 err5:
@@ -751,96 +683,72 @@ _E_end:
 _T:
 	addiu	$sp,$sp,-16
 	sw	$ra,0($sp)
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_F
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,4($sp)
 loop4:
+	addiu	$sp,$sp,0
+	jal	_peek
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	lw	$t8,_TK_MUL
+	seq	$t7,$t9,$t8
+	bne	$t7,$0,or_left_true5
 	addiu	$sp,$sp,-8
 	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	sw	$t7,4($sp)
 	jal	_peek
 	lw	$t9,0($sp)
-	lw	$t8,4($sp)
+	lw	$t7,4($sp)
 	addiu	$sp,$sp,8
-	move	$t7,$v0
-	lw	$t6,_TK_MUL
-	seq	$t5,$t7,$t6
-	bne	$t5,$0,or_left_true5
-	addiu	$sp,$sp,-16
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
-	sw	$t7,8($sp)
-	sw	$t5,12($sp)
-	jal	_peek
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	lw	$t7,8($sp)
-	lw	$t5,12($sp)
-	addiu	$sp,$sp,16
-	move	$t6,$v0
-	lw	$t4,_TK_DIV
-	seq	$t3,$t6,$t4
-	move	$t7,$t3
+	move	$t8,$v0
+	lw	$t6,_TK_DIV
+	seq	$t5,$t8,$t6
+	move	$t9,$t5
 	j	or_end5
 or_left_true5:
-	li	$t7,1
+	li	$t9,1
 or_end5:
-	beq	$t7,$0,intermediate_while4
+	beq	$t9,$0,intermediate_while4
 	j	intermediate_endwhile4
 intermediate_while4:
 	j	while4
 intermediate_endwhile4:
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_peek
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,12($sp)
-	lw	$t7,12($sp)
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,12($sp)
+	lw	$t9,12($sp)
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_match
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	addiu	$sp,$sp,0
 	jal	_F
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,8($sp)
-	lw	$t7,12($sp)
-	lw	$t6,_TK_MUL
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_elseIf14
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,8($sp)
+	lw	$t9,12($sp)
+	lw	$t8,_TK_MUL
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_elseIf14
 	j	intermediate_endelseIf14
 intermediate_elseIf14:
 	j	elseIf14
 intermediate_endelseIf14:
-	lw	$t7,4($sp)
-	lw	$t6,8($sp)
-	mul	$t5,$t7,$t6
-	sw	$t5,4($sp)
+	lw	$t9,4($sp)
+	lw	$t8,8($sp)
+	mul	$t7,$t9,$t8
+	sw	$t7,4($sp)
 	j	if14
 elseIf14:
-	lw	$t7,4($sp)
-	lw	$t6,8($sp)
-	bne	$t6,$0,divNorm
+	lw	$t9,4($sp)
+	lw	$t8,8($sp)
+	bne	$t8,$0,divNorm
 .data
 err6:
 .asciiz	"Error: division by zero\n"
@@ -851,13 +759,13 @@ err6:
 	li	$v0,10
 	syscall
 divNorm:
-	div	$t5,$t7,$t6
-	sw	$t5,4($sp)
+	div	$t7,$t9,$t8
+	sw	$t7,4($sp)
 if14:
 	j	loop4
 while4:
-	lw	$t7,4($sp)
-	move	$v0,$t7
+	lw	$t9,4($sp)
+	move	$v0,$t9
 	j	_T_end
 .data
 err7:
@@ -876,116 +784,88 @@ _T_end:
 _F:
 	addiu	$sp,$sp,-12
 	sw	$ra,0($sp)
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
 	jal	_peek
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,8($sp)
-	lw	$t7,8($sp)
-	lw	$t6,_TK_LPAREN
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_elseIf15
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,8($sp)
+	lw	$t9,8($sp)
+	lw	$t8,_TK_LPAREN
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_elseIf15
 	j	intermediate_endelseIf15
 intermediate_elseIf15:
 	j	elseIf15
 intermediate_endelseIf15:
-	lw	$t7,_TK_LPAREN
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	lw	$t9,_TK_LPAREN
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_match
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	addiu	$sp,$sp,0
 	jal	_E
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	sw	$t7,4($sp)
-	lw	$t7,_TK_RPAREN
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	sw	$t9,4($sp)
+	lw	$t9,_TK_RPAREN
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_match
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
+	addiu	$sp,$sp,0
+	move	$t9,$v0
 	j	if15
 elseIf15:
-	lw	$t7,8($sp)
-	lw	$t6,_TK_SUB
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_elseIf16
+	lw	$t9,8($sp)
+	lw	$t8,_TK_SUB
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_elseIf16
 	j	intermediate_endelseIf16
 intermediate_elseIf16:
 	j	elseIf16
 intermediate_endelseIf16:
-	lw	$t7,_TK_SUB
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	lw	$t9,_TK_SUB
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_match
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	addiu	$sp,$sp,0
 	jal	_F
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	subu	$t6,$0,$t7
-	sw	$t6,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	subu	$t8,$0,$t9
+	sw	$t8,4($sp)
 	j	if16
 elseIf16:
-	lw	$t7,8($sp)
-	lw	$t6,_TK_NUMBER
-	seq	$t5,$t7,$t6
-	beq	$t5,$0,intermediate_elseIf17
+	lw	$t9,8($sp)
+	lw	$t8,_TK_NUMBER
+	seq	$t7,$t9,$t8
+	beq	$t7,$0,intermediate_elseIf17
 	j	intermediate_endelseIf17
 intermediate_elseIf17:
 	j	elseIf17
 intermediate_endelseIf17:
-	lw	$t7,_TK_NUMBER
-	move	$a0,$t7
-	addiu	$sp,$sp,-8
-	sw	$t9,0($sp)
-	sw	$t8,4($sp)
+	lw	$t9,_TK_NUMBER
+	move	$a0,$t9
+	addiu	$sp,$sp,0
 	jal	_match
-	lw	$t9,0($sp)
-	lw	$t8,4($sp)
-	addiu	$sp,$sp,8
-	move	$t7,$v0
-	lw	$t7,_attr
-	sw	$t7,4($sp)
+	addiu	$sp,$sp,0
+	move	$t9,$v0
+	lw	$t9,_attr
+	sw	$t9,4($sp)
 	j	if17
 elseIf17:
-	la	$t7,s6
-	li	$t6,0
-	li	$t5,24
+	la	$t9,s6
+	li	$t8,0
+	li	$t7,24
 prints_begin_6:
-	lb	$a0,0($t7)
-	beq	$t6,$t5,prints_exit_6
+	lb	$a0,0($t9)
+	beq	$t8,$t7,prints_exit_6
 	li	$v0,11
 	syscall
-	addi	$t6,$t6,1
-	addi	$t7,$t7,1
+	addi	$t8,$t8,1
+	addi	$t9,$t9,1
 	j	prints_begin_6
 prints_exit_6:
 	li	$v0,10
@@ -993,8 +873,8 @@ prints_exit_6:
 if17:
 if16:
 if15:
-	lw	$t7,4($sp)
-	move	$v0,$t7
+	lw	$t9,4($sp)
+	move	$v0,$t9
 	j	_F_end
 .data
 err8:
@@ -1013,51 +893,51 @@ _F_end:
 _init:
 	addiu	$sp,$sp,-4
 	sw	$ra,0($sp)
-	li	$t7,1
-	subu	$t6,$0,$t7
-	sw	$t6,_EOF
-	li	$t7,48
-	sw	$t7,_ASCII_0
-	li	$t7,57
-	sw	$t7,_ASCII_9
-	li	$t7,43
-	sw	$t7,_ASCII_PLUS
-	li	$t7,45
-	sw	$t7,_ASCII_MINUS
-	li	$t7,42
-	sw	$t7,_ASCII_STAR
-	li	$t7,47
-	sw	$t7,_ASCII_SLASH
-	li	$t7,40
-	sw	$t7,_ASCII_LPAREN
-	li	$t7,41
-	sw	$t7,_ASCII_RPAREN
-	li	$t7,32
-	sw	$t7,_ASCII_SPACE
-	li	$t7,9
-	sw	$t7,_ASCII_TAB
-	li	$t7,13
-	sw	$t7,_ASCII_CR
-	li	$t7,10
-	sw	$t7,_ASCII_NL
-	li	$t7,256
-	sw	$t7,_TK_EOF
-	li	$t7,257
-	sw	$t7,_TK_NUMBER
-	lw	$t7,_ASCII_PLUS
-	sw	$t7,_TK_ADD
-	lw	$t7,_ASCII_MINUS
-	sw	$t7,_TK_SUB
-	lw	$t7,_ASCII_STAR
-	sw	$t7,_TK_MUL
-	lw	$t7,_ASCII_SLASH
-	sw	$t7,_TK_DIV
-	lw	$t7,_ASCII_LPAREN
-	sw	$t7,_TK_LPAREN
-	lw	$t7,_ASCII_RPAREN
-	sw	$t7,_TK_RPAREN
-	lw	$t7,_ASCII_NL
-	sw	$t7,_TK_EOLN
+	li	$t9,1
+	subu	$t8,$0,$t9
+	sw	$t8,_EOF
+	li	$t9,48
+	sw	$t9,_ASCII_0
+	li	$t9,57
+	sw	$t9,_ASCII_9
+	li	$t9,43
+	sw	$t9,_ASCII_PLUS
+	li	$t9,45
+	sw	$t9,_ASCII_MINUS
+	li	$t9,42
+	sw	$t9,_ASCII_STAR
+	li	$t9,47
+	sw	$t9,_ASCII_SLASH
+	li	$t9,40
+	sw	$t9,_ASCII_LPAREN
+	li	$t9,41
+	sw	$t9,_ASCII_RPAREN
+	li	$t9,32
+	sw	$t9,_ASCII_SPACE
+	li	$t9,9
+	sw	$t9,_ASCII_TAB
+	li	$t9,13
+	sw	$t9,_ASCII_CR
+	li	$t9,10
+	sw	$t9,_ASCII_NL
+	li	$t9,256
+	sw	$t9,_TK_EOF
+	li	$t9,257
+	sw	$t9,_TK_NUMBER
+	lw	$t9,_ASCII_PLUS
+	sw	$t9,_TK_ADD
+	lw	$t9,_ASCII_MINUS
+	sw	$t9,_TK_SUB
+	lw	$t9,_ASCII_STAR
+	sw	$t9,_TK_MUL
+	lw	$t9,_ASCII_SLASH
+	sw	$t9,_TK_DIV
+	lw	$t9,_ASCII_LPAREN
+	sw	$t9,_TK_LPAREN
+	lw	$t9,_ASCII_RPAREN
+	sw	$t9,_TK_RPAREN
+	lw	$t9,_ASCII_NL
+	sw	$t9,_TK_EOLN
 _init_end:
 	lw	$ra,0($sp)
 	addiu	$sp,$sp,4
