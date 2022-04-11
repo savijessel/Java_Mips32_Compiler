@@ -4,23 +4,48 @@ _NL:.word 0
 _reverse:
 	addiu	$sp,$sp,-8
 	sw	$ra,0($sp)
-	li	$v0,12
+.data
+char_0: .space 2
+.text
+	li	$v0,8
+	la	$a0,char_0
+	li	$a1,2
 	syscall
+	la	$t9,char_0
+	lb	$t8,0($t9)
+	bne	$t8,'-',char_0_end
+	li	$v0,8
+	la	$a0,char_0
+	li	$a1,2
+	syscall
+	la	$t9,char_0
+	lb	$t8,0($t9)
+	bne	$t8,'1',char_0_end
+	li	$v0,-1
+	j	char_0_fin
+char_0_end:
+	lb	$t9,0($t9)
+	move	$v0,$t9
+char_0_fin:
 	sw	$v0,4($sp)
-	lw	$t9,4($sp)
-	lw	$t8,_NL
-	sne	$t7,$t9,$t8
-	beq	$t7,$0,intermediate_if0
+	lw	$t7,4($sp)
+	lw	$t6,_NL
+	sne	$t5,$t7,$t6
+	beq	$t5,$0,intermediate_if0
 	j	intermediate_endif0
 intermediate_if0:
 	j	if0
 intermediate_endif0:
-	addiu	$sp,$sp,0
+	addiu	$sp,$sp,-8
+	sw	$t9,0($sp)
+	sw	$t8,4($sp)
 	jal	_reverse
-	addiu	$sp,$sp,0
-	move	$t9,$v0
-	lw	$t9,4($sp)
-	move	$a0,$t9
+	lw	$t9,0($sp)
+	lw	$t8,4($sp)
+	addiu	$sp,$sp,8
+	move	$t7,$v0
+	lw	$t7,4($sp)
+	move	$a0,$t7
 	li	$v0,11
 	syscall
 if0:
@@ -32,12 +57,16 @@ _reverse_end:
        	.globl main
 main:
 	addiu	$sp,$sp,-4
-	li	$t9,10
-	sw	$t9,_NL
-	addiu	$sp,$sp,0
+	li	$t7,10
+	sw	$t7,_NL
+	addiu	$sp,$sp,-8
+	sw	$t9,0($sp)
+	sw	$t8,4($sp)
 	jal	_reverse
-	addiu	$sp,$sp,0
-	move	$t9,$v0
+	lw	$t9,0($sp)
+	lw	$t8,4($sp)
+	addiu	$sp,$sp,8
+	move	$t7,$v0
 	addiu	$sp,$sp,4
 	li	$v0,10
 	syscall
