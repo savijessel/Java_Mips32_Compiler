@@ -415,7 +415,6 @@ void genPrintb(AST *node)
 void genGetChar(AST *node)
 {
 
-<<<<<<< HEAD
     std::cout << data;
     std::string charLabel = "char_" + std::to_string(genCharCount);
     std::string finLabel = charLabel + "_fin";
@@ -446,10 +445,6 @@ void genGetChar(AST *node)
     genMemInst("lb", reg, reg, "0");
     genDoubleInst("move", "$v0", reg);
     std::cout << finLabel << ":" << std::endl;
-=======
-    genDoubleInst("li", "$v0", "12");
-    std::cout << tab << "syscall" << std::endl;
->>>>>>> bd657c7d76e81dced38d6ea58e475b398175026a
     node->reg = "$v0";
     genCharCount++;
 }
