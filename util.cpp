@@ -13,9 +13,6 @@ int genStrCount = 0;
 // keeps track of genErr() calls
 int genErrCount = 0;
 
-// keeps track of genErr() calls
-int genCharCount = 0;
-
 // map to manage register allocation
 std::map<std::string, int, std::greater<std::string>> regManager({
 
@@ -415,23 +412,30 @@ void genPrintb(AST *node)
 void genGetChar(AST *node)
 {
 
+<<<<<<< HEAD
     std::cout << data;
     std::string charLabel = "char_" + std::to_string(genCharCount);
     std::string finLabel = charLabel + "_fin";
     std::string endLabel = charLabel + "_end";
-    std::cout << charLabel << ": .space 3" << std::endl;
+    std::cout << charLabel << ": .space 2" << std::endl;
     std::cout << text;
 
     genDoubleInst("li", "$v0", "8");
     genDoubleInst("la", "$a0", charLabel);
-    genDoubleInst("li", "$a1", "3");
+    genDoubleInst("li", "$a1", "2");
     std::cout << tab << "syscall" << std::endl;
     std::string reg = reserveReg();
     std::string reg1 = reserveReg();
     genDoubleInst("la", reg, charLabel);
     genMemInst("lb", reg1, reg, "0");
     genArithInst("bne", reg1, "\'-\'", endLabel);
-    genMemInst("lb", reg1, reg, "1");
+
+    genDoubleInst("li", "$v0", "8");
+    genDoubleInst("la", "$a0", charLabel);
+    genDoubleInst("li", "$a1", "2");
+    std::cout << tab << "syscall" << std::endl;
+    genDoubleInst("la", reg, charLabel);
+    genMemInst("lb", reg1, reg, "0");
     genArithInst("bne", reg1, "\'1\'", endLabel);
     genDoubleInst("li", "$v0", "-1");
     genSingleInst("j", finLabel);
@@ -439,10 +443,11 @@ void genGetChar(AST *node)
     genMemInst("lb", reg, reg, "0");
     genDoubleInst("move", "$v0", reg);
     std::cout << finLabel << ":" << std::endl;
+=======
+    genDoubleInst("li", "$v0", "12");
+    std::cout << tab << "syscall" << std::endl;
+>>>>>>> bd657c7d76e81dced38d6ea58e475b398175026a
     node->reg = "$v0";
-    genCharCount++;
-    freeReg(reg);
-    freeReg(reg1);
 }
 
 // Generates instruction to execute a runtime error
