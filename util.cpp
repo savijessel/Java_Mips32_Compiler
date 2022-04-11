@@ -439,6 +439,8 @@ void genGetChar(AST *node)
     std::cout << finLabel << ":" << std::endl;
     node->reg = "$v0";
     genCharCount++;
+    freeReg(reg);
+    freeReg(tempReg);
 }
 
 // Generates instruction to execute a runtime error
