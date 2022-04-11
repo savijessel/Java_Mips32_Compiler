@@ -430,7 +430,7 @@ void genGetChar(AST *node)
     std::string tempReg = reserveReg();
     genDoubleInst("la", reg, charLabel);
     genMemInst("lb", reg, reg, "0");
-    genDoubleInst("li", tempReg, "4");
+    genDoubleInst("li", tempReg, "0");
     genArithInst("bne", reg, tempReg, endLabel);
     genDoubleInst("li", "$v0", "-1");
     genSingleInst("j", finLabel);
