@@ -28,7 +28,7 @@ prints_begin_0:
 prints_exit_0:
 	la	$t9,s1
 	li	$t8,0
-	li	$t7,8
+	li	$t7,9
 prints_begin_1:
 	lb	$a0,0($t9)
 	beq	$t8,$t7,prints_exit_1
