@@ -1,0 +1,1364 @@
+Program: { './test_files/final/gen.t29' } 
+    variable declaration { line: 1 }
+        type { Type: 'boolean', line: 1 }
+        identifier { Attr: 'a', sig: 'boolean', SymTab Address: '0x168a0d0', line: 1 }
+    variable declaration { line: 2 }
+        type { Type: 'boolean', line: 2 }
+        identifier { Attr: 'b', sig: 'boolean', SymTab Address: '0x168a160', line: 2 }
+    variable declaration { line: 3 }
+        type { Type: 'boolean', line: 3 }
+        identifier { Attr: 'c', sig: 'boolean', SymTab Address: '0x168a230', line: 3 }
+    function declaration { line: 5 }
+        function header { line: 5 }
+            type { Type: 'boolean', line: 5 }
+            function declarator { line: 5 }
+                identifier { Attr: 'A', sig: 'boolean', SymTab Address: '0x168a300', line: 5 }
+        block { line: 5 }
+            block statements { line: 6 }
+                statement expression { Type: 'function call', line: 6 }
+                    function call { Sig: 'void', line: 6 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 6 }
+                        argument list { line: 6 }
+                            literal { Type: 'string', Attr: 'evaluated A\n', line: 6 }
+                return { line: 7 }
+                    identifier { Attr: 'a', sig: 'boolean', SymTab Address: '0x168a0d0', line: 7 }
+    function declaration { line: 9 }
+        function header { line: 9 }
+            type { Type: 'boolean', line: 9 }
+            function declarator { line: 9 }
+                identifier { Attr: 'B', sig: 'boolean', SymTab Address: '0x168a4c0', line: 9 }
+        block { line: 9 }
+            block statements { line: 10 }
+                statement expression { Type: 'function call', line: 10 }
+                    function call { Sig: 'void', line: 10 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 10 }
+                        argument list { line: 10 }
+                            literal { Type: 'string', Attr: 'evaluated B\n', line: 10 }
+                return { line: 11 }
+                    identifier { Attr: 'b', sig: 'boolean', SymTab Address: '0x168a160', line: 11 }
+    function declaration { line: 13 }
+        function header { line: 13 }
+            type { Type: 'boolean', line: 13 }
+            function declarator { line: 13 }
+                identifier { Attr: 'C', sig: 'boolean', SymTab Address: '0x168a590', line: 13 }
+        block { line: 13 }
+            block statements { line: 14 }
+                statement expression { Type: 'function call', line: 14 }
+                    function call { Sig: 'void', line: 14 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 14 }
+                        argument list { line: 14 }
+                            literal { Type: 'string', Attr: 'evaluated C\n', line: 14 }
+                return { line: 15 }
+                    identifier { Attr: 'c', sig: 'boolean', SymTab Address: '0x168a230', line: 15 }
+    function declaration { line: 18 }
+        function header { Type: 'void', line: 18 }
+            function declarator { line: 18 }
+                identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 18 }
+                formal parameter list { line: 18 }
+                    formal parameter { line: 18 }
+                        type { Type: 'boolean', line: 18 }
+                        identifier { Attr: 'newa', sig: 'boolean', SymTab Address: '0x168a9f0', line: 18 }
+                    formal parameter { line: 18 }
+                        type { Type: 'boolean', line: 18 }
+                        identifier { Attr: 'n00b', sig: 'boolean', SymTab Address: '0x168aac0', line: 18 }
+                    formal parameter { line: 18 }
+                        type { Type: 'boolean', line: 18 }
+                        identifier { Attr: 'newc', sig: 'boolean', SymTab Address: '0x168ab90', line: 18 }
+        block { line: 18 }
+            block statements { line: 19 }
+                statement expression { Type: 'assignment', line: 19 }
+                    Assignment { Type: '=', Sig: 'boolean', line: 19 }
+                        identifier { Attr: 'a', sig: 'boolean', SymTab Address: '0x168a0d0', line: 19 }
+                        identifier { Attr: 'newa', sig: 'boolean', SymTab Address: '0x168a9f0', line: 19 }
+                statement expression { Type: 'assignment', line: 20 }
+                    Assignment { Type: '=', Sig: 'boolean', line: 20 }
+                        identifier { Attr: 'b', sig: 'boolean', SymTab Address: '0x168a160', line: 20 }
+                        identifier { Attr: 'n00b', sig: 'boolean', SymTab Address: '0x168aac0', line: 20 }
+                statement expression { Type: 'assignment', line: 21 }
+                    Assignment { Type: '=', Sig: 'boolean', line: 21 }
+                        identifier { Attr: 'c', sig: 'boolean', SymTab Address: '0x168a230', line: 21 }
+                        identifier { Attr: 'newc', sig: 'boolean', SymTab Address: '0x168ab90', line: 21 }
+                statement expression { Type: 'function call', line: 23 }
+                    function call { Sig: 'void', line: 23 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 23 }
+                        argument list { line: 23 }
+                            literal { Type: 'string', Attr: 'if ((A && B) || C) {...} else {...}, with A=', line: 23 }
+                statement expression { Type: 'function call', line: 24 }
+                    function call { Sig: 'void', line: 24 }
+                        identifier { Attr: 'printb', sig: 'f(boolean)', SymTab Address: '0x1689c20', line: 24 }
+                        argument list { line: 24 }
+                            identifier { Attr: 'a', sig: 'boolean', SymTab Address: '0x168a0d0', line: 24 }
+                statement expression { Type: 'function call', line: 25 }
+                    function call { Sig: 'void', line: 25 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 25 }
+                        argument list { line: 25 }
+                            literal { Type: 'string', Attr: ' B=', line: 25 }
+                statement expression { Type: 'function call', line: 26 }
+                    function call { Sig: 'void', line: 26 }
+                        identifier { Attr: 'printb', sig: 'f(boolean)', SymTab Address: '0x1689c20', line: 26 }
+                        argument list { line: 26 }
+                            identifier { Attr: 'b', sig: 'boolean', SymTab Address: '0x168a160', line: 26 }
+                statement expression { Type: 'function call', line: 27 }
+                    function call { Sig: 'void', line: 27 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 27 }
+                        argument list { line: 27 }
+                            literal { Type: 'string', Attr: ' C=', line: 27 }
+                statement expression { Type: 'function call', line: 28 }
+                    function call { Sig: 'void', line: 28 }
+                        identifier { Attr: 'printb', sig: 'f(boolean)', SymTab Address: '0x1689c20', line: 28 }
+                        argument list { line: 28 }
+                            identifier { Attr: 'c', sig: 'boolean', SymTab Address: '0x168a230', line: 28 }
+                statement expression { Type: 'function call', line: 29 }
+                    function call { Sig: 'void', line: 29 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 29 }
+                        argument list { line: 29 }
+                            literal { Type: 'string', Attr: '\n', line: 29 }
+                if { Type: 'if else statement', line: 31 }
+                    Binary Operation { Type: '||', Sig: 'boolean', line: 31 }
+                        Binary Operation { Type: '&&', Sig: 'boolean', line: 31 }
+                            function call { Sig: 'boolean', line: 31 }
+                                identifier { Attr: 'A', sig: 'boolean', SymTab Address: '0x168a300', line: 31 }
+                            function call { Sig: 'boolean', line: 31 }
+                                identifier { Attr: 'B', sig: 'boolean', SymTab Address: '0x168a4c0', line: 31 }
+                        function call { Sig: 'boolean', line: 31 }
+                            identifier { Attr: 'C', sig: 'boolean', SymTab Address: '0x168a590', line: 31 }
+                    block { line: 31 }
+                        block statements { line: 32 }
+                            statement expression { Type: 'function call', line: 32 }
+                                function call { Sig: 'void', line: 32 }
+                                    identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 32 }
+                                    argument list { line: 32 }
+                                        literal { Type: 'string', Attr: 'if-part executed\n', line: 32 }
+                    block { line: 33 }
+                        block statements { line: 34 }
+                            statement expression { Type: 'function call', line: 34 }
+                                function call { Sig: 'void', line: 34 }
+                                    identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 34 }
+                                    argument list { line: 34 }
+                                        literal { Type: 'string', Attr: 'else-part executed\n', line: 34 }
+    function declaration { line: 38 }
+        function header { Type: 'void', line: 38 }
+            function declarator { line: 38 }
+                identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 38 }
+                formal parameter list { line: 38 }
+                    formal parameter { line: 38 }
+                        type { Type: 'boolean', line: 38 }
+                        identifier { Attr: 'newa', sig: 'boolean', SymTab Address: '0x168ac60', line: 38 }
+                    formal parameter { line: 38 }
+                        type { Type: 'boolean', line: 38 }
+                        identifier { Attr: 'newb', sig: 'boolean', SymTab Address: '0x168acf0', line: 38 }
+                    formal parameter { line: 38 }
+                        type { Type: 'boolean', line: 38 }
+                        identifier { Attr: 'newc', sig: 'boolean', SymTab Address: '0x168ad80', line: 38 }
+        block { line: 38 }
+            block statements { line: 39 }
+                statement expression { Type: 'assignment', line: 39 }
+                    Assignment { Type: '=', Sig: 'boolean', line: 39 }
+                        identifier { Attr: 'a', sig: 'boolean', SymTab Address: '0x168a0d0', line: 39 }
+                        identifier { Attr: 'newa', sig: 'boolean', SymTab Address: '0x168ac60', line: 39 }
+                statement expression { Type: 'assignment', line: 40 }
+                    Assignment { Type: '=', Sig: 'boolean', line: 40 }
+                        identifier { Attr: 'b', sig: 'boolean', SymTab Address: '0x168a160', line: 40 }
+                        identifier { Attr: 'newb', sig: 'boolean', SymTab Address: '0x168acf0', line: 40 }
+                statement expression { Type: 'assignment', line: 41 }
+                    Assignment { Type: '=', Sig: 'boolean', line: 41 }
+                        identifier { Attr: 'c', sig: 'boolean', SymTab Address: '0x168a230', line: 41 }
+                        identifier { Attr: 'newc', sig: 'boolean', SymTab Address: '0x168ad80', line: 41 }
+                statement expression { Type: 'function call', line: 43 }
+                    function call { Sig: 'void', line: 43 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 43 }
+                        argument list { line: 43 }
+                            literal { Type: 'string', Attr: 'x = (A && !B) || C, with A=', line: 43 }
+                statement expression { Type: 'function call', line: 44 }
+                    function call { Sig: 'void', line: 44 }
+                        identifier { Attr: 'printb', sig: 'f(boolean)', SymTab Address: '0x1689c20', line: 44 }
+                        argument list { line: 44 }
+                            identifier { Attr: 'a', sig: 'boolean', SymTab Address: '0x168a0d0', line: 44 }
+                statement expression { Type: 'function call', line: 45 }
+                    function call { Sig: 'void', line: 45 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 45 }
+                        argument list { line: 45 }
+                            literal { Type: 'string', Attr: ' B=', line: 45 }
+                statement expression { Type: 'function call', line: 46 }
+                    function call { Sig: 'void', line: 46 }
+                        identifier { Attr: 'printb', sig: 'f(boolean)', SymTab Address: '0x1689c20', line: 46 }
+                        argument list { line: 46 }
+                            identifier { Attr: 'b', sig: 'boolean', SymTab Address: '0x168a160', line: 46 }
+                statement expression { Type: 'function call', line: 47 }
+                    function call { Sig: 'void', line: 47 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 47 }
+                        argument list { line: 47 }
+                            literal { Type: 'string', Attr: ' C=', line: 47 }
+                statement expression { Type: 'function call', line: 48 }
+                    function call { Sig: 'void', line: 48 }
+                        identifier { Attr: 'printb', sig: 'f(boolean)', SymTab Address: '0x1689c20', line: 48 }
+                        argument list { line: 48 }
+                            identifier { Attr: 'c', sig: 'boolean', SymTab Address: '0x168a230', line: 48 }
+                statement expression { Type: 'function call', line: 49 }
+                    function call { Sig: 'void', line: 49 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 49 }
+                        argument list { line: 49 }
+                            literal { Type: 'string', Attr: '\n', line: 49 }
+                variable declaration { line: 51 }
+                    type { Type: 'boolean', line: 51 }
+                    identifier { Attr: 'x', sig: 'boolean', SymTab Address: '0x168ae10', line: 51 }
+                statement expression { Type: 'assignment', line: 52 }
+                    Assignment { Type: '=', Sig: 'boolean', line: 52 }
+                        identifier { Attr: 'x', sig: 'boolean', SymTab Address: '0x168ae10', line: 52 }
+                        Binary Operation { Type: '||', Sig: 'boolean', line: 52 }
+                            Binary Operation { Type: '&&', Sig: 'boolean', line: 52 }
+                                function call { Sig: 'boolean', line: 52 }
+                                    identifier { Attr: 'A', sig: 'boolean', SymTab Address: '0x168a300', line: 52 }
+                                Unary Operation { Type: '!', Sig: 'boolean', line: 52 }
+                                    function call { Sig: 'boolean', line: 52 }
+                                        identifier { Attr: 'B', sig: 'boolean', SymTab Address: '0x168a4c0', line: 52 }
+                            function call { Sig: 'boolean', line: 52 }
+                                identifier { Attr: 'C', sig: 'boolean', SymTab Address: '0x168a590', line: 52 }
+                statement expression { Type: 'function call', line: 53 }
+                    function call { Sig: 'void', line: 53 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 53 }
+                        argument list { line: 53 }
+                            literal { Type: 'string', Attr: 'x=', line: 53 }
+                statement expression { Type: 'function call', line: 54 }
+                    function call { Sig: 'void', line: 54 }
+                        identifier { Attr: 'printb', sig: 'f(boolean)', SymTab Address: '0x1689c20', line: 54 }
+                        argument list { line: 54 }
+                            identifier { Attr: 'x', sig: 'boolean', SymTab Address: '0x168ae10', line: 54 }
+                statement expression { Type: 'function call', line: 55 }
+                    function call { Sig: 'void', line: 55 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 55 }
+                        argument list { line: 55 }
+                            literal { Type: 'string', Attr: '\n', line: 55 }
+    main function declaration { line: 58 }
+        main function declarator { line: 58 }
+            identifier { Attr: 'main', sig: 'main', SymTab Address: '0x168a920', line: 58 }
+        block { line: 58 }
+            block statements { line: 59 }
+                statement expression { Type: 'function call', line: 59 }
+                    function call { Sig: 'void', line: 59 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 59 }
+                        argument list { line: 59 }
+                            literal { Type: 'boolean', Attr: 'false', line: 59 }
+                            literal { Type: 'boolean', Attr: 'false', line: 59 }
+                            literal { Type: 'boolean', Attr: 'false', line: 59 }
+                statement expression { Type: 'function call', line: 59 }
+                    function call { Sig: 'void', line: 59 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 59 }
+                        argument list { line: 59 }
+                            literal { Type: 'string', Attr: '\n', line: 59 }
+                statement expression { Type: 'function call', line: 60 }
+                    function call { Sig: 'void', line: 60 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 60 }
+                        argument list { line: 60 }
+                            literal { Type: 'boolean', Attr: 'false', line: 60 }
+                            literal { Type: 'boolean', Attr: 'false', line: 60 }
+                            literal { Type: 'boolean', Attr: 'true', line: 60 }
+                statement expression { Type: 'function call', line: 60 }
+                    function call { Sig: 'void', line: 60 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 60 }
+                        argument list { line: 60 }
+                            literal { Type: 'string', Attr: '\n', line: 60 }
+                statement expression { Type: 'function call', line: 61 }
+                    function call { Sig: 'void', line: 61 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 61 }
+                        argument list { line: 61 }
+                            literal { Type: 'boolean', Attr: 'false', line: 61 }
+                            literal { Type: 'boolean', Attr: 'true', line: 61 }
+                            literal { Type: 'boolean', Attr: 'false', line: 61 }
+                statement expression { Type: 'function call', line: 61 }
+                    function call { Sig: 'void', line: 61 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 61 }
+                        argument list { line: 61 }
+                            literal { Type: 'string', Attr: '\n', line: 61 }
+                statement expression { Type: 'function call', line: 62 }
+                    function call { Sig: 'void', line: 62 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 62 }
+                        argument list { line: 62 }
+                            literal { Type: 'boolean', Attr: 'false', line: 62 }
+                            literal { Type: 'boolean', Attr: 'true', line: 62 }
+                            literal { Type: 'boolean', Attr: 'true', line: 62 }
+                statement expression { Type: 'function call', line: 62 }
+                    function call { Sig: 'void', line: 62 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 62 }
+                        argument list { line: 62 }
+                            literal { Type: 'string', Attr: '\n', line: 62 }
+                statement expression { Type: 'function call', line: 63 }
+                    function call { Sig: 'void', line: 63 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 63 }
+                        argument list { line: 63 }
+                            literal { Type: 'boolean', Attr: 'true', line: 63 }
+                            literal { Type: 'boolean', Attr: 'false', line: 63 }
+                            literal { Type: 'boolean', Attr: 'false', line: 63 }
+                statement expression { Type: 'function call', line: 63 }
+                    function call { Sig: 'void', line: 63 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 63 }
+                        argument list { line: 63 }
+                            literal { Type: 'string', Attr: '\n', line: 63 }
+                statement expression { Type: 'function call', line: 64 }
+                    function call { Sig: 'void', line: 64 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 64 }
+                        argument list { line: 64 }
+                            literal { Type: 'boolean', Attr: 'true', line: 64 }
+                            literal { Type: 'boolean', Attr: 'false', line: 64 }
+                            literal { Type: 'boolean', Attr: 'true', line: 64 }
+                statement expression { Type: 'function call', line: 64 }
+                    function call { Sig: 'void', line: 64 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 64 }
+                        argument list { line: 64 }
+                            literal { Type: 'string', Attr: '\n', line: 64 }
+                statement expression { Type: 'function call', line: 65 }
+                    function call { Sig: 'void', line: 65 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 65 }
+                        argument list { line: 65 }
+                            literal { Type: 'boolean', Attr: 'true', line: 65 }
+                            literal { Type: 'boolean', Attr: 'true', line: 65 }
+                            literal { Type: 'boolean', Attr: 'false', line: 65 }
+                statement expression { Type: 'function call', line: 65 }
+                    function call { Sig: 'void', line: 65 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 65 }
+                        argument list { line: 65 }
+                            literal { Type: 'string', Attr: '\n', line: 65 }
+                statement expression { Type: 'function call', line: 66 }
+                    function call { Sig: 'void', line: 66 }
+                        identifier { Attr: 'eval', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a660', line: 66 }
+                        argument list { line: 66 }
+                            literal { Type: 'boolean', Attr: 'true', line: 66 }
+                            literal { Type: 'boolean', Attr: 'true', line: 66 }
+                            literal { Type: 'boolean', Attr: 'true', line: 66 }
+                statement expression { Type: 'function call', line: 66 }
+                    function call { Sig: 'void', line: 66 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 66 }
+                        argument list { line: 66 }
+                            literal { Type: 'string', Attr: '\n', line: 66 }
+                statement expression { Type: 'function call', line: 68 }
+                    function call { Sig: 'void', line: 68 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 68 }
+                        argument list { line: 68 }
+                            literal { Type: 'boolean', Attr: 'false', line: 68 }
+                            literal { Type: 'boolean', Attr: 'false', line: 68 }
+                            literal { Type: 'boolean', Attr: 'false', line: 68 }
+                statement expression { Type: 'function call', line: 68 }
+                    function call { Sig: 'void', line: 68 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 68 }
+                        argument list { line: 68 }
+                            literal { Type: 'string', Attr: '\n', line: 68 }
+                statement expression { Type: 'function call', line: 69 }
+                    function call { Sig: 'void', line: 69 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 69 }
+                        argument list { line: 69 }
+                            literal { Type: 'boolean', Attr: 'false', line: 69 }
+                            literal { Type: 'boolean', Attr: 'false', line: 69 }
+                            literal { Type: 'boolean', Attr: 'true', line: 69 }
+                statement expression { Type: 'function call', line: 69 }
+                    function call { Sig: 'void', line: 69 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 69 }
+                        argument list { line: 69 }
+                            literal { Type: 'string', Attr: '\n', line: 69 }
+                statement expression { Type: 'function call', line: 70 }
+                    function call { Sig: 'void', line: 70 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 70 }
+                        argument list { line: 70 }
+                            literal { Type: 'boolean', Attr: 'false', line: 70 }
+                            literal { Type: 'boolean', Attr: 'true', line: 70 }
+                            literal { Type: 'boolean', Attr: 'false', line: 70 }
+                statement expression { Type: 'function call', line: 70 }
+                    function call { Sig: 'void', line: 70 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 70 }
+                        argument list { line: 70 }
+                            literal { Type: 'string', Attr: '\n', line: 70 }
+                statement expression { Type: 'function call', line: 71 }
+                    function call { Sig: 'void', line: 71 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 71 }
+                        argument list { line: 71 }
+                            literal { Type: 'boolean', Attr: 'false', line: 71 }
+                            literal { Type: 'boolean', Attr: 'true', line: 71 }
+                            literal { Type: 'boolean', Attr: 'true', line: 71 }
+                statement expression { Type: 'function call', line: 71 }
+                    function call { Sig: 'void', line: 71 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 71 }
+                        argument list { line: 71 }
+                            literal { Type: 'string', Attr: '\n', line: 71 }
+                statement expression { Type: 'function call', line: 72 }
+                    function call { Sig: 'void', line: 72 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 72 }
+                        argument list { line: 72 }
+                            literal { Type: 'boolean', Attr: 'true', line: 72 }
+                            literal { Type: 'boolean', Attr: 'false', line: 72 }
+                            literal { Type: 'boolean', Attr: 'false', line: 72 }
+                statement expression { Type: 'function call', line: 72 }
+                    function call { Sig: 'void', line: 72 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 72 }
+                        argument list { line: 72 }
+                            literal { Type: 'string', Attr: '\n', line: 72 }
+                statement expression { Type: 'function call', line: 73 }
+                    function call { Sig: 'void', line: 73 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 73 }
+                        argument list { line: 73 }
+                            literal { Type: 'boolean', Attr: 'true', line: 73 }
+                            literal { Type: 'boolean', Attr: 'false', line: 73 }
+                            literal { Type: 'boolean', Attr: 'true', line: 73 }
+                statement expression { Type: 'function call', line: 73 }
+                    function call { Sig: 'void', line: 73 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 73 }
+                        argument list { line: 73 }
+                            literal { Type: 'string', Attr: '\n', line: 73 }
+                statement expression { Type: 'function call', line: 74 }
+                    function call { Sig: 'void', line: 74 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 74 }
+                        argument list { line: 74 }
+                            literal { Type: 'boolean', Attr: 'true', line: 74 }
+                            literal { Type: 'boolean', Attr: 'true', line: 74 }
+                            literal { Type: 'boolean', Attr: 'false', line: 74 }
+                statement expression { Type: 'function call', line: 74 }
+                    function call { Sig: 'void', line: 74 }
+                        identifier { Attr: 'prints', sig: 'f(string)', SymTab Address: '0x1689f50', line: 74 }
+                        argument list { line: 74 }
+                            literal { Type: 'string', Attr: '\n', line: 74 }
+                statement expression { Type: 'function call', line: 75 }
+                    function call { Sig: 'void', line: 75 }
+                        identifier { Attr: 'assign', sig: 'f(boolean,boolean,boolean)', SymTab Address: '0x168a7c0', line: 75 }
+                        argument list { line: 75 }
+                            literal { Type: 'boolean', Attr: 'true', line: 75 }
+                            literal { Type: 'boolean', Attr: 'true', line: 75 }
+                            literal { Type: 'boolean', Attr: 'true', line: 75 }
+	.data
+_a:	.word 0
+	.data
+_b:	.word 0
+	.data
+_c:	.word 0
+	.data
+s0:       	.byte 101 , 118 , 97 , 108 , 117 , 97 , 116 , 101 , 100 , 32 , 65 , 10 , 0 
+       	.align 2 
+	.data
+s1:       	.byte 101 , 118 , 97 , 108 , 117 , 97 , 116 , 101 , 100 , 32 , 66 , 10 , 0 
+       	.align 2 
+	.data
+s2:       	.byte 101 , 118 , 97 , 108 , 117 , 97 , 116 , 101 , 100 , 32 , 67 , 10 , 0 
+       	.align 2 
+	.data
+s3:       	.byte 105 , 102 , 32 , 40 , 40 , 65 , 32 , 38 , 38 , 32 , 66 , 41 , 32 , 124 , 124 , 32 , 67 , 41 , 32 , 123 , 46 , 46 , 46 , 125 , 32 , 101 , 108 , 115 , 101 , 32 , 123 , 46 , 46 , 46 , 125 , 44 , 32 , 119 , 105 , 116 , 104 , 32 , 65 , 61 , 0 
+       	.align 2 
+	.data
+s4:       	.byte 32 , 66 , 61 , 0 
+       	.align 2 
+	.data
+s5:       	.byte 32 , 67 , 61 , 0 
+       	.align 2 
+	.data
+s6:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s7:       	.byte 105 , 102 , 45 , 112 , 97 , 114 , 116 , 32 , 101 , 120 , 101 , 99 , 117 , 116 , 101 , 100 , 10 , 0 
+       	.align 2 
+	.data
+s8:       	.byte 101 , 108 , 115 , 101 , 45 , 112 , 97 , 114 , 116 , 32 , 101 , 120 , 101 , 99 , 117 , 116 , 101 , 100 , 10 , 0 
+       	.align 2 
+	.data
+s9:       	.byte 120 , 32 , 61 , 32 , 40 , 65 , 32 , 38 , 38 , 32 , 33 , 66 , 41 , 32 , 124 , 124 , 32 , 67 , 44 , 32 , 119 , 105 , 116 , 104 , 32 , 65 , 61 , 0 
+       	.align 2 
+	.data
+s10:       	.byte 32 , 66 , 61 , 0 
+       	.align 2 
+	.data
+s11:       	.byte 32 , 67 , 61 , 0 
+       	.align 2 
+	.data
+s12:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s13:       	.byte 120 , 61 , 0 
+       	.align 2 
+	.data
+s14:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s15:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s16:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s17:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s18:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s19:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s20:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s21:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s22:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s23:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s24:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s25:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s26:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s27:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s28:       	.byte 10 , 0 
+       	.align 2 
+	.data
+s29:       	.byte 10 , 0 
+       	.align 2 
+	.text
+_A:
+addiu	$sp,$sp,-4
+sw	$ra,0($sp)
+la	$t9,s0
+li	$t8,0
+li	$t7,13
+prints_begin_0:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_0
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_0
+prints_exit_0:
+lw	$t9,_a
+move	$v0,$t9
+j	_A_end
+_A_end:
+lw	$ra,0($sp)
+addiu	$sp,$sp,4
+jr	$ra
+	.text
+_B:
+addiu	$sp,$sp,-4
+sw	$ra,0($sp)
+la	$t9,s1
+li	$t8,0
+li	$t7,13
+prints_begin_1:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_1
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_1
+prints_exit_1:
+lw	$t9,_b
+move	$v0,$t9
+j	_B_end
+_B_end:
+lw	$ra,0($sp)
+addiu	$sp,$sp,4
+jr	$ra
+	.text
+_C:
+addiu	$sp,$sp,-4
+sw	$ra,0($sp)
+la	$t9,s2
+li	$t8,0
+li	$t7,13
+prints_begin_2:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_2
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_2
+prints_exit_2:
+lw	$t9,_c
+move	$v0,$t9
+j	_C_end
+_C_end:
+lw	$ra,0($sp)
+addiu	$sp,$sp,4
+jr	$ra
+	.text
+_eval:
+addiu	$sp,$sp,-16
+sw	$ra,0($sp)
+sw	$a0,4($sp)
+sw	$a1,8($sp)
+sw	$a2,12($sp)
+lw	$t9,4($sp)
+sw	$t9,_a
+lw	$t9,8($sp)
+sw	$t9,_b
+lw	$t9,12($sp)
+sw	$t9,_c
+la	$t9,s3
+li	$t8,0
+li	$t7,44
+prints_begin_3:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_3
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_3
+prints_exit_3:
+lw	$t9,_a
+move	$a0,$t9
+bne	$a0,$0,print_b_else0
+	.data
+s_print_b_false0:       	.asciiz "false" 
+	.text
+la	$a0,s_print_b_false0
+j	print_b_end0
+print_b_else0:
+	.data
+s_print_b_true0:       	.asciiz "true" 
+	.text
+la	$a0,s_print_b_true0
+print_b_end0:
+li	$v0,4
+syscall
+la	$t9,s4
+li	$t8,0
+li	$t7,3
+prints_begin_4:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_4
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_4
+prints_exit_4:
+lw	$t9,_b
+move	$a0,$t9
+bne	$a0,$0,print_b_else1
+	.data
+s_print_b_false1:       	.asciiz "false" 
+	.text
+la	$a0,s_print_b_false1
+j	print_b_end1
+print_b_else1:
+	.data
+s_print_b_true1:       	.asciiz "true" 
+	.text
+la	$a0,s_print_b_true1
+print_b_end1:
+li	$v0,4
+syscall
+la	$t9,s5
+li	$t8,0
+li	$t7,3
+prints_begin_5:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_5
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_5
+prints_exit_5:
+lw	$t9,_c
+move	$a0,$t9
+bne	$a0,$0,print_b_else2
+	.data
+s_print_b_false2:       	.asciiz "false" 
+	.text
+la	$a0,s_print_b_false2
+j	print_b_end2
+print_b_else2:
+	.data
+s_print_b_true2:       	.asciiz "true" 
+	.text
+la	$a0,s_print_b_true2
+print_b_end2:
+li	$v0,4
+syscall
+la	$t9,s6
+li	$t8,0
+li	$t7,2
+prints_begin_6:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_6
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_6
+prints_exit_6:
+addiu	$sp,$sp,0
+jal	_A
+move	$t9,$v0
+addiu	$sp,$sp,0
+addiu	$sp,$sp,-4
+sw	$t9,0($sp)
+jal	_B
+move	$t8,$v0
+lw	$t9,0($sp)
+addiu	$sp,$sp,4
+addiu	$sp,$sp,-4
+sw	$t7,0($sp)
+jal	_C
+move	$t9,$v0
+lw	$t7,0($sp)
+addiu	$sp,$sp,4
+beq	$t8,$0,elseIf0
+la	$t9,s7
+li	$t8,0
+li	$t7,18
+prints_begin_7:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_7
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_7
+prints_exit_7:
+j	if0
+elseIf0:
+la	$t9,s8
+li	$t8,0
+li	$t7,20
+prints_begin_8:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_8
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_8
+prints_exit_8:
+if0:
+_eval_end:
+lw	$ra,0($sp)
+addiu	$sp,$sp,16
+jr	$ra
+	.text
+_assign:
+addiu	$sp,$sp,-20
+sw	$ra,0($sp)
+sw	$a0,4($sp)
+sw	$a1,8($sp)
+sw	$a2,12($sp)
+lw	$t9,4($sp)
+sw	$t9,_a
+lw	$t9,8($sp)
+sw	$t9,_b
+lw	$t9,12($sp)
+sw	$t9,_c
+la	$t9,s9
+li	$t8,0
+li	$t7,27
+prints_begin_9:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_9
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_9
+prints_exit_9:
+lw	$t9,_a
+move	$a0,$t9
+bne	$a0,$0,print_b_else3
+	.data
+s_print_b_false3:       	.asciiz "false" 
+	.text
+la	$a0,s_print_b_false3
+j	print_b_end3
+print_b_else3:
+	.data
+s_print_b_true3:       	.asciiz "true" 
+	.text
+la	$a0,s_print_b_true3
+print_b_end3:
+li	$v0,4
+syscall
+la	$t9,s10
+li	$t8,0
+li	$t7,3
+prints_begin_10:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_10
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_10
+prints_exit_10:
+lw	$t9,_b
+move	$a0,$t9
+bne	$a0,$0,print_b_else4
+	.data
+s_print_b_false4:       	.asciiz "false" 
+	.text
+la	$a0,s_print_b_false4
+j	print_b_end4
+print_b_else4:
+	.data
+s_print_b_true4:       	.asciiz "true" 
+	.text
+la	$a0,s_print_b_true4
+print_b_end4:
+li	$v0,4
+syscall
+la	$t9,s11
+li	$t8,0
+li	$t7,3
+prints_begin_11:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_11
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_11
+prints_exit_11:
+lw	$t9,_c
+move	$a0,$t9
+bne	$a0,$0,print_b_else5
+	.data
+s_print_b_false5:       	.asciiz "false" 
+	.text
+la	$a0,s_print_b_false5
+j	print_b_end5
+print_b_else5:
+	.data
+s_print_b_true5:       	.asciiz "true" 
+	.text
+la	$a0,s_print_b_true5
+print_b_end5:
+li	$v0,4
+syscall
+la	$t9,s12
+li	$t8,0
+li	$t7,2
+prints_begin_12:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_12
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_12
+prints_exit_12:
+addiu	$sp,$sp,0
+jal	_A
+move	$t9,$v0
+addiu	$sp,$sp,0
+addiu	$sp,$sp,-4
+sw	$t9,0($sp)
+jal	_B
+move	$t8,$v0
+lw	$t9,0($sp)
+addiu	$sp,$sp,4
+beq	$t8,$0,not_0
+li	$t7,0
+j	not_end_0
+not_0:
+li	$t7,1
+not_end_0:
+addiu	$sp,$sp,-4
+sw	$t8,0($sp)
+jal	_C
+move	$t9,$v0
+lw	$t8,0($sp)
+addiu	$sp,$sp,4
+sw	$t7,16($sp)
+la	$t9,s13
+li	$t8,0
+li	$t7,2
+prints_begin_13:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_13
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_13
+prints_exit_13:
+lw	$t9,16($sp)
+move	$a0,$t9
+bne	$a0,$0,print_b_else6
+	.data
+s_print_b_false6:       	.asciiz "false" 
+	.text
+la	$a0,s_print_b_false6
+j	print_b_end6
+print_b_else6:
+	.data
+s_print_b_true6:       	.asciiz "true" 
+	.text
+la	$a0,s_print_b_true6
+print_b_end6:
+li	$v0,4
+syscall
+la	$t9,s14
+li	$t8,0
+li	$t7,2
+prints_begin_14:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_14
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_14
+prints_exit_14:
+_assign_end:
+lw	$ra,0($sp)
+addiu	$sp,$sp,20
+jr	$ra
+       	.text
+       	.globl main
+main:
+addiu	$sp,$sp,-4
+li	$t9,0
+li	$t8,0
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s15
+li	$t8,0
+li	$t7,2
+prints_begin_15:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_15
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_15
+prints_exit_15:
+li	$t9,0
+li	$t8,0
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s16
+li	$t8,0
+li	$t7,2
+prints_begin_16:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_16
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_16
+prints_exit_16:
+li	$t9,0
+li	$t8,1
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s17
+li	$t8,0
+li	$t7,2
+prints_begin_17:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_17
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_17
+prints_exit_17:
+li	$t9,0
+li	$t8,1
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s18
+li	$t8,0
+li	$t7,2
+prints_begin_18:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_18
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_18
+prints_exit_18:
+li	$t9,1
+li	$t8,0
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s19
+li	$t8,0
+li	$t7,2
+prints_begin_19:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_19
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_19
+prints_exit_19:
+li	$t9,1
+li	$t8,0
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s20
+li	$t8,0
+li	$t7,2
+prints_begin_20:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_20
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_20
+prints_exit_20:
+li	$t9,1
+li	$t8,1
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s21
+li	$t8,0
+li	$t7,2
+prints_begin_21:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_21
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_21
+prints_exit_21:
+li	$t9,1
+li	$t8,1
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_eval
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s22
+li	$t8,0
+li	$t7,2
+prints_begin_22:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_22
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_22
+prints_exit_22:
+li	$t9,0
+li	$t8,0
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s23
+li	$t8,0
+li	$t7,2
+prints_begin_23:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_23
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_23
+prints_exit_23:
+li	$t9,0
+li	$t8,0
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s24
+li	$t8,0
+li	$t7,2
+prints_begin_24:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_24
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_24
+prints_exit_24:
+li	$t9,0
+li	$t8,1
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s25
+li	$t8,0
+li	$t7,2
+prints_begin_25:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_25
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_25
+prints_exit_25:
+li	$t9,0
+li	$t8,1
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s26
+li	$t8,0
+li	$t7,2
+prints_begin_26:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_26
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_26
+prints_exit_26:
+li	$t9,1
+li	$t8,0
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s27
+li	$t8,0
+li	$t7,2
+prints_begin_27:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_27
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_27
+prints_exit_27:
+li	$t9,1
+li	$t8,0
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s28
+li	$t8,0
+li	$t7,2
+prints_begin_28:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_28
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_28
+prints_exit_28:
+li	$t9,1
+li	$t8,1
+li	$t7,0
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+la	$t9,s29
+li	$t8,0
+li	$t7,2
+prints_begin_29:
+lb	$a0,0($t9)
+beq	$t8,$t7,prints_exit_29
+li	$v0,11
+syscall
+addi	$t8,$t8,1
+addi	$t9,$t9,1
+j	prints_begin_29
+prints_exit_29:
+li	$t9,1
+li	$t8,1
+li	$t7,1
+addiu	$sp,$sp,-12
+sw	$t9,0($sp)
+sw	$t8,4($sp)
+sw	$t7,8($sp)
+move	$a0,$t9
+move	$a1,$t8
+move	$a2,$t7
+jal	_assign
+move	$t9,$v0
+lw	$t9,0($sp)
+lw	$t8,4($sp)
+lw	$t7,8($sp)
+addiu	$sp,$sp,12
+addiu	$sp,$sp,4
+li	$v0,10
+syscall

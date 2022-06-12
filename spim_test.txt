@@ -1,0 +1,18 @@
+.data
+char: .space 2 
+
+.text
+main:
+
+li $v0, 8  
+la $a0, char 
+li $a1, 2  
+syscall  
+
+la $t0, char 
+lb $a0, 0($t0)
+li $v0, 1  
+syscall
+
+li $v0, 10
+syscall

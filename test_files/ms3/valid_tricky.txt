@@ -1,7 +1,0 @@
-void func(){
-    func();
-}
-
-imposter_main(){
-    func();
-}

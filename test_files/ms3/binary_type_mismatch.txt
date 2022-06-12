@@ -1,4 +1,0 @@
-main(){
-    int x;
-    x = x * x * x + 25 + false;
-}

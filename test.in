@@ -1,0 +1,7 @@
+void dog(int x, int y, int z){
+    x = 1;
+    y = 2;
+    z = 3;
+
+    shitme(x, y, h);
+}

@@ -1,0 +1,6 @@
+god() {
+        prints("I am god\n");
+        int local_var;
+}
+
+int global_var;
